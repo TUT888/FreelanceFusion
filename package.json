@@ -1,0 +1,27 @@
+{
+    "name": "freelancefusion",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha --reporter spec",
+        "start": "node server.js",
+        "start:dev": "nodemon server.js"
+    },
+    "author": "Alice Tat",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "chai": "^4.3.10",
+        "chai-http": "^5.0.0",
+        "dotenv": "^16.4.5",
+        "ejs": "^3.1.10",
+        "express": "^4.19.2",
+        "expresss": "^0.0.0",
+        "http": "^0.0.1-security",
+        "mocha": "^10.2.0",
+        "mongodb": "^4.4.1",
+        "nodemon": "^3.0.1",
+        "request": "^2.88.2",
+        "socket.io": "^4.7.2"
+    }
+}
