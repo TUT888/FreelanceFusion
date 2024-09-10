@@ -8,6 +8,7 @@ connections
 
 ## Table of Contents
 - [Installation](#installation)
+- [Testing](#testing)
 - [Contribution](#contribution)
 
 ## Installation
@@ -40,13 +41,16 @@ connections
         npm start
         ```
 
+[Back to top](#introduction)
+
 ## Testing
 
 1. Unit test: use following command to run the test with Mocha and Chai:
     ```
     npm test
     ```
-
+    
+[Back to top](#introduction)
 
 ## Contribution
 Our team members:
