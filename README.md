@@ -4,7 +4,7 @@
 FreelanceFusion is a platform where freelancers can create profiles and
 connect with clients seeking various services. It facilitates direct
 communication, helping freelancers and clients establish effective
-connections
+connections.
 
 ## Table of Contents
 - [Installation](#installation)
