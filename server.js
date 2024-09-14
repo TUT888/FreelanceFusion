@@ -14,8 +14,10 @@ app.use(express.urlencoded({extended: false}));
 
 // Routing
 let homeRouter = require('./routers/homeRouter');
+let profileRouter = require('./routers/profileRouter');
 
 app.use('/', homeRouter);
+app.use('/profile', profileRouter);
 
 // Socket
 let http = require('http').createServer(app);
