@@ -1,0 +1,109 @@
+<%- include('partials/header'); -%>
+
+<div class="container">
+    <!-- Filter Section Row -->
+    <div class="row">
+        <!-- Filter Buttons (e.g., Keyword Search) -->
+        <div class="col s12">
+            <form id="freelancer-filter-form" method="GET" action="/freelancers">
+                <div class="row">
+                    <!-- Search Keyword -->
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">search</i>
+                        <input type="text" name="keyword" id="keyword" placeholder="Search Freelancer by Skills"
+                            value="<%= filters.keyword || '' %>">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content Row (Freelancer List and Freelancer Details) -->
+    <div class="row">
+        <!-- Left Side: Freelancer List -->
+        <div class="col s12 m5">
+            <% if (freelancersList && freelancersList.length > 0) { %>
+                <ul class="collection" id="freelancer-list" data-freelancers='<%= JSON.stringify(freelancersList).replace(/'/g, "&#39;") %>'>
+                    <% freelancersList.forEach(function(freelancer, index) { %>
+                        <li class="collection-item freelancer-item <%= index === 0 ? 'active' : '' %>" data-id="<%= freelancer._id %>">
+                            <span class="title">
+                                <%= freelancer.profile && freelancer.profile.name ? freelancer.profile.name : 'No name available' %>
+                            </span>
+                            <p>
+                                <strong>Skills:</strong>
+                                <%= freelancer.profile && freelancer.profile.skills && freelancer.profile.skills.length > 0 
+                                    ? freelancer.profile.skills.join(', ') : 'No skills listed' %><br>
+                                <strong>Experience:</strong> 
+                                <%= freelancer.profile && freelancer.profile.experience ? freelancer.profile.experience : 'No experience information' %>
+                            </p>
+                        </li>
+                    <% }) %>
+                </ul>
+                <!-- Include Pagination Partial -->
+                <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
+            <% } else { %>
+                <!-- Display message if no freelancers are available -->
+                <p>No freelancers available.</p>
+            <% } %>
+        </div>
+
+        <!-- Right Side: Freelancer Detail View -->
+        <div class="col s12 m7" id="freelancer-details" style="position: sticky; top: 20px;">
+            <% if (freelancersList && freelancersList.length > 0) { %>
+                <%- include('partials/freelancerDetail', { freelancer: freelancersList[0] }) %>
+            <% } else { %>
+                <p>No freelancer selected.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var freelancerListElement = document.getElementById('freelancer-list');
+
+        // When a freelancer item is clicked, update the freelancer details on the right
+        document.querySelectorAll('.freelancer-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                var freelancerId = item.getAttribute('data-id');
+
+                // Make an AJAX request to fetch the rendered partial
+                fetch(`/freelancers/${freelancerId}`)
+                    .then(response => response.text()) // Return the response as HTML
+                    .then(html => {
+                        // Update the freelancer details section with the rendered partial
+                        document.getElementById('freelancer-details').innerHTML = html;
+                    })
+                    .catch(error => console.error(error));
+
+                // Set the clicked freelancer as active
+                document.querySelectorAll('.freelancer-item').forEach(function (el) {
+                    el.classList.remove('active');
+                });
+                item.classList.add('active');
+            });
+        });
+
+        const filterForm = document.getElementById('freelancer-filter-form');
+
+        // Function to submit the filter form
+        function submitFilter() {
+            filterForm.submit();
+        }
+
+        // Add 'blur' event listeners for input fields (keyword)
+        const blurFields = ['keyword'];
+        blurFields.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('blur', submitFilter);
+            }
+        });
+
+        // Initialize Materialize select dropdowns if required
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+    });
+</script>
