@@ -1,9 +1,22 @@
 const express= require("express");
+const session = require('express-session');
 const app = express();
 const path = require('path');
+
 const port = process.env.PORT || 3000;
 require('dotenv').config();
 require('./dbConnection');
+
+
+
+app.use(session({
+    secret: process.env.SESSION_SECRET, // Replace 'yourSecretKey' with a secure key or use environment variable
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Change to true if using HTTPS
+}));
+
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
