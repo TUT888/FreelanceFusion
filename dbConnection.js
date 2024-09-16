@@ -10,6 +10,12 @@ const client = new MongoClient(url, {
     }
 })
 
-client.connect();
+client.connect()
+    .then(() => {
+        console.log('Connected to MongoDB');
+    })
+    .catch(err => {
+        console.error('Failed to connect to MongoDB', err);
+    });
 
 module.exports = client;
