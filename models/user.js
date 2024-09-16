@@ -6,6 +6,17 @@ function getUserData(userEmail, callback) {
     collection.find(query).toArray(callback);
 }
 
+function updateUserData(userEmail, updateData, callback) {
+    let query = { email: userEmail };
+    collection.updateOne(
+        query,
+        {
+            $set: updateData
+        }
+    )
+}
+
 module.exports = {
-    getUserData
+    getUserData,
+    updateUserData
 }
