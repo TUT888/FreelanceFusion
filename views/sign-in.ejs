@@ -1,0 +1,35 @@
+<%- include('partials/header'); -%>
+
+<div class="container">
+    <div class="row">
+        <div class="col s12 m6 l4 offset-l4 offset-m3">
+            <h4 class="center-align">Sign In</h4>
+            <form action="/login" method="POST">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">email</i>
+                    <input id="email" type="email" name="email" class="validate" required>
+                    <label for="email">Email</label>
+                    <span class="helper-text" data-error="Invalid email format"></span>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">lock</i>
+                    <input id="password" type="password" name="password" class="validate" required>
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <button type="submit" class="btn waves-effect waves-light">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        M.updateTextFields(); // Initialize Materialize text fields
+    });
+</script>
+
+<%- include('partials/footer'); -%>

@@ -3,3 +3,11 @@
     padding-left: 1rem; 
     padding-bottom: 1rem;
 }
+
+.page-footer {
+    padding: 0.1%;
+}
+
+.container {
+    text-align: center;
+}

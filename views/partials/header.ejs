@@ -18,8 +18,54 @@
         <div class="nav-wrapper">
             <a class="brand-logo left">FreelanceFusion</a>
             <ul id="nav-mobile" class="right ">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
+                <li><a href="/sign-in">Sign In</a></li>
+                <li><a href="/register">Join</a></li>
+            </ul>
+            <ul id="nav-mobile" class="right">
+                <!-- Find Jobs -->
+                <li><a href="/find-jobs">Find Jobs</a></li>
+                <!-- Find Freelancers -->
+                <li><a href="/find-freelancers">Find Freelancer</a></li>
+                <!-- My Projects -->
+                <li><a href="/projects">My Projects</a></li>
+                <!-- Notifications Icon -->
+                <li>
+                    <a href="/notification">
+                        <i class="material-icons">notifications</i>
+                    </a>
+                </li>
+                <!-- Mailbox Icon -->
+                <li>
+                    <a href="/messages">
+                        <i class="material-icons">mail</i>
+                    </a>
+                </li>
+                <!-- Avatar Dropdown -->
+                <li>
+                    <a class="dropdown-trigger" href="#!" data-target="dropdown1">
+                        <i class="material-icons">account_circle</i>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
+
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="/profile">My Profile</a></li>
+        <li class="divider"></li>
+        <li><a href="/logout">Log Out</a></li>
+    </ul>
+
+    <!--Import jQuery before materialize.js-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize dropdown
+            $('.dropdown-trigger').dropdown({
+                coverTrigger: false
+            });
+            // Initialize tooltips
+            $('.tooltipped').tooltip();
+        });
+    </script>
