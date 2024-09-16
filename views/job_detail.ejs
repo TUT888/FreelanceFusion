@@ -1,0 +1,12 @@
+<%- include('partials/header'); -%>
+<div class="container">
+    <h3 class="center-align"><%= job.title %></h3>
+    <p><b>Description:</b> <%= job.description %></p>
+    <p><b>Requirements:</b> <%= job ? job.requirements.join(',') : '' %></p>
+    <p><b>Status:</b> <%= job.status %></p>
+    <p><b>Date created:</b> <%=  new Date(job.created_at).toLocaleDateString() %> at <%= new Date(job.created_at).toLocaleTimeString() %></p>
+    <div class="right-align">
+        <a href="/jobs/edit/<%= job._id %>" class="btn">Edit Job</a>
+    </div>
+</div>
+<%- include('partials/footer'); -%>

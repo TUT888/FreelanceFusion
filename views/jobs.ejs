@@ -1,0 +1,23 @@
+<%- include('partials/header'); -%>
+<div class="container">
+    <h3 class="center-align">Job List</h3>
+    <table class="striped centered">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Job Details</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% jobs.forEach(function(job) { %>
+                <tr>
+                    <td><a href="/jobs/<%= job._id %>"><b><%= job.title %></b></a></td>
+                    <td><%= job.description %></td>
+                    <td><%= job.status %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+<%- include('partials/footer'); -%>
