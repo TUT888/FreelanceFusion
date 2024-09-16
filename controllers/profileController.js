@@ -10,6 +10,14 @@ const displayProfile = (req, res) => {
     });
 }
 
+const updateProfile = (req, res) => {
+    let userData = req.body;
+    let userEmail = "freelancer@example.com";
+    // let userEmail = "client@example.com";
+    collection.updateUserData(userEmail, userData);
+}
+
 module.exports = {
-    displayProfile
+    displayProfile,
+    updateProfile
 }
