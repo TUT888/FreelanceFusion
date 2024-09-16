@@ -1,8 +1,52 @@
-let collection = require('../models/user');
+// let collection = require('../models/user');
+
+
+// const displayProfile = (req, res) => {
+//     // Simulate a hardcoded user for testing
+//     const hardcodedUserData = {
+//         email: 'testuser@example.com',
+//         username: 'Test User',
+//         role: 'freelancer',
+//         profile: {
+//             name: 'Test User',
+//             // add other profile fields as necessary
+//         }
+//     };
+
+//     if (!req.session.user) {
+//         return res.redirect('/sign-in');
+//     }
+
+//     // You can skip the database fetch for now
+//     // collection.getUserData(userEmail, (err, result) => {
+//     //     if (err) {
+//     //         console.error('Error retrieving user data:', err);
+//     //         return res.redirect('/sign-in'); // Redirect if error occurs
+//     //     }
+
+//     //     if (result.length === 0) {
+//     //         return res.redirect('/sign-in'); // Redirect if no user found
+//     //     }
+
+//     //     console.log('User Data:', result);
+
+//     res.render("profile", {
+//         userData: hardcodedUserData, // Use hardcoded data here
+//         session: req.session
+//     });
+//     // });
+// };
+
+// module.exports = {
+//     displayProfile
+// };
 
 
 
 const displayProfile = async (req, res) => {
+
+    console.log('Session Data:', req.session);
+
     try {
         let userEmail = req.session.user.email;
 
@@ -31,6 +75,16 @@ const displayProfile = async (req, res) => {
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
     collection.find(query).toArray(callback);
+
+    if (err) {
+        console.error('Error querying database:', err);
+        return callback(err);
+    }
+
+    console.log('Database Query Result:', result);
+
+        callback(null, result);
+
 }
 
 

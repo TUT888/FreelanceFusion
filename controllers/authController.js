@@ -33,19 +33,29 @@ const register = async (req, res) => {
             updated_at: new Date()
         });
 
+        const userId = result.insertedId;
+
         await usersCollection.insertOne({
-            user_id: result.insertedId, 
+            _id: userId, 
             email,
+            password: hashedPassword,
             role: 'freelancer', 
-            profile: {},
-            name: username,
-            skills: [],
-            experience: '',
-            company_details: '',
-            contact_info: { phone: '', address: '' },
+            profile: {
+                name: username,
+                skills: [], // Default to empty array
+                experience: '' // Default to empty string
+            },
+            contact_info: {
+                phone: '', // Default to empty string
+                address: '' // Default to empty string
+            },
             created_at: new Date(),
             updated_at: new Date()
         });
+
+
+   
+          
 
         res.status(201).json({ success: true, message: 'User registered successfully' });
     } catch (err) {
@@ -71,9 +81,10 @@ const login = async (req, res) => {
         }
 
         req.session.user = {
-            id: user._id,
+            // id: user._id,
             email: user.email,
-            profile: user.profile
+            role: user.role
+            // profile: user.profile
         };
 
         res.json({ success: true, message: 'Logged in successfully' });
