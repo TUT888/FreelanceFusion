@@ -1,22 +1,43 @@
 let collection = require('../models/jobModel');
+const paginate = require('../utils/pagination');
 
-const displayJobs = (req, res) => {
-    let filter = {
-        jobType: req.query.jobType || null // Get jobType from query parameters if present
-    };
+const displayJobs = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
 
-    // Fetch jobs based on the filter
-    collection.getJobs(filter, (err, result) => {
-        if (err) {
-            return res.status(500).send('Error fetching jobs');
+    let filter = {};
+    if (req.query.payType) filter.payType = req.query.payType;
+    if (req.query.salaryMin) filter.salaryMin = parseFloat(req.query.salaryMin); 
+    if (req.query.salaryMax) filter.salaryMax = parseFloat(req.query.salaryMax);  
+    if (req.query.requirements) filter.requirements = req.query.requirements.split(',').map(skill => skill.trim());  
+    if (req.query.status) filter.status = req.query.status;  
+    if (req.query.keyword) filter.keyword = req.query.keyword;  
+
+    try {
+        // Pass the jobModel to the paginate function
+        const paginationResult = await paginate.paginate(
+            collection, // Pass the whole model
+            { page, limit, filter } // Pagination options
+        );
+
+        if (paginationResult.data.length === 0 && page > 1) {
+            // Redirect to the previous valid page or the first page if none exists
+            return res.redirect(`/jobs?page=${Math.max(1, paginationResult.totalPages)}`);
         }
 
-        // Render the jobs view
-        res.render("job", {
-            jobsList: result
+        res.render('job', {
+            jobsList: paginationResult.data,
+            currentPage: paginationResult.currentPage,
+            totalPages: paginationResult.totalPages,
+            filters: req.query
         });
-    });
+    } catch (err) {
+        console.error("Error fetching jobs:", err);
+        res.status(500).send('Error fetching jobs');
+    }
 };
+
+
 
 
 const getJobDetail = (req, res) => {
