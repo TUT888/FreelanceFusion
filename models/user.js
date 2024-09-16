@@ -4,10 +4,27 @@ let collection = client.db().collection('users');
 
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
+
+    console.log("Querying database for:", userEmail); // Add logging here
+
+    const timeout = setTimeout(() => {
+        return callback(new Error('Database query timed out'));
+    }, 5000);
+
     collection.find(query).toArray((err, result) => {
-        if (err) return callback(err);
+
+        clearTimeout(timeout);
+        if (err) {
+            console.log("Error during database query:", err);
+            return callback(err);
+        }
         console.log('Database Result:', result);
-        callback(null, result); // Return result as array
+
+        if (!result || result.length === 0) {
+            console.log("No user data found for:", userEmail);
+        }
+
+        callback(null, result);
     });
 }
 

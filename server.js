@@ -42,7 +42,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // Routing
 let homeRouter = require('./routers/homeRouter');
 let profileRouter = require('./routers/profileRouter');

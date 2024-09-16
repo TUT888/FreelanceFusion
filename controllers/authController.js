@@ -11,13 +11,18 @@ const register = async (req, res) => {
     try {
         const { email, password, username } = req.body;
 
+        console.log("Received registration data:", { email, password, username });
+
+
         // check if user already exists
         const user = await authCollection.findOne({ email });
+
+        console.log("Existing user check:", user);
+
         if (user) {
-            return res.status(400).send('User already exists');
+            return res.status(400).json({ success: false, message: 'User already exists' });
         }
 
-      
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const result = await authCollection.insertOne({
@@ -27,9 +32,6 @@ const register = async (req, res) => {
             created_at: new Date(),
             updated_at: new Date()
         });
-
-
-
 
         await usersCollection.insertOne({
             user_id: result.insertedId, 
@@ -46,33 +48,28 @@ const register = async (req, res) => {
         });
 
         res.status(201).json({ success: true, message: 'User registered successfully' });
-        // res.redirect('/sign-in');
-
     } catch (err) {
         console.error('Error registering user:', err);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
-
     }
 };
+
 
 
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // find the user in the 'auth' collection
         const user = await authCollection.findOne({ email });
         if (!user) {
-            return res.status(401).send('Invalid email or password');
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
-  
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-            return res.status(401).send('Invalid email or password');
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
-        // store user information in session
         req.session.user = {
             id: user._id,
             email: user.email,
@@ -80,12 +77,12 @@ const login = async (req, res) => {
         };
 
         res.json({ success: true, message: 'Logged in successfully' });
-        
     } catch (err) {
         console.error('Error logging in user:', err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+
 
 
 const logout = (req, res) => {

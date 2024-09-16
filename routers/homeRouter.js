@@ -12,11 +12,17 @@ router.get('/', (req, res) => {
 
 // Serve the sign in page
 router.get('/sign-in', (req, res) => {
+    if (req.session.user) {
+        return res.redirect('/'); // Redirect to home if already logged in
+    }
     res.render('sign-in.ejs', { session: req.session });
 });
 
 // Serve the register page
 router.get('/register', (req, res) => {
+    if (req.session.user) {
+        return res.redirect('/'); // Redirect to home if already logged in
+    }
     res.render('register.ejs', { session: req.session });
 });
 
