@@ -25,7 +25,7 @@ router.post('/login', authController.login);
 router.post('/register', authController.register);
 
 router.get('/profile', isAuthenticated, (req, res) => {
-    res.redirect('/profile');
+    res.render('profile', { session: req.session });
 });
 
 router.get('/logout', authController.logout);

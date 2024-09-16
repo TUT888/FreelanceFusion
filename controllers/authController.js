@@ -31,25 +31,27 @@ const register = async (req, res) => {
 
 
 
-        // await usersCollection.insertOne({
-        //     user_id: result.insertedId, 
-        //     email,
-        //     role: 'freelancer', 
-        //     profile: {},
-        //     name: username,
-        //     skills: [],
-        //     experience: '',
-        //     company_details: '',
-        //     contact_info: { phone: '', address: '' },
-        //     created_at: new Date(),
-        //     updated_at: new Date()
-        // });
+        await usersCollection.insertOne({
+            user_id: result.insertedId, 
+            email,
+            role: 'freelancer', 
+            profile: {},
+            name: username,
+            skills: [],
+            experience: '',
+            company_details: '',
+            contact_info: { phone: '', address: '' },
+            created_at: new Date(),
+            updated_at: new Date()
+        });
 
-        res.status(201).send('User registered successfully');
-        res.redirect('/sign-in');
+        res.status(201).json({ success: true, message: 'User registered successfully' });
+        // res.redirect('/sign-in');
+
     } catch (err) {
         console.error('Error registering user:', err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+
     }
 };
 
@@ -77,7 +79,8 @@ const login = async (req, res) => {
             profile: user.profile
         };
 
-        res.redirect('/profile');
+        res.json({ success: true, message: 'Logged in successfully' });
+        
     } catch (err) {
         console.error('Error logging in user:', err);
         res.status(500).send('Internal Server Error');
