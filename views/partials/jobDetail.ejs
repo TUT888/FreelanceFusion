@@ -1,0 +1,10 @@
+<!-- partials/jobDetail.ejs -->
+<div class="card">
+    <div class="card-content">
+        <span class="card-title"><%= job.title %></span>
+        <p><strong>Description:</strong> <%= job.description %></p>
+        <p><strong>Requirements:</strong> <%= job.requirements.join(', ') %></p>
+        <p><strong>Status:</strong> <%= job.status %></p>
+        <p><strong>Pay:</strong> $25 - $50 / hr</p>
+    </div>
+</div>

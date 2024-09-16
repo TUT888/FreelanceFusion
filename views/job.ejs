@@ -1,0 +1,108 @@
+<%- include('partials/header'); -%>
+
+    <div class="container">
+        <!-- Search Bar Row -->
+        <div class="row" style="margin-top: 20px;">
+            <!-- Search Keyword -->
+            <div class="input-field col s12 m5">
+                <i class="material-icons prefix">search</i>
+                <input type="text" id="search-keyword" placeholder="Search Keyword">
+            </div>
+
+            <!-- Search Location -->
+            <div class="input-field col s12 m5">
+                <i class="material-icons prefix">place</i>
+                <select id="location">
+                    <option value="" disabled selected>Select Location</option>
+                    <option value="melbourne">Melbourne</option>
+                    <option value="sydney">Sydney</option>
+                </select>
+                <label for="location">Location</label>
+            </div>
+
+            <!-- Search Button -->
+            <div class="input-field col s12 m2">
+                <button class="btn blue waves-effect waves-light" type="submit">Find Jobs</button>
+            </div>
+        </div>
+
+        <!-- Filter Section Row -->
+        <div class="row">
+            <!-- Filter Buttons (e.g., Date Posted, Job Type, etc.) -->
+            <div class="col s12">
+                <div class="chip">Date posted</div>
+                <div class="chip">Remote</div>
+                <div class="chip">Within 50km</div>
+                <div class="chip">Pay</div>
+                <div class="chip">Job type</div>
+                <div class="chip">Education level</div>
+            </div>
+        </div>
+
+        <!-- Main Content Row (Job List and Job Details) -->
+        <div class="row">
+            <!-- Left Side: Job List -->
+            <div class="col s12 m5">
+                <h5>Available Jobs</h5>
+                <ul class="collection" id="job-list" data-jobs='<%= JSON.stringify(jobsList).replace(/' /g, "&#39;" ) %>
+                    '>
+                    <% jobsList.forEach(function(job, index) { %>
+                        <li class="collection-item job-item <%= index === 0 ? 'active' : '' %>"
+                            data-id="<%= job._id %>">
+                            <span class="title">
+                                <%= job.title %>
+                            </span>
+                            <p>
+                                <strong>Description:</strong>
+                                <%= job.description.substring(0, 100) %>...<br>
+                                    <strong>Pay:</strong> $25 - $50 / hr
+                            </p>
+                        </li>
+                        <% }) %>
+                </ul>
+            </div>
+
+            <!-- Right Side: Job Detail View -->
+            <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
+                <%- include('partials/jobDetail', { job: jobsList[0] }) %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer'); -%>
+
+        <!-- Update Job Details Section When a Job is Clicked -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var jobListElement = document.getElementById('job-list');
+                var jobsList = JSON.parse(jobListElement.getAttribute('data-jobs'));
+
+                // When a job item is clicked, update the job details on the right
+                document.querySelectorAll('.job-item').forEach(function (item) {
+                    item.addEventListener('click', function () {
+                        var jobId = item.getAttribute('data-id');
+
+                        // Make an AJAX request to fetch the rendered partial
+                        fetch(`/jobs/${jobId}`)
+                            .then(response => response.text()) // Return the response as HTML
+                            .then(html => {
+                                // Update the job details section with the rendered partial
+                                document.getElementById('job-details').innerHTML = html;
+                            })
+                            .catch(error => {
+                                console.error(error)
+                            });
+
+                        // Set the clicked job as active
+                        document.querySelectorAll('.job-item').forEach(function (el) {
+                            el.classList.remove('active');
+                        });
+                        item.classList.add('active');
+                    });
+                });
+
+                // Initialize Materialize select dropdowns
+                var elems = document.querySelectorAll('select');
+                M.FormSelect.init(elems);
+            });
+        </script>
