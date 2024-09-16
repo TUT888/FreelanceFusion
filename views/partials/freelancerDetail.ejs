@@ -1,0 +1,32 @@
+<div class="card">
+    <div id="loading-spinner" class="loader"></div>
+    <div class="card-content">
+        <span class="card-title">
+            <%= freelancer.profile && freelancer.profile.name ? freelancer.profile.name : 'No name available' %>
+        </span>
+
+        <p><strong>Skills:</strong> 
+            <%= freelancer.profile && freelancer.profile.skills && freelancer.profile.skills.length > 0 
+                ? freelancer.profile.skills.join(', ') 
+                : 'No skills listed' %>
+        </p>
+
+        <p><strong>Experience:</strong> 
+            <%= freelancer.profile && freelancer.profile.experience 
+                ? freelancer.profile.experience 
+                : 'No experience information available' %>
+        </p>
+
+        <p><strong>Phone:</strong> 
+            <%= freelancer.contact_info && freelancer.contact_info.phone 
+                ? freelancer.contact_info.phone 
+                : 'No phone number provided' %>
+        </p>
+
+        <p><strong>Address:</strong> 
+            <%= freelancer.contact_info && freelancer.contact_info.address 
+                ? freelancer.contact_info.address 
+                : 'No address provided' %>
+        </p>
+    </div>
+</div>
