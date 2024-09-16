@@ -1,0 +1,27 @@
+<ul class="pagination">
+    <% if (currentPage > 1) { %>
+        <li class="waves-effect">
+            <a href="?page=<%= currentPage - 1 %>"><i class="material-icons">chevron_left</i></a>
+        </li>
+    <% } else { %>
+        <li class="disabled">
+            <a href="#"><i class="material-icons">chevron_left</i></a>
+        </li>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+        <li class="<%= currentPage === i ? 'active' : 'waves-effect' %>">
+            <a href="?page=<%= i %>"><%= i %></a>
+        </li>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+        <li class="waves-effect">
+            <a href="?page=<%= currentPage + 1 %>"><i class="material-icons">chevron_right</i></a>
+        </li>
+    <% } else { %>
+        <li class="disabled">
+            <a href="#"><i class="material-icons">chevron_right</i></a>
+        </li>
+    <% } %>
+</ul>

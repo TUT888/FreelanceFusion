@@ -1,0 +1,180 @@
+<%- include('partials/header'); -%>
+
+    <div class="container">
+        <!-- Filter Section Row -->
+        <div class="row">
+
+            <!-- Filter Buttons (e.g., Date Posted, Job Type, etc.) -->
+            <div class="col s12">
+                <form id="job-filter-form" method="GET" action="/jobs">
+                    <div class="row">
+                        <!-- Search Keyword -->
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">search</i>
+                            <input type="text" name="keyword" id="keyword" placeholder="Search Keyword"
+                                value="<%= filters.keyword || '' %>">
+                        </div>
+
+                        <!-- Pay Type Filter -->
+                        <div class="input-field col s2">
+                            <select name="payType" id="payType">
+                                <option value="">All</option>
+                                <option value="hourly" <%=filters.payType==='hourly' ? 'selected' : '' %>>Hourly
+                                </option>
+                                <option value="project" <%=filters.payType==='project' ? 'selected' : '' %>>Project
+                                    based
+                                </option>
+                            </select>
+                            <label for="payType">Project Payment</label>
+                        </div>
+
+                        <!-- Job Status -->
+                        <div class="input-field col s2">
+                            <select name="status" id="status">
+                                <option value="">All</option>
+                                <option value="open" <%=filters.status==='open' ? 'selected' : '' %>>Open</option>
+                                <option value="closed" <%=filters.status==='closed' ? 'selected' : '' %>>Closed</option>
+                            </select>
+                            <label for="status">Job Status</label>
+
+                        </div>
+                        <!-- Salary Min -->
+                        <div class="input-field col s2">
+                            <input type="number" name="salaryMin" id="salaryMin" value="<%= filters.salaryMin || '' %>">
+                            <label for="salaryMin">Min Salary</label>
+
+                        </div>
+
+                        <!-- Salary Max -->
+                        <div class="input-field col s2">
+                            <label for="salaryMax">Max Salary</label>
+                            <input type="number" name="salaryMax" id="salaryMax" value="<%= filters.salaryMax || '' %>">
+                        </div>
+
+
+                        <!-- Requirements Filter -->
+                        <div class="input-field col s4">
+                            <label for="requirements">Skills</label>
+                            <input type="text" name="requirements" id="requirements"
+                                placeholder="Comma-separated skills (e.g., React, Node.js)"
+                                value="<%= filters.requirements || '' %>">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content Row (Job List and Job Details) -->
+        <div class="row">
+            <!-- Left Side: Job List -->
+            <div class="col s12 m5">
+              <% if (jobsList && jobsList.length> 0) { %>
+
+              <ul class="collection" id="job-list" data-jobs='<%= JSON.stringify(jobsList).replace(/' /g, "&#39;"
+                        ) %>
+                        '>
+                <% jobsList.forEach(function(job, index) { %>
+                <li class="collection-item job-item <%= index === 0 ? 'active' : '' %>" data-id="<%= job._id %>">
+                  <span class="title">
+                    <%= job.title %>
+                  </span>
+                  <p>
+                    <strong>Description:</strong>
+                    <%= job.description.substring(0, 100) %>...<br>
+                    <% if (job.payment_type === 'hourly') { %>
+                    <strong>Pay:</strong> $<%= job.salary %>/hr
+                    <% } else if (job.payment_type === 'project') { %>
+                    <strong>Pay:</strong> $<%= job.salary %> (on project delivery)
+                    <% } else { %>
+                    <strong>Pay:</strong> Not specified
+                    <% } %>
+                  </p>
+                </li>
+                <% }) %>
+              </ul>
+              <!-- Include Pagination Partial -->
+              <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
+
+              <% } else { %>
+              <!-- Display message if no jobs are available -->
+              <p>No jobs available.</p>
+              <% } %>
+
+            </div>
+
+
+            <!-- Right Side: Job Detail View -->
+             
+            <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
+                <% if (jobsList && jobsList.length> 0) { %>
+                <%- include('partials/jobDetail', { job: jobsList[0] }) %>
+
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer'); -%>
+
+        <!-- Update Job Details Section When a Job is Clicked -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var jobListElement = document.getElementById('job-list');
+
+                // When a job item is clicked, update the job details on the right
+                document.querySelectorAll('.job-item').forEach(function (item) {
+                    item.addEventListener('click', function () {
+                        var jobId = item.getAttribute('data-id');
+
+                        // Make an AJAX request to fetch the rendered partial
+                        fetch(`/jobs/${jobId}`)
+                            .then(response => response.text()) // Return the response as HTML
+                            .then(html => {
+                                // Update the job details section with the rendered partial
+                                document.getElementById('job-details').innerHTML = html;
+                            })
+                            .catch(error => {
+                                console.error(error)
+                            });
+
+                        // Set the clicked job as active
+                        document.querySelectorAll('.job-item').forEach(function (el) {
+                            el.classList.remove('active');
+                        });
+                        item.classList.add('active');
+                    });
+                });
+
+
+
+                const filterForm = document.getElementById('job-filter-form');
+
+                // Function to submit the filter form
+                function submitFilter() {
+                    filterForm.submit();
+                }
+
+                // List of input fields for 'blur' event (salaryMin, salaryMax, requirements)
+                const blurFields = ['salaryMin', 'salaryMax', 'requirements', 'keyword'];
+                blurFields.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.addEventListener('blur', submitFilter);
+                    }
+                });
+
+                // List of select fields for 'change' event (payType, status)
+                const selectFields = ['payType', 'status'];
+                selectFields.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.addEventListener('change', submitFilter);
+                    }
+                });
+
+
+                // Initialize Materialize select dropdowns
+                var elems = document.querySelectorAll('select');
+                var instances = M.FormSelect.init(elems);
+            });
+        </script>
