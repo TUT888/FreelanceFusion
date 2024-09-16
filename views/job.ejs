@@ -1,12 +1,6 @@
 <%- include('partials/header'); -%>
 
     <div class="container">
-        <!-- Search Bar Row -->
-        <div class="row" style="margin-top: 20px;">
-
-
-        </div>
-
         <!-- Filter Section Row -->
         <div class="row">
 
@@ -67,11 +61,6 @@
                         </div>
                     </div>
                 </form>
-
-
-
-
-
             </div>
         </div>
 
@@ -93,7 +82,13 @@
                                 <p>
                                     <strong>Description:</strong>
                                     <%= job.description.substring(0, 100) %>...<br>
-                                        <strong>Pay:</strong> $25 - $50 / hr
+                                    <% if (job.payment_type === 'hourly') { %>
+                                        <strong>Pay:</strong> $<%= job.salary %>/hr
+                                    <% } else if (job.payment_type === 'project') { %>
+                                        <strong>Pay:</strong> $<%= job.salary %> (on project delivery)
+                                    <% } else { %>
+                                        <strong>Pay:</strong> Not specified
+                                    <% } %>
                                 </p>
                             </li>
                             <% }) %>
@@ -110,6 +105,7 @@
 
 
             <!-- Right Side: Job Detail View -->
+             
             <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
                 <% if (jobsList && jobsList.length> 0) { %>
                     <%- include('partials/jobDetail', { job: jobsList[0] }) %>
