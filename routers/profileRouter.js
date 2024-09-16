@@ -1,9 +1,8 @@
-let express = require('express');
-let router = express.Router();
-let controller = require('../controllers/profileController');
-let isAuthenticated = require('../middleware/auth');
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/profileController');
+const isAuthenticated = require('../middleware/auth'); // Ensure this middleware checks for user authentication
 
 router.get('/', isAuthenticated, controller.displayProfile);
-
 
 module.exports = router;

@@ -4,7 +4,11 @@ let collection = client.db().collection('users');
 
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
-    collection.find(query).toArray(callback);
+    collection.find(query).toArray((err, result) => {
+        if (err) return callback(err);
+        console.log('Database Result:', result);
+        callback(null, result); // Return result as array
+    });
 }
 
 
