@@ -19,41 +19,41 @@
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a class="brand-logo left">FF</a>
+            <a href="/" class="brand-logo left">FreelanceFusion</a>
             <ul id="nav-mobile" class="right ">
-                <% if (!session.user) { %>
-                <li><a href="/sign-in">Sign In</a></li>
-                <li><a href="/register">Join</a></li>
-                <% } else { %>
-                    <li><a href="/profile">Profile</a></li>
-                    <li><a href="/logout">Logout</a></li>
-                <% } %>
+                
             </ul>
             <ul id="nav-mobile" class="right">
                 <!-- Find Jobs -->
                 <li><a href="/jobs/search">Find Jobs</a></li>
                 <!-- Find Freelancers -->
                 <li><a href="/freelancers/search">Find Freelancer</a></li>
-                <!-- My Projects -->
-                <li><a href="/projects">My Projects</a></li>
-                <!-- Notifications Icon -->
-                <li>
-                    <a href="/notification">
-                        <i class="material-icons">notifications</i>
-                    </a>
-                </li>
-                <!-- Mailbox Icon -->
-                <li>
-                    <a href="/messages">
-                        <i class="material-icons">mail</i>
-                    </a>
-                </li>
-                <!-- Avatar Dropdown -->
-                <li>
-                    <a class="dropdown-trigger" href="#!" data-target="dropdown1">
-                        <i class="material-icons">account_circle</i>
-                    </a>
-                </li>
+
+                <% if (!session.user) { %>
+                <li><a href="/sign-in">Sign In</a></li>
+                <li><a href="/register">Join</a></li>
+                <% } else { %>
+                    <!-- My Projects -->
+                    <li><a href="/projects">My Projects</a></li>
+                    <!-- Notifications Icon -->
+                    <li>
+                        <a href="/notification">
+                            <i class="material-icons">notifications</i>
+                        </a>
+                    </li>
+                    <!-- Mailbox Icon -->
+                    <li>
+                        <a href="/messages">
+                            <i class="material-icons">mail</i>
+                        </a>
+                    </li>
+                    <!-- Avatar Dropdown -->
+                    <li>
+                        <a class="dropdown-trigger" href="#!" data-target="dropdown1">
+                            <i class="material-icons">account_circle</i>
+                        </a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </nav>
