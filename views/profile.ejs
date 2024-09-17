@@ -7,7 +7,7 @@
         <div class="col s12">
             <ul class="tabs">
                 <li class="tab col s6"><a class="active" href="#profile">Profile Detail</a></li>
-                <li class="tab col s6"><a href="#ratingreview">Rating and Review</a></li>
+                <li class="tab col s6"><a id="ratingreview_btn" href="#ratingreview">Rating and Review</a></li>
             </ul>
         </div>
 
@@ -81,7 +81,7 @@
             <div class="row">
                 <div class="col s12">
                     <h5 class="center-align"><strong>Your rating and reviews</strong></h5>
-                    <p>You don't have any rating yet</p>
+                    <p class="center-align">You don't have any rating yet</p>
                 </div>
             </div>
         </div>
@@ -129,13 +129,13 @@
                     <div class="col s6">
                         <div class="valign-wrapper">
                             <h6><strong>Update Your Skills</strong></h6>
-                            <button id="add_skill_btn" class="btn-small green col s2">Add skill</button>
+                            <button id="add_skill_btn" class="btn-small green col s2"><i class="material-icons">add</i></button>
                         </div>
                         <div id="input_skill_list">
                             <% userData.profile.skills.forEach(function (skill) { %>
                             <div class="input-field valign-wrapper">
                                 <input class="col s10" type="text" value="<%= skill %>">
-                                <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;">Discard</button>
+                                <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i class="material-icons">clear</i></button>
                             </div>
                             <% }) %>
                         </div>
@@ -184,6 +184,9 @@
     $('#show_edit_btn').on('click', function(){
         $('#edit_section').show();
     })
+    $('#ratingreview_btn').on('click', function(){
+        $('#edit_section').hide();
+    })
 
     // Update skills
     $(document).on('click', '.remove-skill-btn', function(){
@@ -198,7 +201,7 @@
         let newSkillNode = $(`
             <div class="input-field valign-wrapper">
                 <input class="col s10" type="text" value="">
-                <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;">Discard</button>
+                <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i class="material-icons">clear</i></button>
             </div>
         `);
         $('#input_skill_list').append(newSkillNode);
