@@ -24,17 +24,22 @@ app.use(express.urlencoded({extended: false}));
 
 const mongoStore = MongoStore.create({
     mongoUrl: process.env.MONGODB_URL,
-    collectionName: 'sessions'
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60,
+    autoRemove: 'native'
 });
 
 
 
 app.use(session({
-    secret: process.env.SESSION_SECRET, // Replace 'yourSecretKey' with a secure key or use environment variable
+    secret: process.env.SESSION_SECRET, 
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: mongoStore,
-    cookie: { secure: false } // Change to true if using HTTPS
+    cookie: { 
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 24
+     }
 }));
 
 app.use((req, res, next) => {
