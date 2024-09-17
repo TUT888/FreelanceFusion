@@ -7,9 +7,19 @@ communication, helping freelancers and clients establish effective
 connections.
 
 ## Table of Contents
+- [Features](#features)
 - [Installation](#installation)
 - [Testing](#testing)
 - [Contribution](#contribution)
+
+## Features
+This software project includes following features:
+- **User authentication**: Register and login
+- **Profile management**: View and update profile
+- **Search function**: Search job, search freelancer
+- **Job board**: Post new job
+
+[Back to top](#introduction)
 
 ## Installation
 1. Clone the repository
@@ -29,6 +39,7 @@ connections.
     - Set the following environment variables:
         ```
         MONGODB_URL=<URL to your MongoDB>
+        SESSION_SECRET=<Your secret key>
         ```
 
 4. Run the project
