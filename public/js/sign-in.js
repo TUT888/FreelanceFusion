@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
+            console.log('Error:', error);
             console.error('Error:', error);
             document.getElementById('message').innerHTML = '<p class="red-text">An error occurred</p>';
         });
