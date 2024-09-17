@@ -1,7 +1,7 @@
 let collection = require('../models/jobModel');
 const paginate = require('../utils/pagination');
 
-const displayJobs = async (req, res) => {
+const getJobList = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
 
@@ -22,10 +22,10 @@ const displayJobs = async (req, res) => {
 
         if (paginationResult.data.length === 0 && page > 1) {
             // Redirect to the previous valid page or the first page if none exists
-            return res.redirect(`/jobs?page=${Math.max(1, paginationResult.totalPages)}`);
+            return res.redirect(`/jobs/search?page=${Math.max(1, paginationResult.totalPages)}`);
         }
 
-        res.render('job', {
+        res.render('jobSearch', {
             jobsList: paginationResult.data,
             currentPage: paginationResult.currentPage,
             totalPages: paginationResult.totalPages,
@@ -38,27 +38,25 @@ const displayJobs = async (req, res) => {
 };
 
 
-
-
-const getJobDetail = (req, res) => {
+const getJobDetail = async (req, res) => {
     const jobId = req.params.id;
     // Fetch the job details asynchronously from the model
-    collection.getJobById(jobId, (err, job) => {
-        if (err) {
-            return res.status(404).send('Job not found');
-        }
-
+    try {
+        let job = await collection.getJobById(jobId);
         if (job) {
-            res.render('partials/jobDetail', { job });
+            res.render('partials/jobSearchDetail', { job });
         } else {
             res.status(404).send('Job not found');
         }
-    });
+    } catch (error) {
+        console.log(error)
+    }
+
 };
 
 
 
 module.exports = {
-    displayJobs,
+    getJobList,
     getJobDetail
 };

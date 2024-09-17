@@ -6,7 +6,7 @@
 
             <!-- Filter Buttons (e.g., Date Posted, Job Type, etc.) -->
             <div class="col s12">
-                <form id="job-filter-form" method="GET" action="/jobs">
+                <form id="job-filter-form" method="GET" action="/jobs/search">
                     <div class="row">
                         <!-- Search Keyword -->
                         <div class="input-field col s12">
@@ -107,7 +107,7 @@
              
             <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
                 <% if (jobsList && jobsList.length> 0) { %>
-                <%- include('partials/jobDetail', { job: jobsList[0] }) %>
+                <%- include('partials/jobSearchDetail', { job: jobsList[0] }) %>
 
                 <% } %>
             </div>
@@ -127,7 +127,7 @@
                         var jobId = item.getAttribute('data-id');
 
                         // Make an AJAX request to fetch the rendered partial
-                        fetch(`/jobs/${jobId}`)
+                        fetch(`/jobs/search/${jobId}`)
                             .then(response => response.text()) // Return the response as HTML
                             .then(html => {
                                 // Update the job details section with the rendered partial
