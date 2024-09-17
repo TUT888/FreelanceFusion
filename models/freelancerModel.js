@@ -12,17 +12,18 @@ const countData = async (filter) => {
 	return await collection.countDocuments(query);
 };
 
-function getFreelancerById(id, callback) {
-	collection.findOne({ _id: ObjectId(id) }, (err, freelancer) => {
-		if (err) {
-			callback(err, null); // Pass error back through callback
-		} else if (!freelancer) {
-			callback("Freelancer not found", null); // Pass 'not found' error
-		} else {
-			callback(null, freelancer); // Pass freelancer if found
-		}
-	});
+const getFreelancerById = async (id) => {
+	try {
+        const freelancer = await collection.findOne({ _id: new ObjectId(id) }); 
+        if (!freelancer) {
+            throw new Error('Freelancer not found'); // Throw an error if freelancer is not found
+        }
+        return freelancer; // Return the freelancer if found
+    } catch (error) {
+        throw error; // Throw the error to be handled by the caller
+    }
 }
+
 
 const buildJobFilterQuery = (filter) => {
 	let query = {};

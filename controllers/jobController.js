@@ -29,7 +29,8 @@ const getJobList = async (req, res) => {
             jobsList: paginationResult.data,
             currentPage: paginationResult.currentPage,
             totalPages: paginationResult.totalPages,
-            filters: req.query
+            filters: req.query,
+            session: req.session
         });
     } catch (err) {
         console.error("Error fetching jobs:", err);
