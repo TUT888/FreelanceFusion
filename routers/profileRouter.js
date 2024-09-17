@@ -5,6 +5,6 @@ let isAuthenticated = require('../middleware/auth');
 
 // router.get('/', controller.displayProfile);
 router.get('/', isAuthenticated, controller.displayProfile);
-router.put('/update', controller.updateProfile);
+router.put('/update', isAuthenticated, controller.updateProfile);
 
 module.exports = router;

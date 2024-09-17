@@ -81,6 +81,7 @@
             <div class="row">
                 <div class="col s12">
                     <h5 class="center-align"><strong>Your rating and reviews</strong></h5>
+                    <p>You don't have any rating yet</p>
                 </div>
             </div>
         </div>
@@ -91,6 +92,9 @@
     <div id="edit_section" class="row" hidden>
         <div id="edit_profile" class="col s12 z-depth-2 amber lighten-5">
             <h5 class="center-align"><strong>Edit Profile</strong></h5>
+            
+            <h6 id="update_result_mess" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>Result</h6>
+            
             <form style="padding-left: 1rem; padding-right: 1rem;">
                 <!-- Contact -->
                 <div class="row">
@@ -201,7 +205,9 @@
     });
 
     // Form submit
-    $('#submit_changes').on('click', function(){
+    $('#submit_changes').on('click', function() {
+        event.preventDefault();
+
         let skillList = [];
         let skillElements = $('#input_skill_list').children();
         skillElements.each(function() {
@@ -235,7 +241,20 @@
             url: "/profile/update",
             type: "PUT",
             contentType: 'application/json',
-            data: JSON.stringify(formData)
+            data: JSON.stringify(formData),
+            success: function(result) {
+                $('#update_result_mess').show();
+                $('#update_result_mess').css('color', 'green');
+                $('#update_result_mess').html(result);
+                setTimeout(function() {
+                    window.location.href = "/profile";
+                }, 2000);
+            },
+            error: function(result) {
+                $('#update_result_mess').show();
+                $('#update_result_mess').css('color', 'red');
+                $('#update_result_mess').html(result.responseText);
+            }
         })
     });
 </script>
