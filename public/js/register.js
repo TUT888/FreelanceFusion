@@ -47,7 +47,8 @@ $(document).ready(function () {
         $.ajax({
             url: '/register',
             type: 'POST',
-            data: formData,
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
             success: function (response) {
                 if (response.success) {
                     $('#message').html(`<p class="green-text">${response.message}</p>`);
