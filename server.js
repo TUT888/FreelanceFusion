@@ -51,6 +51,7 @@ app.use((req, res, next) => {
 let homeRouter = require('./routers/homeRouter');
 let profileRouter = require('./routers/profileRouter');
 let jobRouter = require('./routers/jobRouter');
+
 let freelancerRouter = require('./routers/freelancerRouter');
 
 
@@ -58,6 +59,8 @@ app.use('/', homeRouter);
 app.use('/profile', profileRouter);
 app.use('/jobs', jobRouter);
 app.use('/freelancers', freelancerRouter);
+
+
 
 // Socket
 let http = require('http').createServer(app);

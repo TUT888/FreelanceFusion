@@ -73,9 +73,36 @@ const buildJobFilterQuery = (filter) => {
     return query;
 };
 
+// Create a new job
+const createJob = async (jobData) => {
+    try {
+        const result = await collection.insertOne(jobData);
+        return await getJobById(result.insertedId);
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Update an existing job
+const updateJob = async (id, jobData) => {
+    try {
+        const result = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: jobData }
+        );
+        if (result.matchedCount === 0) {
+            throw new Error('Job not found');
+        }
+        return await getJobById(id);
+    } catch (error) {
+        throw error;
+    }
+};
 
 module.exports = {
     getData,
     countData,
-    getJobById
+    getJobById,
+    createJob,
+    updateJob
 };
