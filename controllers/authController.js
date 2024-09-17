@@ -19,10 +19,23 @@ const register = async (req, res) => {
 
         console.log("Existing user check:", user);
 
-        if (user) {
-            return res.status(400).json({ success: false, message: 'User already exists' });
+        if (user){
+
+            console.log("first if");
+
+        if (user.email==email) {
+            console.log("second if");
+            return res.status(400).json({ success: false, message: 'email  already in use' });
         }
 
+        if (user.username==username) {
+            console.log("thrid if");
+            return res.status(400).json({ success: false, message: 'username  already in use' });
+        }
+
+    }
+
+        
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const result = await authCollection.insertOne({
