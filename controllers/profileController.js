@@ -96,7 +96,6 @@ function registerUser(user, callback) {
     });
 }
 
-
 function authenticateUser(email, password, callback) {
     collection.findOne({ email }, (err, user) => {
         if (err || !user) return callback(err || 'User not found');
@@ -108,10 +107,17 @@ function authenticateUser(email, password, callback) {
 }
 
 
+const updateProfile = (req, res) => {
+    let userData = req.body;
+    let userEmail = "freelancer@example.com";
+    // let userEmail = "client@example.com";
+    collection.updateUserData(userEmail, userData);
+}
 
 module.exports = {
     getUserData,
     registerUser,
     authenticateUser,
-    displayProfile
+    displayProfile,
+    updateProfile
 }

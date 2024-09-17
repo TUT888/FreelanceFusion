@@ -37,7 +37,6 @@ function registerUser(user, callback) {
     });
 }
 
-
 function authenticateUser(email, password, callback) {
     collection.findOne({ email }, (err, user) => {
         if (err || !user) return callback(err || 'User not found');
@@ -48,10 +47,19 @@ function authenticateUser(email, password, callback) {
     });
 }
 
-
+function updateUserData(userEmail, updateData, callback) {
+    let query = { email: userEmail };
+    collection.updateOne(
+        query,
+        {
+            $set: updateData
+        }
+    )
+}
 
 module.exports = {
-    getUserData,
     registerUser,
-    authenticateUser
+    authenticateUser,
+    getUserData,
+    updateUserData
 }
