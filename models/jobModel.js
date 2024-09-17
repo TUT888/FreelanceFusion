@@ -16,18 +16,17 @@ const countData = async (filter) => {
 };
 
 
-function getJobById(id, callback) {
-    collection.findOne({ _id: ObjectId(id) }, (err, job) => {
-        if (err) {
-            callback(err, null); // Pass error back through callback
-        } else if (!job) {
-            callback('Job not found', null); // Pass 'not found' error
-        } else {
-            callback(null, job); // Pass job if found
+const getJobById = async (id) => {
+    try {
+        const job = await collection.findOne({ _id: new ObjectId(id) }); 
+        if (!job) {
+            throw new Error('Job not found'); // Throw an error if job is not found
         }
-    });
-
-}
+        return job; // Return the job if found
+    } catch (error) {
+        throw error; // Throw the error to be handled by the caller
+    }
+};
 
 
 const buildJobFilterQuery = (filter) => {
