@@ -48,13 +48,14 @@ function authenticateUser(email, password, callback) {
 }
 
 function updateUserData(userEmail, updateData, callback) {
-    let query = { email: userEmail };
-    collection.updateOne(
-        query,
-        {
-            $set: updateData
-        }
-    )
+    let filter = { email: userEmail };
+    let updateDoc = { $set: updateData };
+    collection.updateOne(filter, updateDoc).then((result)=>{
+        console.log(
+            `Found ${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+        );
+        callback(result);
+    })
 }
 
 module.exports = {

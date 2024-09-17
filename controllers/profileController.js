@@ -1,47 +1,4 @@
-// let collection = require('../models/user');
-
-
-// const displayProfile = (req, res) => {
-//     // Simulate a hardcoded user for testing
-//     const hardcodedUserData = {
-//         email: 'testuser@example.com',
-//         username: 'Test User',
-//         role: 'freelancer',
-//         profile: {
-//             name: 'Test User',
-//             // add other profile fields as necessary
-//         }
-//     };
-
-//     if (!req.session.user) {
-//         return res.redirect('/sign-in');
-//     }
-
-//     // You can skip the database fetch for now
-//     // collection.getUserData(userEmail, (err, result) => {
-//     //     if (err) {
-//     //         console.error('Error retrieving user data:', err);
-//     //         return res.redirect('/sign-in'); // Redirect if error occurs
-//     //     }
-
-//     //     if (result.length === 0) {
-//     //         return res.redirect('/sign-in'); // Redirect if no user found
-//     //     }
-
-//     //     console.log('User Data:', result);
-
-//     res.render("profile", {
-//         userData: hardcodedUserData, // Use hardcoded data here
-//         session: req.session
-//     });
-//     // });
-// };
-
-// module.exports = {
-//     displayProfile
-// };
-
-
+let collection = require('../models/user');
 
 const displayProfile = async (req, res) => {
 
@@ -71,7 +28,6 @@ const displayProfile = async (req, res) => {
     }
 };
 
-
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
     collection.find(query).toArray(callback);
@@ -86,7 +42,6 @@ function getUserData(userEmail, callback) {
         callback(null, result);
 
 }
-
 
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
@@ -106,12 +61,33 @@ function authenticateUser(email, password, callback) {
     });
 }
 
-
 const updateProfile = (req, res) => {
-    let userData = req.body;
-    let userEmail = "freelancer@example.com";
-    // let userEmail = "client@example.com";
-    collection.updateUserData(userEmail, userData);
+    try {
+        let userData = req.body;
+        let userEmail = req.session.user.email;
+
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        collection.updateUserData(userEmail, userData, (result) => {
+            if (result.matchedCount!=0) {
+                if (result.modifiedCount==0) { // No changes made
+                    console.log("Failed updated profile!");
+                    res.status(400).send("There are no changes made.");
+                } else { // Change successfully
+                    console.log("Successfully updated profile!");
+                    res.status(200).send("Successfully updated profile! Page will be reloaded in few second...");
+                }
+            } else { // No data found
+                console.log("Failed updated profile!");
+                res.status(400).send("There is an error when updating your profile. Please try again later!");
+            }
+        });
+    } catch (err) {
+        console.error('Error updating user data:', err);
+        res.redirect('/sign-in');
+    }
 }
 
 module.exports = {
