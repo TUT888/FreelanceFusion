@@ -1,5 +1,7 @@
+
 let collection = require('../models/jobModel');
 const paginate = require('../utils/pagination');
+const jobModel = require('../models/jobModel');
 
 const getJobList = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -56,8 +58,76 @@ const getJobDetail = async (req, res) => {
 };
 
 
+// Render the Add Job form
+const getAddJobForm = (req, res) => {
+    res.render('jobForm', { job: null, action: '/jobs/add', formTitle: 'Add Job',session: req.session });
+};
+
+// Handle Add Job form submission
+const addJob = async (req, res) => {
+    const { title, description, payment_type, salary, requirements, status } = req.body;
+    const jobData = {
+        title,
+        description,
+        payment_type,
+        salary: parseFloat(salary),
+        requirements: requirements.split(',').map(skill => skill.trim()),
+        status,
+        created_at: new Date(),
+        updated_at: new Date()
+    };
+
+    console.log("TEST:: ", jobData);
+
+    try {
+        await jobModel.createJob(jobData);
+        res.redirect('/jobs/search');
+    } catch (error) {
+        console.error('Error creating job:', error);
+        res.status(500).send('Error creating job');
+    }
+};
+
+// Render the Edit Job form
+const getEditJobForm = async (req, res) => {
+    const jobId = req.params.id;
+    try {
+        const job = await jobModel.getJobById(jobId);
+        res.render('jobForm', { job, action: `/jobs/edit/${jobId}`, formTitle: 'Edit Job' ,session: req.session});
+    } catch (error) {
+        console.error('Error fetching job for edit:', error);
+        res.status(500).send('Error fetching job');
+    }
+};
+
+// Handle Edit Job form submission
+const editJob = async (req, res) => {
+    const jobId = req.params.id;
+    const { title, description, payment_type, salary, requirements, status } = req.body;
+    const jobData = {
+        title,
+        description,
+        payment_type,
+        salary: parseFloat(salary),
+        requirements: requirements.split(',').map(skill => skill.trim()),
+        status,
+        updated_at: new Date()
+    };
+
+    try {
+        await jobModel.updateJob(jobId, jobData);
+        res.redirect('/jobs/search');
+    } catch (error) {
+        console.error('Error updating job:', error);
+        res.status(500).send('Error updating job');
+    }
+};
 
 module.exports = {
     getJobList,
-    getJobDetail
+    getJobDetail,
+    getAddJobForm,
+    addJob,
+    getEditJobForm,
+    editJob
 };

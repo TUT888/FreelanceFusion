@@ -1,21 +1,19 @@
 <!-- partials/jobSearchDetail.ejs -->
 <div class="card">
   <div class="card-content">
-    <span class="card-title">
-      <%= job.title %>
-    </span>
-    <p><strong>Description:</strong>
+    <span class="card-title"> <%= job.title %> </span>
+    <p>
+      <strong>Description:</strong>
       <%= job.description %>
     </p>
-    <p><strong>Requirements:</strong>
-      <%= job.requirements.join(', ') %></p>
+    <p><strong>Requirements:</strong> <%= job.requirements.join(', ') %></p>
     <p><strong>Status:</strong> <%= job.status %></p>
-    <% if (job.payment_type === ' hourly') { %>
-    <strong>Pay:</strong> $<%= job.salary %>/hr
-    <% } else if (job.payment_type==='project' ) { %>
-    <strong>Pay:</strong> $<%= job.salary %> (on project delivery)
-    <% } else { %>
-    <strong>Pay:</strong> Not specified
-    <% } %>
+    <% if (job.payment_type === 'hourly') { %>
+    <strong>Pay:</strong> $<%= job.salary %>/hr <% } else if (job.payment_type
+    === 'project') { %> <strong>Pay:</strong> $<%= job.salary %> (on project
+    delivery) <% } else { %> <strong>Pay:</strong> Not specified <% } %>
+  </div>
+  <div class="edit-btn-container">
+      <a href="edit/<%= job._id %>" class="btn edit-btn">Edit Job</a>
   </div>
 </div>
