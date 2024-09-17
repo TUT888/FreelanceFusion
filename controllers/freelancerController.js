@@ -1,7 +1,7 @@
 let collection = require('../models/freelancerModel');
 const paginate = require('../utils/pagination');
 
-const displayFreelancers = async (req, res) => {
+const getFreelancerList = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
 
@@ -24,7 +24,9 @@ const displayFreelancers = async (req, res) => {
             freelancersList: paginationResult.data,
             currentPage: paginationResult.currentPage,
             totalPages: paginationResult.totalPages,
-            filters: req.query
+            filters: req.query,
+            session: req.session
+
         });
     } catch (err) {
         console.error("Error fetching freelancers:", err);
@@ -32,25 +34,19 @@ const displayFreelancers = async (req, res) => {
     }
 };
 
-const getFreelancerDetail = (req, res) => {
+const getFreelancerDetail = async (req, res) => {
     const freelancerId = req.params.id;
 
     // Assuming the freelancer list is available as dummy data or MongoDB
-    collection.getFreelancerById(freelancerId, (err, freelancer) => {
-
-        if (err) {
-            return res.status(500).send('Error fetching freelancer');
-        }
-
-        if (freelancer) {
-            res.render('partials/freelancerDetail', { freelancer });
-        } else {
-            res.status(404).send('Freelancer not found');
-        }
-    });
+    let freelancer = await collection.getFreelancerById(freelancerId);
+    if (freelancer) {
+        res.render('partials/freelancerDetail', { freelancer });
+    } else {
+        res.status(404).send('Freelancer not found');
+    }
 };
 
 module.exports = {
-    displayFreelancers,
+    getFreelancerList,
     getFreelancerDetail
 };

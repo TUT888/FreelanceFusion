@@ -70,7 +70,7 @@
                 var freelancerId = item.getAttribute('data-id');
 
                 // Make an AJAX request to fetch the rendered partial
-                fetch(`/freelancers/${freelancerId}`)
+                fetch(`/freelancers/search/${freelancerId}`)
                     .then(response => response.text()) // Return the response as HTML
                     .then(html => {
                         // Update the freelancer details section with the rendered partial
