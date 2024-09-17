@@ -4,85 +4,79 @@
     <h3 class="center-align">Profile Management</h3>
     <!-- Feature: View detail -->
     <div class="row">
-        <!-- Define the tabs -->
         <div class="col s12">
             <ul class="tabs">
                 <li class="tab col s6"><a class="active" href="#profile">Profile Detail</a></li>
-                <li class="tab col s6"><a class="" href="#ratingreview">Rating and Review</a></li>
+                <li class="tab col s6"><a href="#ratingreview">Rating and Review</a></li>
             </ul>
         </div>
 
-        <!-- Define the content within detail tab -->
         <div id="profile" class="col s12 z-depth-2 amber lighten-5">
+            <span id="role_caption" hidden><%= userData.role %></span>
             <div class="profile-spacing">
-                <!-- Personal information -->
                 <div>
-                    
-                    <span id="role_caption" hidden><%= userData.role %></span>
-                    <% if (userData.role=="freelancer") { %>
-                    <h4>
-                        <strong><%= userData.profile.name %></strong>
-                        <span class="new badge blue" data-badge-caption="<%= userData.role %>"></span>
-                    </h4>
+                    <% if (userData) { %>
+                        <% if (userData.role === "freelancer") { %>
+                            <h4>
+                                <strong><%= userData.profile.name %></strong>
+                                <span class="new badge blue" data-badge-caption="<%= userData.role %>"></span>
+                            </h4>
+                        <% } else { %>
+                            <h5>
+                                <strong><%= userData.profile.name %></strong>
+                                <span class="new badge orange" data-badge-caption="<%= userData.role %>"></span>
+                            </h5>
+                            <h6 class="blue-text text-darken-3">
+                                <strong><%= userData.profile.company_details %></strong>
+                            </h6>
+                        <% } %>
+
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Email</th>
+                                    <td><%= userData.email %></td>
+                                </tr>
+                                <tr>
+                                    <th>Phone</th>
+                                    <td><%= userData.contact_info.phone %></td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td><%= userData.contact_info.address %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <% if (userData.role === "freelancer") { %>
+                            <div class="col s12 m6">
+                                <h6><strong>Skills</strong></h6>
+                                <ul class="collection">
+                                    <% userData.profile.skills.forEach(function (skill) { %>
+                                        <li class="collection-item"><%= skill %></li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+
+                            <div class="col s12 m6">
+                                <h6><strong>Experience</strong></h6>
+                                <div class="card-panel teal lighten-5"><%= userData.profile.experience %></div>
+                            </div>
+                        <% } %>
+
                     <% } else { %>
-                    <h5>
-                        <strong><%= userData.profile.name %></strong>
-                        <span class="new badge orange" data-badge-caption="<%= userData.role %>"></span>
-                    </h5>
-                    <h6 class="blue-text text-darken-3">
-                        <strong><%= userData.profile.company_details %></strong>
-                    </h6>
+                        <p>No user data available.</p>
                     <% } %>
-                    
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th>Email</th>
-                                <td><%= userData.email %></td>
-                            </tr>
-                            <tr>
-                                <th>Phone</th>
-                                <td><%= userData.contact_info.phone %></td>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <td><%= userData.contact_info.address %></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <% if (userData.role=="freelancer") { %>
-                <!-- Skills section -->
-                <div class="col s12 m6">
-                    <h6><strong>Skills</strong></h6>
-                    <ul class="collection">
-                        <% userData.profile.skills.forEach(function (skill) { %>
-                            <li class="collection-item">
-                                <%= skill %>
-                            </li>
-                        <% }) %>
-                    </ul>
-                </div>
 
-                <!-- Experience section -->
-                <div class="col s12 m6">
-                    <h6><strong>Experience</strong></h6>
-                    <div class="card-panel teal lighten-5">
-                        <%= userData.profile.experience %>
+                    <div class="right-align profile-spacing">
+                        <button id="show_edit_btn" class="btn">
+                            Edit Profile
+                        </button>
                     </div>
-                </div>
-                <% } %>
-
-                <div class="right-align profile-spacing">
-                    <button id="show_edit_btn" class="btn">
-                        Edit Profile
-                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Define the content within rating and review tab -->
         <div id="ratingreview" class="col s12 z-depth-2 orange lighten-5">
             <div class="row">
                 <div class="col s12">
@@ -91,6 +85,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Feature: Edit detail -->
     <div id="edit_section" class="row" hidden>
