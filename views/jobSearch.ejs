@@ -1,11 +1,13 @@
 <%- include('partials/header'); -%>
 
     <div class="container">
-        <div class="row" style="margin-top: 20px;">
-            <div class="col s12">
-                <a href="/jobs/add" class="btn waves-effect waves-light">Add Job</a>
-            </div>
-        </div>
+<div class="row" style="margin-top: 20px;">
+    <div class="col s12">
+        <% if (session && session.user && session.user.role == "client") { %>
+            <a href="/jobs/add" class="btn waves-effect waves-light">Add Job</a>
+        <% } %>
+    </div>
+</div>
     
         <!-- Filter Section Row -->
         <div class="row">
@@ -113,7 +115,7 @@
              
             <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
                 <% if (jobsList && jobsList.length> 0) { %>
-                <%- include('partials/jobSearchDetail', { job: jobsList[0] }) %>
+                <%- include('partials/jobSearchDetail', { job: jobsList[0], session: session }) %>
 
                 <% } %>
             </div>

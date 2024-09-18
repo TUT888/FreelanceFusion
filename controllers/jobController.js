@@ -43,11 +43,12 @@ const getJobList = async (req, res) => {
 
 const getJobDetail = async (req, res) => {
     const jobId = req.params.id;
+    const session = req.session;
     // Fetch the job details asynchronously from the model
     try {
         let job = await collection.getJobById(jobId);
         if (job) {
-            res.render('partials/jobSearchDetail', { job });
+            res.render('partials/jobSearchDetail', { job, session });
         } else {
             res.status(404).send('Job not found');
         }
