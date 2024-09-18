@@ -14,6 +14,8 @@
     delivery) <% } else { %> <strong>Pay:</strong> Not specified <% } %>
   </div>
   <div class="edit-btn-container">
-      <a href="edit/<%= job._id %>" class="btn edit-btn">Edit Job</a>
-  </div>
+    <% if (session && session.user && session.user.role == "client") { %>
+        <a href="edit/<%= job._id %>" class="btn edit-btn">Edit Job</a>
+    <% } %>
+</div>
 </div>
