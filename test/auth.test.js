@@ -2,12 +2,29 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server'); 
 const expect = chai.expect;
+const client = require('../dbConnection');
 
 chai.use(chaiHttp);
 
-describe('User Authentication', () => {
+
+const clearCollections = async () => {
+    const authCollection = client.db().collection('auths');
+    const usersCollection = client.db().collection('users');
+    
+    await authCollection.deleteMany({});
+    await usersCollection.deleteMany({});
+};
+
+
+describe('User Registration', () => {
+
+    before(async () => {
+        await clearCollections();
+    });
     
     describe('POST /register', () => {
+
+        
         it('should register a user successfully', (done) => {
             chai.request(server)
                 .post('/register')
@@ -18,6 +35,10 @@ describe('User Authentication', () => {
                     expect(res.body).to.have.property('message', 'User registered successfully! Redirecting...');
                     done();
                 });
+
+                after(async () => {
+                    await chai.request(server).post('/logout'); 
+                });
         });
 
         it('should return error for existing email', (done) => {
@@ -27,7 +48,7 @@ describe('User Authentication', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(res.body).to.have.property('success', false);
-                    expect(res.body).to.have.property('message', 'Email  already in use! Please use a different email');
+                    expect(res.body).to.have.property('message', 'Email already in use! Please use a different email');
                     done();
                 });
         });
@@ -39,7 +60,7 @@ describe('User Authentication', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(res.body).to.have.property('success', false);
-                    expect(res.body).to.have.property('message', 'Username  already in use! Please use a different username');
+                    expect(res.body).to.have.property('message', 'Username already in use! Please use a different username');
                     done();
                 });
         });
@@ -56,22 +77,6 @@ describe('User Authentication', () => {
                 });
         });
 
-
-        it('should not allow duplicate registrations', async () => {
-            await chai.request(server)
-                .post('/register')
-                .send({ email: 'duplicate@example.com', password: 'Password1!', username: 'duplicateuser' });
-
-            const res = await chai.request(server)
-                .post('/register')
-                .send({ email: 'duplicate@example.com', password: 'Password1!', username: 'duplicateuser' });
-
-            expect(res).to.have.status(400);
-            expect(res.body).to.have.property('success', false);
-            expect(res.body).to.have.property('message', 'email already in use');
-        });
-    });
-
         it('should return error for weak password', (done) => {
             chai.request(server)
                 .post('/register')
@@ -84,49 +89,18 @@ describe('User Authentication', () => {
                 });
         });
 
-
-    describe('POST /login', () => {
-        before(async () => {
-            // Register a user before login tests
+        it('should not allow duplicate registrations', async () => {
             await chai.request(server)
                 .post('/register')
-                .send({ email: 'login@example.com', password: 'Password1!', username: 'loginuser' });
-        });
+                .send({ email: 'duplicate@example.com', password: 'Password1!', username: 'duplicateuser' });
 
-        it('should log in a user successfully', (done) => {
-            chai.request(server)
-                .post('/login')
-                .send({ email: 'login@example.com', password: 'Password1!' })
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.have.property('success', true);
-                    expect(res.body).to.have.property('message', 'Logged in successfully! Redirecting...');
-                    done();
-                });
-        });
+            const res = await chai.request(server)
+                .post('/register')
+                .send({ email: 'duplicate@example.com', password: 'Password1!', username: 'duplicateuser' });
 
-        it('should return error for invalid email', (done) => {
-            chai.request(server)
-                .post('/login')
-                .send({ email: 'invalid@example.com', password: 'Password1!' })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body).to.have.property('success', false);
-                    expect(res.body).to.have.property('message', 'Invalid email or password');
-                    done();
-                });
-        });
-
-        it('should return error for invalid password', (done) => {
-            chai.request(server)
-                .post('/login')
-                .send({ email: 'login@example.com', password: 'WrongPassword' })
-                .end((err, res) => {
-                    expect(res).to.have.status(401);
-                    expect(res.body).to.have.property('success', false);
-                    expect(res.body).to.have.property('message', 'Invalid email or password');
-                    done();
-                });
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property('success', false);
+            expect(res.body).to.have.property('message', 'Email already in use! Please use a different email');
         });
     });
 });

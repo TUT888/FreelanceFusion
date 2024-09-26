@@ -76,3 +76,5 @@ io.on('connection', (socket) => {
 http.listen(port, () => {
     console.log("Server started: http://localhost:" + port);
 })
+
+module.exports = app; 
