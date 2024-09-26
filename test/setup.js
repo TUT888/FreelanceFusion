@@ -1,16 +1,13 @@
-const mongoose = require('mongoose');
 const client = require('../dbConnection');
 
-const mongoURI = 'your_mongo_db_uri'; 
+const mongoURI = process.env.MONGODB_URL_TEST; // Use the test database URI from the environment variable
 
 before(async () => {
-    await mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+    await client.connect();
+    console.log('Connected to the test database');
 });
 
 after(async () => {
-    await mongoose.connection.dropDatabase(); 
-    await mongoose.connection.close(); 
+// Drop the test database after tests
+    await client.close(); // Close the client connection
 });
