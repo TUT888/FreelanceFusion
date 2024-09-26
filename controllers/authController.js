@@ -11,11 +11,19 @@ const register = async (req, res) => {
     try {
         const { email, password, username } = req.body;
 
-        console.log("Received registration data:", { email, password, username });
+        console.log("Received registration data:", req.body);
 
 
         // check if user already exists
-        const user = await authCollection.findOne({ email });
+        //const user = await authCollection.findOne({ email,username });
+        const user = await authCollection.findOne(
+            {
+              $or: [
+                     { email },
+                     { username }
+                   ]
+            }
+         )
 
         console.log("Existing user check:", user);
 
@@ -25,12 +33,12 @@ const register = async (req, res) => {
 
         if (user.email==email) {
             console.log("second if");
-            return res.status(400).json({ success: false, message: 'email  already in use' });
+            return res.status(400).json({ success: false, message: 'Email  already in use! Please use a different email' });
         }
 
         if (user.username==username) {
             console.log("thrid if");
-            return res.status(400).json({ success: false, message: 'username  already in use' });
+            return res.status(400).json({ success: false, message: 'Username  already in use! Please use a different username' });
         }
 
     }
@@ -70,7 +78,7 @@ const register = async (req, res) => {
    
           
 
-        res.status(201).json({ success: true, message: 'User registered successfully' });
+        res.status(201).json({ success: true, message: 'User registered successfully! Redirecting...' });
     } catch (err) {
         console.error('Error registering user:', err);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -100,7 +108,7 @@ const login = async (req, res) => {
             // profile: user.profile
         };
 
-        res.json({ success: true, message: 'Logged in successfully' });
+        res.json({ success: true, message: 'Logged in successfully! Redirecting...' });
     } catch (err) {
         console.error('Error logging in user:', err);
         res.status(500).json({ success: false, message: 'Internal Server Error' });

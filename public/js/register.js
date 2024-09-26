@@ -49,18 +49,33 @@ $(document).ready(function () {
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
+
             success: function (response) {
                 if (response.success) {
+                    // console.log(data),
+                    console.log(formData),
                     $('#message').html(`<p class="green-text">${response.message}</p>`);
                     setTimeout(() => {
                         window.location.href = '/profile'; // Redirect to profile after successful registration
                     }, 3000);
                 } else {
+                    // console.log(data),
+                    console.log(formData),
                     $('#message').html(`<p class="red-text">${response.message}</p>`);
                 }
             },
-            error: function () {
-                $('#message').html('<p class="red-text">An error occurred</p>');
+            error: function (xhr) {
+                // console.log(data),
+                const response = xhr.responseJSON;
+                console.log(response);
+                console.log(xhr);
+                if (response && response.message) {
+                    $('#message').html(`<p class="red-text">${response.message}</p>`);
+                } else {
+                    $('#message').html('<p class="red-text">An unknown error occurred</p>');
+                }
+                // console.log(formData),
+                // $('#message').html('<p class="red-text">An error occurred</p>');
             }
         });
     });
