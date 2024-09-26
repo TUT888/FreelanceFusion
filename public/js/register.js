@@ -44,6 +44,31 @@ $(document).ready(function () {
             username: $('#username').val()
         };
 
+
+        $('#message').html('');
+        $('#username').removeClass('invalid');
+        $('#username-error').text('');
+
+
+
+
+        if (!formData.username.trim()) {
+            $('#username').addClass('invalid'); // Add invalid class to the input field
+            $('#username-error').text('Username cannot be empty.'); // Set error message
+            return; 
+        }
+
+
+
+        const password = formData.password;
+        const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordRequirements.test(password)) {
+            $('#message').html('<p class="red-text">Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.</p>');
+            return;
+        }
+
+
         $.ajax({
             url: '/register',
             type: 'POST',

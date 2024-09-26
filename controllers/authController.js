@@ -5,6 +5,8 @@ const usersCollection = client.db().collection('users');
 const authCollection = client.db().collection('auths');
 const session = require('express-session');
 
+const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
 
 
 const register = async (req, res) => {
@@ -12,6 +14,11 @@ const register = async (req, res) => {
         const { email, password, username } = req.body;
 
         console.log("Received registration data:", req.body);
+
+        if (!username || !username.trim()) {
+            return res.status(400).json({ success: false, message: 'Username cannot be empty.' });
+        }
+        
 
 
         // check if user already exists
@@ -42,6 +49,14 @@ const register = async (req, res) => {
         }
 
     }
+
+    if (!passwordRequirements.test(password)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        });
+    }
+
 
         
         const hashedPassword = await bcrypt.hash(password, saltRounds);
