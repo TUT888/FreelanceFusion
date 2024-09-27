@@ -1,5 +1,30 @@
 let collection = require('../models/user');
 
+const displayProfile = (req, res) => {
+    try {
+        // Get user email from session
+        let userEmail = req.session.user.email;
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        collection.getUserProfile(userEmail, (result) => {     
+            if (!result) {
+                res.redirect('/');
+            }
+            
+            res.render("profile", {
+                userData: result,
+                session: req.session
+            });
+        });
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
+}
+
+/* THIS IS NOT WORKING, IT SEEMS THAT THE RETURN FROM getUserData DOES NOT MATCH THIS
 const displayProfile = async (req, res) => {
 
     console.log('Session Data:', req.session);
@@ -27,7 +52,9 @@ const displayProfile = async (req, res) => {
         res.redirect('/sign-in');
     }
 };
+*/
 
+/* THIS SHOULD NOT BE HERE! IT SHOULD BE IN THE USER MODEL
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
     collection.find(query).toArray(callback);
@@ -38,10 +65,9 @@ function getUserData(userEmail, callback) {
     }
 
     console.log('Database Query Result:', result);
-
         callback(null, result);
-
 }
+*/
 
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
@@ -91,7 +117,6 @@ const updateProfile = (req, res) => {
 }
 
 module.exports = {
-    getUserData,
     registerUser,
     authenticateUser,
     displayProfile,

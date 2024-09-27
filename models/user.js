@@ -2,6 +2,18 @@ let client = require('../dbConnection');
 const bcrypt = require('bcrypt');
 let collection = client.db().collection('users');
 
+function getUserProfile(userEmail, callback) {
+    let query = { email: userEmail };
+
+    collection.findOne(query).then((result)=>{
+        if (!result) {
+            console.log("No user data found for: ", userEmail);
+        }
+        callback(result);
+    });
+}
+
+/* THIS IS NOT WORKING, IT SEEMS THAT THE RETURN DOES NOT MATCH THE "OLD displayProfile", which already commented
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
 
@@ -27,7 +39,7 @@ function getUserData(userEmail, callback) {
         callback(null, result);
     });
 }
-
+*/
 
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
@@ -61,6 +73,7 @@ function updateUserData(userEmail, updateData, callback) {
 module.exports = {
     registerUser,
     authenticateUser,
-    getUserData,
-    updateUserData
+    // getUserData,
+    updateUserData,
+    getUserProfile
 }
