@@ -1,4 +1,5 @@
 let collection = require('../models/user');
+let ratingCollection = require('../models/ratingModel');
 
 const displayProfile = (req, res) => {
     try {
@@ -8,14 +9,19 @@ const displayProfile = (req, res) => {
             return res.redirect('/sign-in');
         }
 
-        collection.getUserProfile(userEmail, (result) => {     
-            if (!result) {
+        // Get user data
+        collection.getUserProfile(userEmail, (userData) => {     
+            if (!userData) {
                 res.redirect('/');
             }
             
-            res.render("profile", {
-                userData: result,
-                session: req.session
+            // Get ratings data
+            ratingCollection.getUserRating(userData._id, (userRating) => {
+                res.render("profile", {
+                    userData: userData,
+                    userRating: userRating,
+                    session: req.session
+                });
             });
         });
     } catch (err) {

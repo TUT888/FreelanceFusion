@@ -13,6 +13,21 @@ function getUserProfile(userEmail, callback) {
     });
 }
 
+function getNameByUserID(userID) {
+    let query = { _id: userID };
+    let projection = { projection: { 'profile.name': 1 } };
+
+    return collection.findOne(query, projection);
+
+    // collection.findOne(query, projection).then((result)=>{
+    //     if (!result) {
+    //         console.log("No user data found for: ");
+    //     }
+    //     console.log("Result in model: ", result);
+    //     return result;
+    // });
+}
+
 /* THIS IS NOT WORKING, IT SEEMS THAT THE RETURN DOES NOT MATCH THE "OLD displayProfile", which already commented
 function getUserData(userEmail, callback) {
     let query = { email: userEmail };
@@ -75,5 +90,6 @@ module.exports = {
     authenticateUser,
     // getUserData,
     updateUserData,
-    getUserProfile
+    getUserProfile,
+    getNameByUserID
 }

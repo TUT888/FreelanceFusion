@@ -6,8 +6,8 @@
     <div class="row">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s6"><a class="active" href="#profile">Profile Detail</a></li>
-                <li class="tab col s6"><a id="ratingreview_btn" href="#ratingreview">Rating and Review</a></li>
+                <li class="tab col s6"><a href="#profile">Profile Detail</a></li>
+                <li class="tab col s6"><a class="active" id="ratingreview_btn" href="#ratingreview">Rating and Review</a></li>
             </ul>
         </div>
 
@@ -82,6 +82,44 @@
                 <div class="col s12">
                     <h5 class="center-align"><strong>Your rating and reviews</strong></h5>
                     <p class="center-align">You don't have any rating yet</p>
+                </div>
+                <div class="col s10">
+                    <!-- Overall ratings -->
+                    <div class="col s12 m6">
+                        <h6><strong>Overall Ratings</strong></h6>
+                        <% 
+                            const initVal = 0;
+                            const totalStar = userRating.reduce(
+                                (accumulator, rating) => accumulator + rating.rating, 
+                                initVal,
+                            );
+                        %>
+                        <div class="valign-wrapper">
+                            <i class="material-icons Small orange-text">star</i>
+                            <span style="padding-left: 2rem;"><%= totalStar/userRating.length %> </span>
+                        </div>
+                    </div>
+
+                    <!-- All rating and review -->
+                    <div class="col s12 m6">            
+                        <!-- A review --> 
+                        <% userRating.forEach(function (rating) { %>
+                            <ul class="collection">
+                            <li class="collection-item">Status: <%= rating.project_status %></li>
+                            <li class="collection-item">Days: <%= rating.project_duration %></li>
+                            <li class="collection-item">Rater: <%= rating.rater_id %></li>
+                            <li class="collection-item">Ratee: <%= rating.ratee_id %></li>
+                            <li class="collection-item">Rating: <%= rating.rating %></li>
+                            <li class="collection-item">Review: <%= rating.review %></li>
+                            <li class="collection-item"><%= rating.date %></li>
+                            <li class="collection-item"><%= rating.time %></li>
+                        </ul>
+                        <% }) %>
+                        
+                    </div>
+
+                    
+                    
                 </div>
             </div>
         </div>
