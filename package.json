@@ -5,7 +5,9 @@
     "scripts": {
         "test": "mocha --reporter spec",
         "start": "node server.js",
-        "start:dev": "nodemon server.js"
+        "start:dev": "nodemon server.js",
+        "backup": "node dbBackup/backup.js",
+        "restore": "node dbBackup/restore.js"
     },
     "author": "Alice Tat",
     "license": "ISC",
