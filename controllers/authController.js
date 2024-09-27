@@ -40,12 +40,12 @@ const register = async (req, res) => {
 
         if (user.email==email) {
             console.log("second if");
-            return res.status(400).json({ success: false, message: 'Email  already in use! Please use a different email' });
+            return res.status(400).json({ success: false, message: 'Email already in use! Please use a different email' });
         }
 
         if (user.username==username) {
             console.log("thrid if");
-            return res.status(400).json({ success: false, message: 'Username  already in use! Please use a different username' });
+            return res.status(400).json({ success: false, message: 'Username already in use! Please use a different username' });
         }
 
     }
