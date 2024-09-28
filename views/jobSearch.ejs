@@ -3,6 +3,9 @@
     <div class="container">
 <div class="row" style="margin-top: 20px;">
     <div class="col s12">
+        <% console.log(session); %>
+        <% console.log(session.user); %>
+        <% console.log(session.user.role); %>
         <% if (session && session.user && session.user.role == "client") { %>
             <a href="/jobs/add" class="btn waves-effect waves-light">Add Job</a>
         <% } %>
