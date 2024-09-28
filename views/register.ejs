@@ -24,6 +24,15 @@
                     <label for="password">Password</label>
                 </div>
 
+                <!-- User Type Selection using Dropdown -->
+                <div class="input-field col s12">
+                    <select name="userType" required>
+                        <option value="" disabled selected>Choose your role</option>
+                        <option value="client">Client</option>
+                        <option value="freelancer">Freelancer</option>
+                    </select>
+                </div>
+
                 <div class="input-field col s12">
                     <button type="submit" class="btn waves-effect waves-light">Register</button>
                 </div>
@@ -32,6 +41,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        M.updateTextFields(); // Initialize Materialize text fields
+        $('select').formSelect(); // Initialize Materialize select dropdown
+    });
+</script>
 
 <script>
     $(document).ready(function() {
