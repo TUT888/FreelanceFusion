@@ -19,7 +19,7 @@ const displayProfile = (req, res) => {
             ratingCollection.getUserRating(userData._id, (userRating) => {
                 res.render("profile", {
                     userData: userData,
-                    userRating: userRating,
+                    allUserRating: userRating,
                     session: req.session
                 });
             });
