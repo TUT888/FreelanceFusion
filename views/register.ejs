@@ -28,7 +28,10 @@
 
                 <!-- User Type Selection using Dropdown -->
                 <div class="input-field col s12">
-                    <select name="userType" required>
+    
+                    <!-- <select name="userType" id="userType" required> -->
+                    <select name="userType" id="userType" required onchange="console.log(this.value)">
+
                         <option value="" disabled selected>Choose your role</option>
                         <option value="client">Client</option>
                         <option value="freelancer">Freelancer</option>
@@ -46,6 +49,7 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function() {
         M.updateTextFields(); // Initialize Materialize text fields
@@ -58,6 +62,8 @@
         M.updateTextFields(); // Initialize Materialize text fields
     });
 </script>
+
+
 
 <script src="/js/register.js"></script>
 

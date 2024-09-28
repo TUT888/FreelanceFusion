@@ -41,7 +41,8 @@ $(document).ready(function () {
         const formData = {
             email: $('#email').val(),
             password: $('#password').val(),
-            username: $('#username').val()
+            username: $('#username').val(),
+            userType: $('#userType').val()
         };
 
 
