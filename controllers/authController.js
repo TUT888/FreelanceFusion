@@ -116,12 +116,22 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
+
+        const userData = await usersCollection.findOne({ email: user.email });
+        console.log("User data:", userData);
+        if (!userData) {
+            return res.status(401).json({ success: false, message: 'User data not found' });
+        }
+
         req.session.user = {
             // id: user._id,
             email: user.email,
-            role: user.role
+            role: userData.role
             // profile: user.profile
         };
+
+        console.log("Session after login:", req.session);
+
 
         res.json({ success: true, message: 'Logged in successfully! Redirecting...' });
     } catch (err) {

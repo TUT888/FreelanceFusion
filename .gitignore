@@ -1,5 +1,6 @@
 node_modules/
 .env
+.dblinks
 scripts/
 models/dbSetup.js
 drafts/
