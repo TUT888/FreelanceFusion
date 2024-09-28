@@ -16,7 +16,7 @@ const displayProfile = (req, res) => {
             }
             
             // Get ratings data
-            ratingCollection.getUserRating(userData._id, (userRating) => {
+            ratingCollection.getUserRating(userData._id, userData.role, (userRating) => {
                 res.render("profile", {
                     userData: userData,
                     allUserRating: userRating,
@@ -122,9 +122,31 @@ const updateProfile = (req, res) => {
     }
 }
 
+const deleteRating = async (req, res) => {
+    try {
+        console.log("DELETE RATING TRIGGER!!!");
+        let rating_id = req.body.ratingID; 
+        
+        ratingCollection.deleteGivenRating(rating_id, (result) => {
+            console.log("RESULTTTT: ",result);
+            if (result.deletedCount === 1) {
+                console.log("Successfully deleted one document.");
+                res.status(200).send("Successfully deleted your review!");
+            } else {
+                console.log("No documents matched the query. Deleted 0 documents.");
+                res.status(400).send("No documents matched the query. Deleted 0 documents.");   
+            }
+        })
+    } catch (err) {
+        console.error("There was an error when trying to delete a document: ", err);
+        res.status(400).send("There was an error when trying to delete a document: ", err);   
+    }
+}
+
 module.exports = {
     registerUser,
     authenticateUser,
     displayProfile,
-    updateProfile
+    updateProfile,
+    deleteRating
 }

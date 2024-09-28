@@ -2,10 +2,16 @@ let client = require('../dbConnection');
 let collection = client.db().collection('ratings');
 let projectCollection = client.db().collection('projects');
 let userModel = require('../models/user');
+const { ObjectId } = require('mongodb');
 
-const getUserRating = async (userID, callback) => {
-    let query = { ratee_id: userID };
-
+const getUserRating = async (userID, userRole, callback) => {
+    let query;
+    if (userRole==='freelancer') {
+        query = { ratee_id: userID };
+    } else {
+        query = { rater_id: userID };
+    }
+    
     /*
     collection.findOne(query).then((userRating)=>{
         console.log("Finding for: ", userID);
@@ -29,7 +35,6 @@ const getUserRating = async (userID, callback) => {
     }
     
     let userRating = await processUserRating(await cursor.toArray());
-    console.log("userRating: ", userRating);
     
     callback(userRating);
     /*
@@ -78,6 +83,7 @@ const processUserRating = async (allUserRatings) => {
         let ratee_data = await userModel.getNameByUserID(userRating.ratee_id);
 
         processedRatings.push({
+            rating_id: userRating._id,
             project_status: projectDetail.status,
             project_duration: projectDetail.totalDays,
             rater_id: rater_data.profile.name,
@@ -90,6 +96,13 @@ const processUserRating = async (allUserRatings) => {
     };
     
     return processedRatings;
+}
+
+const deleteGivenRating = async (ratingID, callback) => {
+    const query = { _id: new ObjectId(ratingID) };
+    let result = await collection.deleteOne(query);
+
+    callback(result);
 }
 
 // Project detail: This may be transferred to projectModel
@@ -110,5 +123,6 @@ let getProjectDetail = async (projectID) => {
 }
 
 module.exports = {
-    getUserRating
+    getUserRating,
+    deleteGivenRating
 }
