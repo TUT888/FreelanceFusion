@@ -6,9 +6,8 @@
         <div class="row">
             <div class="col s12">
                 <ul class="tabs">
-                    <li class="tab col s6"><a href="#profile">Profile Detail</a></li>
-                    <li class="tab col s6"><a class="active" id="ratingreview_btn" href="#ratingreview">Rating and
-                            Review</a></li>
+                    <li class="tab col s6"><a class="active" href="#profile">Profile Detail</a></li>
+                    <li class="tab col s6"><a id="ratingreview_btn" href="#ratingreview">Rating and Review</a></li>
                 </ul>
             </div>
 
@@ -218,102 +217,100 @@
                 </div>
             </div>
         </div>
-    </div>
+    
+        <!-- Feature: Edit detail -->
+        <div id="edit_section" class="row" hidden>
+            <div id="edit_profile" class="col s12 z-depth-2 amber lighten-5">
+                <h5 class="center-align"><strong>Edit Profile</strong></h5>
 
+                <h6 id="update_result_mess" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>
+                    Result</h6>
 
-    <!-- Feature: Edit detail -->
-    <div id="edit_section" class="row" hidden>
-        <div id="edit_profile" class="col s12 z-depth-2 amber lighten-5">
-            <h5 class="center-align"><strong>Edit Profile</strong></h5>
-
-            <h6 id="update_result_mess" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>
-                Result</h6>
-
-            <form style="padding-left: 1rem; padding-right: 1rem;">
-                <!-- Contact -->
-                <div class="row">
-                    <div class="col s12">
-                        <h6><strong>Update Personal Information</strong></h6>
-                        <div class="row">
-                            <div class="input-field col s4">
-                                <input type="text" id="input_name" value="<%= userData.profile.name %>"
-                                    class="validate">
-                                <label for="input_name">Your name</label>
-                            </div>
-                            <div class="input-field col s8">
-                                <input type="text" id="input_email" value="<%= userData.email%>" disabled>
-                                <label for="input_email">Email</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s4">
-                                <input type="text" id="input_phone" value="<%= userData.contact_info.phone %>"
-                                    class="validate">
-                                <label for="input_phone">Phone number</label>
-                            </div>
-                            <div class="input-field col s8">
-                                <input type="text" id="input_address" value="<%= userData.contact_info.address %>"
-                                    class="validate">
-                                <label for="input_address">Address</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <% if (userData.role=="freelancer" ) { %>
-                    <!-- Profile for Freelancer -->
+                <form style="padding-left: 1rem; padding-right: 1rem;">
+                    <!-- Contact -->
                     <div class="row">
-                        <div class="col s6">
-                            <div class="valign-wrapper">
-                                <h6><strong>Update Your Skills</strong></h6>
-                                <button id="add_skill_btn" class="btn-small green col s2"><i
-                                        class="material-icons">add</i></button>
+                        <div class="col s12">
+                            <h6><strong>Update Personal Information</strong></h6>
+                            <div class="row">
+                                <div class="input-field col s4">
+                                    <input type="text" id="input_name" value="<%= userData.profile.name %>"
+                                        class="validate">
+                                    <label for="input_name">Your name</label>
+                                </div>
+                                <div class="input-field col s8">
+                                    <input type="text" id="input_email" value="<%= userData.email%>" disabled>
+                                    <label for="input_email">Email</label>
+                                </div>
                             </div>
-                            <div id="input_skill_list">
-                                <% userData.profile.skills.forEach(function (skill) { %>
-                                    <div class="input-field valign-wrapper">
-                                        <input class="col s10" type="text" value="<%= skill %>">
-                                        <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i
-                                                class="material-icons">clear</i></button>
-                                    </div>
-                                    <% }) %>
-                            </div>
-                        </div>
-
-                        <div class="col s6">
-                            <div class="valign-wrapper">
-                                <h6><strong>Update Your Experience</strong></h6>
-                            </div>
-                            <div class="input-field">
-                                <textarea id="input_experience" class="materialize-textarea"
-                                    value="<%= userData.profile.experience %>"><%= userData.profile.experience %></textarea>
+                            <div class="row">
+                                <div class="input-field col s4">
+                                    <input type="text" id="input_phone" value="<%= userData.contact_info.phone %>"
+                                        class="validate">
+                                    <label for="input_phone">Phone number</label>
+                                </div>
+                                <div class="input-field col s8">
+                                    <input type="text" id="input_address" value="<%= userData.contact_info.address %>"
+                                        class="validate">
+                                    <label for="input_address">Address</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <% } else { %>
 
-                        <!-- Profile for Client -->
+                    <% if (userData.role=="freelancer" ) { %>
+                        <!-- Profile for Freelancer -->
                         <div class="row">
-                            <div class="col s12">
-                                <h6><strong>Update Company Information</strong></h6>
+                            <div class="col s6">
+                                <div class="valign-wrapper">
+                                    <h6><strong>Update Your Skills</strong></h6>
+                                    <button id="add_skill_btn" class="btn-small green col s2"><i
+                                            class="material-icons">add</i></button>
+                                </div>
+                                <div id="input_skill_list">
+                                    <% userData.profile.skills.forEach(function (skill) { %>
+                                        <div class="input-field valign-wrapper">
+                                            <input class="col s10" type="text" value="<%= skill %>">
+                                            <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i
+                                                    class="material-icons">clear</i></button>
+                                        </div>
+                                        <% }) %>
+                                </div>
                             </div>
 
-                            <div class="input-field col s4">
-                                <input type="text" id="input_company" value="<%= userData.profile.company_details %>"
-                                    class="validate">
-                                <label for="input_company">Your company name</label>
+                            <div class="col s6">
+                                <div class="valign-wrapper">
+                                    <h6><strong>Update Your Experience</strong></h6>
+                                </div>
+                                <div class="input-field">
+                                    <textarea id="input_experience" class="materialize-textarea"
+                                        value="<%= userData.profile.experience %>"><%= userData.profile.experience %></textarea>
+                                </div>
                             </div>
                         </div>
+                        <% } else { %>
 
-                        <% } %>
+                            <!-- Profile for Client -->
+                            <div class="row">
+                                <div class="col s12">
+                                    <h6><strong>Update Company Information</strong></h6>
+                                </div>
 
-                            <div class="row input-field right">
-                                <button class="btn teal lighten-3" id="cancel_changes">Cancel</button>
-                                <button class="btn teal darken-1" id="submit_changes">Confirm</button>
+                                <div class="input-field col s4">
+                                    <input type="text" id="input_company" value="<%= userData.profile.company_details %>"
+                                        class="validate">
+                                    <label for="input_company">Your company name</label>
+                                </div>
                             </div>
-            </form>
+
+                            <% } %>
+
+                                <div class="row input-field right">
+                                    <button class="btn teal lighten-3" id="cancel_changes">Cancel</button>
+                                    <button class="btn teal darken-1" id="submit_changes">Confirm</button>
+                                </div>
+                </form>
+            </div>
         </div>
-    </div>
     </div>
 
     <script>
