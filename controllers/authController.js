@@ -11,7 +11,7 @@ const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Z
 
 const register = async (req, res) => {
     try {
-        const { email, password, username } = req.body;
+        const { email, password, username,userType } = req.body;
 
         console.log("Received registration data:", req.body);
 
@@ -75,7 +75,7 @@ const register = async (req, res) => {
             _id: userId, 
             email,
             password: hashedPassword,
-            role: 'freelancer', 
+            role: userType, 
             profile: {
                 name: username,
                 skills: [], // Default to empty array
