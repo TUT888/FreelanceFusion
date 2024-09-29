@@ -18,43 +18,7 @@ function getNameByUserID(userID) {
     let projection = { projection: { 'profile.name': 1 } };
 
     return collection.findOne(query, projection);
-
-    // collection.findOne(query, projection).then((result)=>{
-    //     if (!result) {
-    //         console.log("No user data found for: ");
-    //     }
-    //     console.log("Result in model: ", result);
-    //     return result;
-    // });
 }
-
-/* THIS IS NOT WORKING, IT SEEMS THAT THE RETURN DOES NOT MATCH THE "OLD displayProfile", which already commented
-function getUserData(userEmail, callback) {
-    let query = { email: userEmail };
-
-    console.log("Querying database for:", userEmail); // Add logging here
-
-    const timeout = setTimeout(() => {
-        return callback(new Error('Database query timed out'));
-    }, 5000);
-
-    collection.find(query).toArray((err, result) => {
-
-        clearTimeout(timeout);
-        if (err) {
-            console.log("Error during database query:", err);
-            return callback(err);
-        }
-        console.log('Database Result:', result);
-
-        if (!result || result.length === 0) {
-            console.log("No user data found for:", userEmail);
-        }
-
-        callback(null, result);
-    });
-}
-*/
 
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
@@ -88,7 +52,6 @@ function updateUserData(userEmail, updateData, callback) {
 module.exports = {
     registerUser,
     authenticateUser,
-    // getUserData,
     updateUserData,
     getUserProfile,
     getNameByUserID

@@ -32,51 +32,6 @@ const displayProfile = (req, res) => {
     }
 }
 
-/* THIS IS NOT WORKING, IT SEEMS THAT THE RETURN FROM getUserData DOES NOT MATCH THIS
-const displayProfile = async (req, res) => {
-
-    console.log('Session Data:', req.session);
-
-    try {
-        let userEmail = req.session.user.email;
-
-        if (!req.session.user) {
-            return res.redirect('/sign-in');
-        }
-
-        const result = await collection.getUserData(userEmail);
-        if (result.length === 0) {
-            return res.redirect('/sign-in'); // Redirect if no user found
-        }
-
-        console.log('User Data:', result);
-
-        res.render("profile", {
-            userData: result[0], // Ensure userData is defined and passed
-            session: req.session
-        });
-    } catch (err) {
-        console.error('Error retrieving user data:', err);
-        res.redirect('/sign-in');
-    }
-};
-*/
-
-/* THIS SHOULD NOT BE HERE! IT SHOULD BE IN THE USER MODEL
-function getUserData(userEmail, callback) {
-    let query = { email: userEmail };
-    collection.find(query).toArray(callback);
-
-    if (err) {
-        console.error('Error querying database:', err);
-        return callback(err);
-    }
-
-    console.log('Database Query Result:', result);
-        callback(null, result);
-}
-*/
-
 // USER AUTHENTICATION feature
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
@@ -129,11 +84,9 @@ const updateProfile = (req, res) => {
 // RATING & REVIEW feature
 const deleteRating = async (req, res) => {
     try {
-        console.log("DELETE RATING TRIGGER!!!");
         let rating_id = req.body.ratingID; 
         
         ratingCollection.deleteGivenRating(rating_id, (result) => {
-            console.log("RESULTTTT: ",result);
             if (result.deletedCount === 1) {
                 console.log("Successfully deleted one document.");
                 res.status(200).send("Successfully deleted your review!");
@@ -149,7 +102,31 @@ const deleteRating = async (req, res) => {
 }
 
 const addNewRating = (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
 
+        let data = req.body;
+        console.log("RECEIVED REQUEST FROM USER: ", data);
+
+        ratingCollection.addNewRating(data, (result) => {
+            if (result.insertedId) {
+                res.json({
+                    statuscocde:200, 
+                    message: `Successfully added new rating. Redirecting in few seconds...`
+                });
+            } else {
+                res.json({
+                    statuscocde:400, 
+                    message: `Insertion failed. Please try again later.`
+                });
+            }
+        })
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
 }
 
 const displayAddRatingForm = (req, res) => {
@@ -168,7 +145,6 @@ const displayAddRatingForm = (req, res) => {
             
             // Get available projects for rating
             projectCollection.getProjectForRating(userData._id, (allProjectsForRating) => {
-                console.log(allProjectsForRating);
                 res.render("ratingForm", {
                     allProjectsForRating: allProjectsForRating,
                     session: req.session

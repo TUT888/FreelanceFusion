@@ -1,7 +1,10 @@
 <%- include('partials/header'); -%>
 
 <div class="container">
-    <h3 class="center-align">Give your rating to freelancer</h3>
+    <div class="row valign-wrapper">
+        <a href="/profile#ratingreview" class="btn teal">Back</a>
+        <h3 class="center-align col s11">Give your rating to freelancer</h3>
+    </div>
     
     <div class="row">
         <div class="col s12 z-depth-2 amber lighten-5">
@@ -30,6 +33,7 @@
                 <div id="project_detail_section" class="row z-depth-1 yellow lighten-5" style="border: 1px solid black; border-radius: 1rem;" hidden>
                     <div class="col s12 m6">
                         <h5>Project information</h5>
+                        <p id="user_id_data" hidden></p>
                         <table>
                             <tbody>
                                 <tr>
@@ -115,7 +119,9 @@
                             </div>
                         </div>
                     </div>
-    
+                    
+                    <h6 id="validation_message" class="center-align" style="font-weight: bold; color: red;" hidden>Result</h6>
+
                     <div class="row input-field right">
                         <button type="reset" class="btn blue lighten-1" id="reset_changes">Reset</button>
                         <button type="submit" class="btn green darken-1" id="submit_rating">Submit</button>
@@ -138,7 +144,7 @@
 
         $('#add_rating_form').trigger("reset");
 
-        $('#project_selection:first').prop('selected', true);;
+        $('#project_selection:first').prop('selected', true);
     });
 
     // Project selection functions
@@ -148,7 +154,12 @@
         }
     });
 
-    function renderProjectDetail(project) {
+    function renderProjectDetail(project) { 
+        // Store 
+        $('#user_id_data').data("freelancerid", project.freelancer_id);
+        $('#user_id_data').data("clientid", project.client_id);
+        
+        // Render
         $('#td_freelancer_name').text(project.project_info.freelancer_name);
         $('#td_status').text(project.project_info.status);
         if (project.project_info.status=='done') {
@@ -207,45 +218,54 @@
     }
 
     // Submit form
-    $('#submit_rating').on('click', function () {
+    $(document).on('click', '#submit_rating', function () {
         event.preventDefault();
 
-        console.log("You clicked submit button");
-        
-        // let val = $('#project_selection').val();
-        // console.log(typeof val);
-        // console.log(val.project_id);
-
         let project_id = $('#project_selection').find(':selected').data('projectid');
-        let rating = $('#project_selection').find(':selected').data('projectid');
-        let review = $('#project_selection').find(':selected').data('projectid');
+        let freelancer_id = $('#user_id_data').data('freelancerid');
+        let client_id = $('#user_id_data').data('clientid');
+        let input_rating = $('input[name="input_rating"]:checked').val();
+        let input_review = $('#input_review').val();
         let timestamp = new Date();
-        let formData = {
-            project_id: project_id,
-            rating: input_rating,
-            review: input_review,
-            timestamp: timestamp
-        }
 
-        $.ajax({
-            url: "/profile/rating/add",
-            type: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function (result) {
-                $('#update_result_mess').show();
-                $('#update_result_mess').css('color', 'green');
-                $('#update_result_mess').html(result);
-                setTimeout(function () {
-                    window.location.href = "/profile";
-                }, 2000);
-            },
-            error: function (result) {
-                $('#update_result_mess').show();
-                $('#update_result_mess').css('color', 'red');
-                $('#update_result_mess').html(result.responseText);
+        // Validation
+        if (!input_rating) {
+            $('#validation_message').html("Please give your rating from 1 to 5 star.");
+            $('#validation_message').show();
+        } else if (!input_review) {
+            $('#validation_message').html("Please give enter your review.");
+            $('#validation_message').show();
+        } else {
+            $('#validation_message').hide();
+            let formData = {
+                project_id: project_id,
+                rater_id: client_id,
+                ratee_id: freelancer_id,
+                rating: input_rating,
+                review: input_review,
+                timestamp: timestamp
             }
-        })
+
+            $.ajax({
+                url: "/profile/rating/add",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (result) {
+                    $('#validation_message').html(result.message);
+                    $('#validation_message').css('color', 'green');
+                    $('#validation_message').show();
+                    setTimeout(function () {
+                        window.location.href = "/profile";
+                    }, 2000);
+                },
+                error: function (result) {
+                    $('#validation_message').html(result.message);
+                    $('#validation_message').css('color', 'red');
+                    $('#validation_message').show();
+                }
+            })
+        }
     });
 
     $(document).ready(function(){

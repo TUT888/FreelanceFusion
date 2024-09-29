@@ -13,23 +13,6 @@ const getUserRating = async (userID, userRole, callback) => {
         query = { rater_id: userID };
     }
     
-    /*
-    collection.findOne(query).then((userRating)=>{
-        console.log("Finding for: ", userID);
-        console.log(typeof userID);
-        if (!userRating) {
-            console.log("No user rating found for: ", userRating);
-        }
-        console.log("userRating: ", userRating);
-        callback(userRating);
-        // let newQuery = { _id: userData._id };
-        // collection.findOne(newQuery).then((result)=>{
-
-        // })
-        // collection.findOne(query)
-        // callback(userData);
-    });
-    */
     const cursor = collection.find(query);
     if ( (await !collection.countDocuments(query))===0 ) {
         console.log("No user rating found");
@@ -38,36 +21,6 @@ const getUserRating = async (userID, userRole, callback) => {
     let userRating = await processUserRating(await cursor.toArray());
     
     callback(userRating);
-    /*
-    .toArray((err, userRating) => {
-        console.log("Finding for: ", userID);
-        console.log(typeof userID);
-        
-        console.log("userRating: ", userRating);
-        callback("abc");
-
-        if (err) {
-            throw err;
-        }
-        console.log(userRating);
-        
-    })
-    then((userRating)=>{
-        console.log("Finding for: ", userID);
-        console.log(typeof userID);
-        if (!userRating) {
-            console.log("No user rating found for: ", userRating);
-        }
-        console.log("userRating: ", userRating);
-        callback(userRating);
-        // let newQuery = { _id: userData._id };
-        // collection.findOne(newQuery).then((result)=>{
-
-        // })
-        // collection.findOne(query)
-        // callback(userData);
-    });
-    */
 }
 
 const processUserRating = async (allUserRatings) => {
@@ -106,6 +59,31 @@ const deleteGivenRating = async (ratingID, callback) => {
     callback(result);
 }
 
+const addNewRating = async (dataObj, callback) => {
+    const insertVal = {
+        project_id: new ObjectId(dataObj.project_id),
+        rater_id: new ObjectId(dataObj.rater_id),
+        ratee_id: new ObjectId(dataObj.ratee_id),
+        rating: dataObj.rating,
+        review: dataObj.review,
+        timestamp: dataObj.timestamp,
+    }
+
+    let result = await collection.insertOne(insertVal);
+    
+    if (result.insertedId) {
+        console.log(
+            `Successfully inserted new rating!`,
+        );
+    } else {
+        console.log(
+            `Insertion failed. Please try again later`,
+        );
+    }
+    callback(result);
+}
+
+// PROJECT THINGS within RATING MODELS
 // Project related things: This may be transferred to projectModel
 let getProjectDateAndStatus = async (projectID) => {
     let query = { _id: projectID };
@@ -123,7 +101,7 @@ let getProjectDateAndStatus = async (projectID) => {
     return projectDetail;
 }
 
-// Project related things: This may be transferred to projectModel
+// Get available project selection: This may be transferred to projectModel
 let getProjectForRating = async (raterID, callback) => {
     let query = { client_id: raterID };
 
@@ -142,23 +120,33 @@ const processProjectForRating = async (availableProjects) => {
     
     for (let i=0; i<availableProjects.length; i++) {
         let projectData = availableProjects[i];
+        // Check
+        let query = { 
+            project_id: new ObjectId(projectData._id), 
+            rater_id: new ObjectId(projectData.client_id)
+        };
+        const cursor = collection.find(query);
+        const countVal = (await cursor.toArray()).length;
+        
+        if ( countVal===0 ) {
+            // Process
+            let freelancer_data = await userModel.getNameByUserID(projectData.freelancer_id);
 
-        let freelancer_data = await userModel.getNameByUserID(projectData.freelancer_id);
+            let projectCreatedDateObj = new Date(projectData.created_at);
+            let projectUpdateDateObj = new Date(projectData.updated_at);
+            let duration = `${projectCreatedDateObj.toLocaleDateString()} - ${projectUpdateDateObj.toLocaleDateString()}`;
 
-        let projectCreatedDateObj = new Date(projectData.created_at);
-        let projectUpdateDateObj = new Date(projectData.updated_at);
-        let duration = `${projectCreatedDateObj.toLocaleDateString()} - ${projectUpdateDateObj.toLocaleDateString()}`;
-
-        let project_info = `${freelancer_data.profile.name}: project ${(projectData.status).replace("_", " ")} (${duration})`
-        processedProjectData.push({  
-            project_id: projectData._id,
-            project_info: project_info
-        });
+            let project_info = `${freelancer_data.profile.name}: project ${(projectData.status).replace("_", " ")} (${duration})`
+            processedProjectData.push({  
+                project_id: projectData._id,
+                project_info: project_info
+            });
+        }        
     };
     return processedProjectData;
 }
 
-// Project related things: This may be transferred to projectModel
+// Get specific project detail: This may be transferred to projectModel
 let getProjectDetailForRating = async (projectID, callback) => {
     let query = { _id: new ObjectId(projectID) };
 
@@ -200,7 +188,6 @@ const processProjectDetailForRating = async (projectData) => {
             job_post_date: job_post_date
         } 
     };
-
     return processedProjectData;
 }
 
@@ -208,5 +195,6 @@ module.exports = {
     getUserRating,
     deleteGivenRating,
     getProjectForRating,
-    getProjectDetailForRating
+    getProjectDetailForRating,
+    addNewRating
 }

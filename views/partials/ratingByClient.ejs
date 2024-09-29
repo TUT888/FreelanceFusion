@@ -7,7 +7,7 @@
         <div class="col s12 center">
             <div class="card-panel valign-wrapper blue lighten-4">
                 <span class="col s12">You have given total of <%= allUserRating.length %> reviews for freelancer.</span>
-                <a id="add_rating_btn" class="btn right" href="/profile/rating/add">Add</a>
+                <a id="add_rating_btn" class="btn right" href="/profile/rating/form">Add</a>
             </div>
         </div>
 
@@ -38,17 +38,12 @@
                     <!-- DROP DOWN -->
                     <div>
                         <!-- Dropdown Button -->
-                        <div class="col right" style="padding: 4%;">
-                            <button id="review_option_btn" class='dropdown-trigger btn' data-target='review_option'>
-                                <i class="material-icons">dehaze</i>
+                        <div>
+                            <span hidden><%= rating.rating_id %></span>
+                            <button class="btn-small red right delete-review-btn" style="margin-right: 1rem; margin-top: 1rem;">
+                                <i class="material-icons">clear</i>
                             </button>
                         </div>
-                        <!-- Dropdown Detail -->
-                        <ul id='review_option' class='dropdown-content'>
-                            <span hidden><%= rating.rating_id %></span>
-                            <li><a class='edit-review-btn'>Edit</a></li>
-                            <li><a class='delete-review-btn'><span class="red-text">Delete</span></a></li>
-                        </ul>
                     </div>
                 </div>
 
@@ -84,9 +79,8 @@
     })
     
     $(document).on('click', '.delete-review-btn', function () {
-        console.log('clicked');
         event.preventDefault();
-        let wrappedNode = $(this).parent().parent();
+        let wrappedNode = $(this).parent();
 
         let ratingID = $(wrappedNode).children(":first").html();
         let queryData = {};
