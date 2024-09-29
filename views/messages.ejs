@@ -4,7 +4,14 @@
     <h4 class="center-align">Chat Box</h4>
 
     <div class="row">
-        <div class="col s12 m8 offset-m2">
+        <div class="col s12 m4"> <!-- User List Section -->
+            <h5>Users</h5>
+            <ul id="user-list" class="collection">
+                <!-- User list will be populated here -->
+            </ul>
+        </div>
+
+        <div class="col s12 m8 offset-m1">
             <div class="card-panel">
 
                 <!-- Message History Section -->
@@ -12,8 +19,8 @@
                     <!-- Display message history -->
                     <% if (messages && messages.length > 0) { %>
                         <% messages.forEach(function(message) { %>
-                            <div class="chip <%= message.type === 'sent' ? 'blue lighten-4' : 'green lighten-4' %>">
-                                <strong><%= message.username %>:</strong> <%= message.text %>
+                            <div class="chip <%= message.sender === session.username ? 'blue lighten-4' : 'green lighten-4' %>">
+                                <strong><%= message.sender %>:</strong> <%= message.message %>
                             </div>
                         <% }); %>
                     <% } else { %>
@@ -35,32 +42,64 @@
         </div>
     </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    $(document).ready(function () {
-        // Scroll to the bottom of message history on page load
-        const messageHistory = $('#message-history');
-        messageHistory.scrollTop(messageHistory[0].scrollHeight);
+    $(document).ready(function() {
+        const userType = "<%= userType %>";
+        const username = "<%= session.username %>";
+        let receiverUsername = ''; 
 
-        // Send message on button click
-        $('#send-message').on('click', function () {
-            const messageInput = $('#message-input');
-            const messageText = messageInput.val();
 
-            if (messageText.trim()) {
-                // Emit message (implement with your backend)
-                $.post('/send-message', { message: messageText }, function(response) {
-                    if (response.success) {
-                        // Append new message (adjust message type and username based on your logic)
-                        const newMessage = `<div class="chip blue lighten-4"><strong>You:</strong> ${messageText}</div>`;
-                        messageHistory.append(newMessage);
-                        messageHistory.scrollTop(messageHistory[0].scrollHeight);
-                    }
+        $.ajax({
+            url: '/messages/users',
+            method: 'GET',
+            success: function(users) {
+                console.log(users);
+                users.forEach(user => {
+                    $('#user-list').append(`<li class="user collection-item" data-username="${user.username}">${user.username}</li>`);
                 });
 
-                // Clear the input field
-                messageInput.val('');
+                $(document).on('click', '.user', function() {
+
+                    receiverUsername = $(this).data('username'); 
+                    loadChatHistory(receiverUsername); 
+                });
+            },
+            error: function(err) {
+                console.error(err);
             }
         });
+
+
+        function loadChatHistory(username) {
+            $.ajax({
+                url: `/messages/history/${username}`,
+                method: 'GET',
+                success: function(chatHistory) {
+                    $('#message-history').empty();
+                    chatHistory.forEach(chat => {
+                        $('#message-history').append(`<div class="chip ${chat.sender === username ? 'blue lighten-4' : 'green lighten-4'}"><strong>${chat.sender}:</strong> ${chat.message}</div>`);
+                    });
+                    scrollChatToBottom(); 
+                },
+                error: function(err) {
+                    console.error(err);
+                }
+            });
+        }
+
+    
+        function scrollChatToBottom() {
+            const messageHistory = document.getElementById('message-history');
+            messageHistory.scrollTop = messageHistory.scrollHeight;
+        }
+
+
+        const socket = io(); 
+
+
+
     });
 </script>

@@ -21,8 +21,7 @@ const register = async (req, res) => {
         
 
 
-        // check if user already exists
-        //const user = await authCollection.findOne({ email,username });
+ 
         const user = await authCollection.findOne(
             {
               $or: [
@@ -126,7 +125,8 @@ const login = async (req, res) => {
         req.session.user = {
             // id: user._id,
             email: user.email,
-            role: userData.role
+            role: userData.role,
+  
             // profile: user.profile
         };
 

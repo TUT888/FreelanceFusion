@@ -2,12 +2,14 @@ const express= require("express");
 const session = require('express-session');
 const app = express();
 const path = require('path');
-const MongoStore = require('connect-mongo');
-
-
-const port = process.env.PORT || 3000;
 require('dotenv').config();
 require('./dbConnection');
+const MongoStore = require('connect-mongo');
+const Message = require('./models/messageModel');
+
+const port = process.env.PORT || 3000;
+
+
 
 
 
@@ -53,12 +55,13 @@ let profileRouter = require('./routers/profileRouter');
 let jobRouter = require('./routers/jobRouter');
 
 let freelancerRouter = require('./routers/freelancerRouter');
-
+let messageRouter =require('./routers/messageRouter');
 
 app.use('/', homeRouter);
 app.use('/profile', profileRouter);
 app.use('/jobs', jobRouter);
 app.use('/freelancers', freelancerRouter);
+app.use('/messages', messageRouter);
 
 
 
@@ -68,13 +71,21 @@ let io = require('socket.io')(http);
 
 io.on('connection', (socket) => {
     console.log("A user connected!");
+
+
+
+    // Handle sending messages
+
+
     socket.on('disconnect', () => {
         console.log("A user disconnected!");
     });
 });
 
+
+
 http.listen(port, () => {
     console.log("Server started: http://localhost:" + port);
-})
+});
 
 module.exports = app; 
