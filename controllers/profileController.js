@@ -1,6 +1,8 @@
 let collection = require('../models/user');
 let ratingCollection = require('../models/ratingModel');
+let projectCollection = require('../models/ratingModel');
 
+// PROFILE MANAGEMENT feature (view), RATING AND REVIEW feature (view)
 const displayProfile = (req, res) => {
     try {
         // Get user email from session
@@ -75,6 +77,7 @@ function getUserData(userEmail, callback) {
 }
 */
 
+// USER AUTHENTICATION feature
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
         if (err) return callback(err);
@@ -93,6 +96,7 @@ function authenticateUser(email, password, callback) {
     });
 }
 
+// PROFILE MANAGEMENT feature (update)
 const updateProfile = (req, res) => {
     try {
         let userData = req.body;
@@ -122,6 +126,7 @@ const updateProfile = (req, res) => {
     }
 }
 
+// RATING & REVIEW feature
 const deleteRating = async (req, res) => {
     try {
         console.log("DELETE RATING TRIGGER!!!");
@@ -143,10 +148,67 @@ const deleteRating = async (req, res) => {
     }
 }
 
+const addNewRating = (req, res) => {
+
+}
+
+const displayAddRatingForm = (req, res) => {
+    try {
+        // Get user email from session
+        let userEmail = req.session.user.email;
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        // Get user data
+        collection.getUserProfile(userEmail, (userData) => {     
+            if (!userData) {
+                res.redirect('/');
+            }
+            
+            // Get available projects for rating
+            projectCollection.getProjectForRating(userData._id, (allProjectsForRating) => {
+                console.log(allProjectsForRating);
+                res.render("ratingForm", {
+                    allProjectsForRating: allProjectsForRating,
+                    session: req.session
+                });
+            });
+        });
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
+}
+
+const getProjectDetailForRating = (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        let projectID = req.query.id;
+
+        // Get project detail for rating
+        projectCollection.getProjectDetailForRating(projectID, (projectDetailForRating) => {
+            res.json({
+                statuscocde:200, 
+                projectDetail: projectDetailForRating
+            });
+        });
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
+}
+
 module.exports = {
     registerUser,
     authenticateUser,
     displayProfile,
     updateProfile,
-    deleteRating
+    deleteRating,
+    displayAddRatingForm,
+    getProjectDetailForRating,
+    addNewRating
 }

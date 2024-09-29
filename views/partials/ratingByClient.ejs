@@ -4,7 +4,12 @@
     </div>
     <!-- RENDER RECORED RATINGS (if it exists) -->  
     <% if (allUserRating) { %>
-        <div class="col s12">Your review</div>
+        <div class="col s12 center">
+            <div class="card-panel valign-wrapper blue lighten-4">
+                <span class="col s12">You have given total of <%= allUserRating.length %> reviews for freelancer.</span>
+                <a id="add_rating_btn" class="btn right" href="/profile/rating/add">Add</a>
+            </div>
+        </div>
 
         <% 
         let count = 0;
@@ -12,7 +17,7 @@
         count += 1; %>
         <div class="col s12 m6"> 
             <div class="yellow lighten-5 z-depth-1" style="border: 1px solid rgb(248, 197, 69); border-radius: 1rem; margin-top: 1%; margin-bottom: 1%;">
-                <div class="row">
+                <div class="row" style="padding-left: 2%; padding-right: 2%;">
                     <div class="valign-wrapper col" style="padding-left: 2%; padding-right: 2%; padding-top: 2%;">
                         <i class="large material-icons">account_circle</i>
                         <div>

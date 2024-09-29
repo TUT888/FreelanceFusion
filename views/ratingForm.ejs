@@ -1,0 +1,255 @@
+<%- include('partials/header'); -%>
+
+<div class="container">
+    <h3 class="center-align">Give your rating to freelancer</h3>
+    
+    <div class="row">
+        <div class="col s12 z-depth-2 amber lighten-5">
+
+            <h6 id="error_message" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>Result</h6>
+
+            <form id="add_rating_form" style="padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
+                <!-- Project & Client -->
+                <h6 class="deep-orange-text"><strong>Select your project and client</strong></h6>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select id="project_selection">
+                            <option value="" disabled selected>Choose your project</option>
+
+                            <% 
+                            for (let i=0; i<allProjectsForRating.length; i++) { 
+                            project = allProjectsForRating[i]; %>
+                                <option value="<%=(i+1)%>" data-projectid="<%= project.project_id %>">(<%=(i+1)%>) <%= project.project_info %></option>
+                            <% }; %>
+                        </select>
+                        <label>Select the freelancer you want to give review</label>
+                    </div>
+                </div>
+
+                <!-- Project detail: hidden by default -->
+                <div id="project_detail_section" class="row z-depth-1 yellow lighten-5" style="border: 1px solid black; border-radius: 1rem;" hidden>
+                    <div class="col s12 m6">
+                        <h5>Project information</h5>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Freelancer</th>
+                                    <td id="td_freelancer_name">Data</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td id="td_status" style="font-weight: bold;">Data</td>
+                                </tr>
+                                <tr>
+                                    <th>Progress</th>
+                                    <td id="td_progress">Data</td>
+                                </tr>
+                                <tr>
+                                    <th>Start</th>
+                                    <td id="td_start_date">Data</td>
+                                </tr>
+                                <tr>
+                                    <th>Last update</th>
+                                    <td id="td_last_date">Data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col s12 m6">
+                        <h5>Job information</h5>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>Post date</th>
+                                    <td id="td_job_post_date">Data</td>
+                                </tr>
+                                <tr>
+                                    <th>Title</th>
+                                    <td id="td_job_title">Data</td>
+                                </tr>
+                                <tr style="border: 0;">
+                                    <th colspan="2">Description</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" id="td_job_desc">Data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Rating & Review: hidden by default -->
+                <div class="row">
+                    <h6 id="announcement_message" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>Result</h6>
+                </div>
+
+                <div id="give_rating_section" hidden>
+                    <div class="row">
+                        <div class="col s12">
+                            <h6 class="deep-orange-text"><strong>Give your rating and review</strong></h6>
+                            <div class="row valign-wrapper">
+                                <div class="col s2">
+                                    <h6>Give your rating</h6>
+                                </div>
+                                <% for (let i=1; i<=5; i++) { %>
+                                    <div class="col s2">
+                                        <label class="valign-wrapper">
+                                            <input name="input_rating" value="<%= i %>" type="radio" <%= i === 1 ? 'checked' : '' %>/>
+                                            <span><%= i %> <i class="material-icons tiny orange-text">star</i></span>
+                                        </label>
+                                    </div>
+                                <% } %>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col s2">
+                                    <h6>Give your review</h6>
+                                </div>
+                                <div class="col s10">
+                                    <div class="input-field">
+                                        <i class="material-icons prefix">insert_comment</i>
+                                        <textarea id="input_review" class="materialize-textarea" value="Dummy"></textarea>
+                                        <label for="input_review">Write your review here</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="row input-field right">
+                        <button type="reset" class="btn blue lighten-1" id="reset_changes">Reset</button>
+                        <button type="submit" class="btn green darken-1" id="submit_rating">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Reset changes buttons
+    $('#reset_changes').on('click', function() {
+        event.preventDefault();
+
+        $('#project_detail_section').hide();
+        $('#error_message').hide();
+        $('#announcement_message').hide();
+        $('#give_rating_section').hide();
+
+        $('#add_rating_form').trigger("reset");
+
+        $('#project_selection:first').prop('selected', true);;
+    });
+
+    // Project selection functions
+    $('#project_selection').on('change', function () {
+        if ($('#project_selection').val()) {
+            showProjectDetail();
+        }
+    });
+
+    function renderProjectDetail(project) {
+        $('#td_freelancer_name').text(project.project_info.freelancer_name);
+        $('#td_status').text(project.project_info.status);
+        if (project.project_info.status=='done') {
+            $('#td_status').css("color", "green");
+        } else {
+            $('#td_status').css("color", "darkred");
+        }
+        $('#td_progress').text(project.project_info.progress);
+        $('#td_start_date').text(project.project_info.start_date);
+        $('#td_last_date').text(project.project_info.last_date);
+        
+        $('#td_job_title').text(project.job_info.job_title);
+        $('#td_job_post_date').text(project.job_info.job_post_date);
+        $('#td_job_desc').text(project.job_info.job_desc);
+
+        $('#project_detail_section').show();
+        $('#error_message').hide();
+        $('#announcement_message').hide();
+    }
+
+    function showAnnouncementMessage(announcementMessage) {
+        $('#announcement_message').show()
+        $('#announcement_message').css('color', 'brown');
+        $('#announcement_message').html(announcementMessage);
+    }
+
+    function showErrorMessage(errorMessage) {
+        $('#project_detail_section').hide();
+        $('#give_rating_section').hide();
+        $('#error_message').show();
+        $('#error_message').css('color', 'red');
+        $('#error_message').html("There was an error when retrieving project data, please try again later");
+    }
+    
+    function showProjectDetail() {
+        let project_id = $('#project_selection').find(':selected').data('projectid');
+        
+        $.ajax({
+            url: `/profile/rating/get_project?id=${project_id}`,
+            type: "GET",
+            success: function (result) {
+                let projectDetail = result.projectDetail;
+
+                renderProjectDetail(projectDetail);
+                if (projectDetail.project_info.status=='done') {
+                    $('#give_rating_section').show();
+                } else {
+                    $('#give_rating_section').hide();
+                    showAnnouncementMessage("The project have not completed yet.\n You can not give rating for this project at the moment");
+                }
+            },
+            error: function (result) {
+                showErrorMessage();
+            }
+        })
+    }
+
+    // Submit form
+    $('#submit_rating').on('click', function () {
+        event.preventDefault();
+
+        console.log("You clicked submit button");
+        
+        // let val = $('#project_selection').val();
+        // console.log(typeof val);
+        // console.log(val.project_id);
+
+        let project_id = $('#project_selection').find(':selected').data('projectid');
+        let rating = $('#project_selection').find(':selected').data('projectid');
+        let review = $('#project_selection').find(':selected').data('projectid');
+        let timestamp = new Date();
+        let formData = {
+            project_id: project_id,
+            rating: input_rating,
+            review: input_review,
+            timestamp: timestamp
+        }
+
+        $.ajax({
+            url: "/profile/rating/add",
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function (result) {
+                $('#update_result_mess').show();
+                $('#update_result_mess').css('color', 'green');
+                $('#update_result_mess').html(result);
+                setTimeout(function () {
+                    window.location.href = "/profile";
+                }, 2000);
+            },
+            error: function (result) {
+                $('#update_result_mess').show();
+                $('#update_result_mess').css('color', 'red');
+                $('#update_result_mess').html(result.responseText);
+            }
+        })
+    });
+
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
+<%- include('partials/footer'); -%>
