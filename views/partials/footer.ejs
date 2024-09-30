@@ -9,6 +9,7 @@
 </footer>
 
 <!-- Script for real-time rating notification -->
+<% if (session.user) { %>
 <script>
     let socket = io();
     socket.emit('registerRatingNotification', "<%= session.user.email %>");
@@ -28,6 +29,7 @@
         }
     })
 </script>
+<% } %>
 
 <!--JavaScript at end of body for optimized loading-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
