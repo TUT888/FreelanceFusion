@@ -1,0 +1,53 @@
+<%- include('partials/header'); -%>
+
+    <div class="custom_container">
+
+
+        <!-- Main Content Row (Job List and Job Details) -->
+        <div class="row">
+            <!-- Left Side: Job List -->
+            <div class="col s12 m2">
+                <% if (jobsList && jobsList.length> 0) { %>
+
+                    <ul class="collection" id="job-list" data-jobs='<%= JSON.stringify(jobsList).replace(/' /g, "&#39;"
+                        ) %>
+                        '>
+                        <% jobsList.forEach(function(job, index) { %>
+                            <li class="collection-item job-item <%= index === 0 ? 'active' : '' %>"
+                                data-project-name="<%= (job.job_info && job.job_info.length > 0) ? job.job_info[0].title : '' %>" data-job-id="<%= (job.job_info && job.job_info.length > 0) ? job.job_info[0]._id : '' %>" data-project-id="<%= job._id %>">
+                                <span class="title">
+
+                                    <%= (job.job_info && job.job_info.length > 0) ? job.job_info[0].title : '' %>
+                                </span>
+                            </li>
+       
+                            
+                        <% }) %>
+                    </ul>
+                    <!-- Include Pagination Partial -->
+                    <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
+
+                        <% } else { %>
+                            <!-- Display message if no jobs are available -->
+                            <p>No jobs available.</p>
+                            <% } %>
+
+            </div>
+
+
+            <!-- Right Side: Job Detail View -->
+     
+            <div class="col s12 m10"  style="position: sticky; top: 20px;">
+                <h4 id="project_name"><%= jobsList[0].job_info[0].title %></h4>
+                <div id="job-details">
+                    <%- include('partials/projectProgress', {session }) %>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer'); -%>
+
+ 
