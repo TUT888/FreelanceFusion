@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 let client = require('../dbConnection');
 const bcrypt = require('bcrypt');
 let collection = client.db().collection('users');
@@ -16,6 +17,13 @@ function getUserProfile(userEmail, callback) {
 function getNameByUserID(userID) {
     let query = { _id: userID };
     let projection = { projection: { 'profile.name': 1 } };
+
+    return collection.findOne(query, projection);
+}
+
+function getEmailByUserID(userID) {
+    let query = { _id: new ObjectId(userID) };
+    let projection = { projection: { email: 1 } };
 
     return collection.findOne(query, projection);
 }
@@ -54,5 +62,6 @@ module.exports = {
     authenticateUser,
     updateUserData,
     getUserProfile,
-    getNameByUserID
+    getNameByUserID,
+    getEmailByUserID
 }

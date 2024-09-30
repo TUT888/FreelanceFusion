@@ -72,6 +72,7 @@ io.on('connection', (socket) => {
         console.log("A user disconnected!");
     });
 });
+require('./utils/ratingNotification')(io);
 
 http.listen(port, () => {
     console.log("Server started: http://localhost:" + port);
