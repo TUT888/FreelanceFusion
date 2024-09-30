@@ -255,7 +255,12 @@
                     $('#validation_message').html(result.message);
                     $('#validation_message').css('color', 'green');
                     $('#validation_message').show();
+                    
                     setTimeout(function () {
+                        // Send notification via SOCKET
+                        socket.emit('ratingNotification', {
+                            targetUserID: freelancer_id,
+                        });
                         window.location.href = "/profile";
                     }, 2000);
                 },
@@ -270,6 +275,13 @@
 
     $(document).ready(function(){
         $('select').formSelect();
+    });
+
+    // Socket for rating notification
+    let socket = io();
+    socket.emit('registerRatingNotification', "<%= session.user.email %>");
+    socket.on('annoucement', (msg) => {
+        console.log('Announcement: ' + msg);
     });
 </script>
 <%- include('partials/footer'); -%>
