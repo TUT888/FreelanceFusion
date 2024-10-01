@@ -295,17 +295,27 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function (result) {
+                    console.log(result);
                     $('#update_result_mess').show();
                     $('#update_result_mess').css('color', 'green');
-                    $('#update_result_mess').html(result);
+                    if (result.responseJSON) {
+                        $('#update_result_mess').html(result.responseJSON.message);
+                    } else {
+                        $('#update_result_mess').html(result.message);
+                    }
                     setTimeout(function () {
                         window.location.href = "/profile";
                     }, 2000);
                 },
                 error: function (result) {
+                    console.log(result);
                     $('#update_result_mess').show();
                     $('#update_result_mess').css('color', 'red');
-                    $('#update_result_mess').html(result.responseText);
+                    if (result.responseJSON) {
+                        $('#update_result_mess').html(result.responseJSON.message);
+                    } else {
+                        $('#update_result_mess').html(result.message);
+                    }
                 }
             })
         });
