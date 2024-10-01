@@ -1,8 +1,8 @@
 let express = require('express');
 let router = express.Router();
-let controller = require('../controllers/freelancerController');
+let freelancerController = require('../controllers/freelancerController');
 
-router.get('/search', controller.getFreelancerList);
-router.get('/search/:id', controller.getFreelancerDetail);
+router.get('/search', freelancerController.getFreelancerList);
+router.get('/search/:id', freelancerController.getFreelancerDetail);
 
 module.exports = router;

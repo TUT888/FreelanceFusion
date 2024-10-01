@@ -28,6 +28,13 @@
             M.toast({html: toastHTML});
         }
     })
+
+    const userId = "<%= session.user.id %>";
+    socket.emit('register', userId);
+    socket.on('task-notification', function(data) {
+        alert(data.message);  // Display the notification message
+    });
+
 </script>
 <% } %>
 

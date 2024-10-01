@@ -11,5 +11,6 @@ router.get('/:id', controller.getJobDetail);
 router.post('/add', isAuthenticated, controller.addJob);
 router.get('/edit/:id', isAuthenticated, controller.getEditJobForm);
 router.post('/edit/:id', isAuthenticated, controller.editJob);
+router.post('/apply/:jobId', isAuthenticated, controller.applyForJob);
 
 module.exports = router;

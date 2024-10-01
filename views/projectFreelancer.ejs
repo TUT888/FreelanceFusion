@@ -8,7 +8,6 @@
             <!-- Left Side: Job List -->
             <div class="col s12 m2">
                 <% if (jobsList && jobsList.length> 0) { %>
-
                     <ul class="collection" id="job-list" data-jobs='<%= JSON.stringify(jobsList).replace(/' /g, "&#39;"
                         ) %>
                         '>
@@ -27,10 +26,10 @@
                     <!-- Include Pagination Partial -->
                     <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
 
-                        <% } else { %>
-                            <!-- Display message if no jobs are available -->
-                            <p>No jobs available.</p>
-                            <% } %>
+                <% } else { %>
+                    <!-- Display message if no jobs are available -->
+                    <p>You have not joined any project</p>
+                <% } %>
 
             </div>
 
@@ -38,11 +37,15 @@
             <!-- Right Side: Job Detail View -->
      
             <div class="col s12 m10"  style="position: sticky; top: 20px;">
+                <% if (jobsList && jobsList.length> 0) { %>
+                    
                 <h4 id="project_name"><%= jobsList[0].job_info[0].title %></h4>
                 <div id="job-details">
                     <%- include('partials/projectProgress', {session }) %>
 
                 </div>
+                    <% } %>
+
 
             </div>
         </div>

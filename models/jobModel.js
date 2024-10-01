@@ -40,8 +40,8 @@ const countData = async (filter) => {
 
 
 const getJobById = async (id) => {
-    console.log("id")
-    console.log(id)
+
+    
     try {
         const job = await collection.findOne({ _id: new ObjectId(id) }); 
         if (!job) {

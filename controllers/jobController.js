@@ -2,6 +2,7 @@
 let collection = require('../models/jobModel');
 const paginate = require('../utils/pagination');
 const jobModel = require('../models/jobModel');
+const applicationModel = require('../models/applicationModel');
 const { ObjectId } = require('mongodb');
 
 const getJobList = async (req, res) => {
@@ -48,8 +49,15 @@ const getJobDetail = async (req, res) => {
     // Fetch the job details asynchronously from the model
     try {
         let job = await collection.getJobById(jobId);
+        // Check if the user has already applied
+        const existingApplication = await applicationModel.findOne({
+            job_id: new ObjectId(jobId),
+            freelancer_id: new ObjectId(session.user.id),
+        });
+
+        
         if (job) {
-            res.render('partials/jobSearchDetail', { job, session });
+            res.render('partials/jobSearchDetail', { job, session, alreadyApplied: existingApplication ? true : false });
         } else {
             res.status(404).send('Job not found');
         }
@@ -65,6 +73,8 @@ const getAddJobForm = (req, res) => {
 };
 
 const addJob = async (req, res) => {
+    const session = req.session;
+
     const { title, description, payment_type, salary, requirements, status } = req.body;
     const clientId = req.session.user.id; 
     const userRole = req.session.user.role; 
@@ -73,6 +83,7 @@ const addJob = async (req, res) => {
         return res.status(403).send('Forbidden: Only clients can add jobs');
     }
     const jobData = {
+        client_id: new ObjectId(session.user.id),
         title,
         description,
         payment_type,
@@ -95,6 +106,7 @@ const addJob = async (req, res) => {
 
 const getEditJobForm = async (req, res) => {
     const jobId = req.params.id;
+
     try {
         const job = await jobModel.getJobById(jobId);
         res.render('jobForm', { job, action: `/jobs/edit/${jobId}`, formTitle: 'Edit Job' ,session: req.session});
@@ -153,6 +165,39 @@ const getClientJobs = async (req, res) => {
 };
 
 
+const applyForJob = async (req, res) => {
+    const jobId = req.params.jobId;
+    const session = req.session;
+    console.log(jobId)
+    // Ensure the user is logged in
+    if (!session || !session.user || session.user.role !== 'freelancer') {
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+
+    try {
+        // Prepare the application data
+        const applicationData = {
+            job_id: new ObjectId(jobId),
+            freelancer_id: new ObjectId(session.user.id),
+            status: 'pending',
+            cover_letter: req.body.cover_letter || '',
+            applied_at: new Date(),
+            updated_at: new Date()
+        };
+
+        // Insert the application into the collection
+        await applicationModel.insertApplication(applicationData);
+
+        // Respond with success
+        res.json({ success: true, message: 'Application submitted successfully!' });
+
+    } catch (error) {
+        console.error('Error applying for job:', error);
+        res.status(500).json({ success: false, error: 'Error applying for the job' });
+    }
+};
+
+
 module.exports = {
     getJobList,
     getClientJobs,
@@ -160,5 +205,6 @@ module.exports = {
     getAddJobForm,
     addJob,
     getEditJobForm,
-    editJob
+    editJob,
+    applyForJob
 };

@@ -14,23 +14,22 @@
                         '>
                         <% jobsList.forEach(function(job, index) { %>
                             <li class="collection-item job-item <%= index === 0 ? 'active' : '' %>"
-                                data-project-name="<%= job.title %>" data-job-id="<%= job._id %>" data-project-id="<%= (job.project_info && job.project_info.length > 0) ? job.project_info[0]._id : '' %>">
+                                id="<%= job._id %>" data-project-name="<%= job.title %>" data-job-id="<%= job._id %>" data-project-id="<%= (job.project_info && job.project_info.length > 0) ? job.project_info[0]._id : '' %>">
                                 <span class="title">
 
                                     <%= job.title %>
                                 </span>
                             </li>
-       
-                            
-                            <% }) %>
+
+                        <% }) %>
                     </ul>
                     <!-- Include Pagination Partial -->
                     <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
 
-                        <% } else { %>
+                    <% } else { %>
                             <!-- Display message if no jobs are available -->
-                            <p>No jobs available.</p>
-                            <% } %>
+                        <p>No jobs available.</p>
+                    <% } %>
 
             </div>
 
@@ -38,11 +37,13 @@
             <!-- Right Side: Job Detail View -->
      
             <div class="col s12 m10"  style="position: sticky; top: 20px;">
-                <h4 id="project_name"><%= jobsList[0].title %></h4>
-                <div id="job-details">
-                    <%- include('partials/projectProgress', { session  }) %>
-
-                </div>
+                <% if (jobsList && jobsList.length> 0) { %>
+                    <h4 id="project_name"><%= jobsList[0].title %></h4>
+                    <div id="job-details">
+                        <%- include('partials/projectProgress', { session  }) %>
+    
+                    </div>
+                <% } %>
 
             </div>
         </div>
@@ -50,3 +51,7 @@
 
     <%- include('partials/footer'); -%>
 
+<script>
+
+
+</script>
