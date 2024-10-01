@@ -65,19 +65,19 @@ const updateProfile = (req, res) => {
             if (result.matchedCount!=0) {
                 if (result.modifiedCount==0) { // No changes made
                     console.log("Failed updated profile!");
-                    res.status(400).send("There are no changes made.");
+                    res.status(400).json({ success: false, message: "There are no changes made."});
                 } else { // Change successfully
                     console.log("Successfully updated profile!");
-                    res.status(200).send("Successfully updated profile! Page will be reloaded in few second...");
+                    res.status(200).json({ success: true, message: "Successfully updated profile! Page will be reloaded in few second...", modifiedCount: result.modifiedCount});
                 }
             } else { // No data found
                 console.log("Failed updated profile!");
-                res.status(400).send("There is an error when updating your profile. Please try again later!");
+                res.status(400).json({ success: false, message: "There is an error when updating your profile. Please try again later!"});
             }
         });
     } catch (err) {
-        console.error('Error updating user data:', err);
-        res.redirect('/sign-in');
+        console.error(`Error updating user data: ${err}`);
+        res.status(400).json({ success: false, message: `Error updating user data: ${err}`});
     }
 }
 
@@ -89,15 +89,15 @@ const deleteRating = async (req, res) => {
         ratingCollection.deleteGivenRating(rating_id, (result) => {
             if (result.deletedCount === 1) {
                 console.log("Successfully deleted one document.");
-                res.status(200).send("Successfully deleted your review!");
+                res.status(200).json({ success: true, message: "Successfully deleted your review!"});
             } else {
                 console.log("No documents matched the query. Deleted 0 documents.");
-                res.status(400).send("No documents matched the query. Deleted 0 documents.");   
+                res.status(400).json({ success: false, message: "No documents matched the query. Deleted 0 documents."});   
             }
         })
     } catch (err) {
         console.error("There was an error when trying to delete a document: ", err);
-        res.status(400).send("There was an error when trying to delete a document: ", err);   
+        res.status(400).json({ success: false, message: `There was an error when trying to delete a document: ${err}`});   
     }
 }
 
@@ -108,16 +108,16 @@ const addNewRating = (req, res) => {
         }
 
         let data = req.body;
-        console.log("RECEIVED REQUEST FROM USER: ", data);
 
         ratingCollection.addNewRating(data, (result) => {
             if (result.insertedId) {
-                res.json({
+                res.status(200).json({
                     statuscocde:200, 
-                    message: `Successfully added new rating. Redirecting in few seconds...`
+                    message: `Successfully added new rating. Redirecting in few seconds...`,
+                    insertedId: result.insertedId
                 });
             } else {
-                res.json({
+                res.status(400).json({
                     statuscocde:400, 
                     message: `Insertion failed. Please try again later.`
                 });

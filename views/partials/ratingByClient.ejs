@@ -87,20 +87,20 @@
         queryData.ratingID = ratingID;
 
         $.ajax({
-            url: '/profile/delete_rating',
+            url: '/profile/rating/delete',
             type: 'DELETE',
             contentType: 'application/json',
             data: JSON.stringify(queryData),
             success: function (result) {
                 console.log("Delete successful");
-                console.log(result);
+                console.log(result.message);
                 setTimeout(function () {
                     window.location.href = "/profile";
                 }, 2000);
             },
             error: function (result) {
                 console.log("Delete failed");
-                console.log(result);
+                console.log(result.message);
             }
         });
     })

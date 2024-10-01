@@ -11,8 +11,10 @@ const clearCollections = async () => {
     const authCollection = client.db().collection('auths');
     const usersCollection = client.db().collection('users');
     
-    await authCollection.deleteMany({});
-    await usersCollection.deleteMany({});
+    await authCollection.deleteMany({ email: 'test@example.com' });
+    await usersCollection.deleteMany({ email: 'test@example.com' });
+    await authCollection.deleteMany({ email: 'duplicate@example.com' });
+    await usersCollection.deleteMany({ email: 'duplicate@example.com' });
 };
 
 
