@@ -5,17 +5,32 @@ const usersCollection = client.db().collection('users');
 const authCollection = client.db().collection('auths');
 const session = require('express-session');
 
+const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
 
 
 const register = async (req, res) => {
     try {
-        const { email, password, username } = req.body;
+        const { email, password, username,userType } = req.body;
 
-        console.log("Received registration data:", { email, password, username });
+        console.log("Received registration data:", req.body);
+
+        if (!username || !username.trim()) {
+            return res.status(400).json({ success: false, message: 'Username cannot be empty.' });
+        }
+        
 
 
         // check if user already exists
-        const user = await authCollection.findOne({ email });
+        //const user = await authCollection.findOne({ email,username });
+        const user = await authCollection.findOne(
+            {
+              $or: [
+                     { email },
+                     { username }
+                   ]
+            }
+         )
 
         console.log("Existing user check:", user);
 
@@ -25,15 +40,23 @@ const register = async (req, res) => {
 
         if (user.email==email) {
             console.log("second if");
-            return res.status(400).json({ success: false, message: 'email  already in use' });
+            return res.status(400).json({ success: false, message: 'Email already in use! Please use a different email' });
         }
 
         if (user.username==username) {
             console.log("thrid if");
-            return res.status(400).json({ success: false, message: 'username  already in use' });
+            return res.status(400).json({ success: false, message: 'Username already in use! Please use a different username' });
         }
 
     }
+
+    if (!passwordRequirements.test(password)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        });
+    }
+
 
         
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -52,7 +75,7 @@ const register = async (req, res) => {
             _id: userId, 
             email,
             password: hashedPassword,
-            role: 'freelancer', 
+            role: userType, 
             profile: {
                 name: username,
                 skills: [], // Default to empty array
@@ -70,7 +93,7 @@ const register = async (req, res) => {
    
           
 
-        res.status(201).json({ success: true, message: 'User registered successfully' });
+        res.status(201).json({ success: true, message: 'User registered successfully! Redirecting...' });
     } catch (err) {
         console.error('Error registering user:', err);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -93,14 +116,24 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
 
+
+        const userData = await usersCollection.findOne({ email: user.email });
+        console.log("User data:", userData);
+        if (!userData) {
+            return res.status(401).json({ success: false, message: 'User data not found' });
+        }
+
         req.session.user = {
             id: user._id,
             email: user.email,
-            role: user.role
+            role: userData.role
             // profile: user.profile
         };
 
-        res.json({ success: true, message: 'Logged in successfully' });
+        console.log("Session after login:", req.session);
+
+
+        res.json({ success: true, message: 'Logged in successfully! Redirecting...' });
     } catch (err) {
         console.error('Error logging in user:', err);
         res.status(500).json({ success: false, message: 'Internal Server Error' });

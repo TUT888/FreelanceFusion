@@ -31,11 +31,7 @@ router.get('/register', (req, res) => {
 router.post('/login', authController.login);
 router.post('/register', authController.register);
 
-// router.get('/profile', isAuthenticated, (req, res) => {
-//     console.log('Profile route hit');
-//     res.render('profile', { session: req.session });
-// });
-
+/* Dupplicated, commented it before deleting
 router.get('/profile', isAuthenticated, async (req, res) => {
     try {
         // Fetch user data from the database
@@ -54,6 +50,7 @@ router.get('/profile', isAuthenticated, async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+*/
 
 
 router.get('/logout', authController.logout);

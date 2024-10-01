@@ -1,33 +1,32 @@
+const { ObjectId } = require('mongodb');
 let client = require('../dbConnection');
 const bcrypt = require('bcrypt');
 let collection = client.db().collection('users');
 
-function getUserData(userEmail, callback) {
+function getUserProfile(userEmail, callback) {
     let query = { email: userEmail };
 
-    console.log("Querying database for:", userEmail); // Add logging here
-
-    const timeout = setTimeout(() => {
-        return callback(new Error('Database query timed out'));
-    }, 5000);
-
-    collection.find(query).toArray((err, result) => {
-
-        clearTimeout(timeout);
-        if (err) {
-            console.log("Error during database query:", err);
-            return callback(err);
+    collection.findOne(query).then((result)=>{
+        if (!result) {
+            console.log("No user data found for: ", userEmail);
         }
-        console.log('Database Result:', result);
-
-        if (!result || result.length === 0) {
-            console.log("No user data found for:", userEmail);
-        }
-
-        callback(null, result);
+        callback(result);
     });
 }
 
+function getNameByUserID(userID) {
+    let query = { _id: userID };
+    let projection = { projection: { 'profile.name': 1 } };
+
+    return collection.findOne(query, projection);
+}
+
+function getEmailByUserID(userID) {
+    let query = { _id: new ObjectId(userID) };
+    let projection = { projection: { email: 1 } };
+
+    return collection.findOne(query, projection);
+}
 
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
@@ -61,6 +60,8 @@ function updateUserData(userEmail, updateData, callback) {
 module.exports = {
     registerUser,
     authenticateUser,
-    getUserData,
-    updateUserData
+    updateUserData,
+    getUserProfile,
+    getNameByUserID,
+    getEmailByUserID
 }

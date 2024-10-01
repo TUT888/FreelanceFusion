@@ -9,6 +9,7 @@
                     <i class="material-icons prefix">person</i>
                     <input id="username" type="text" name="username" class="validate" required>
                     <label for="username">Username</label>
+                    <span class="helper-text" data-error="Invalid username" id="username-error"></span>
                 </div>
                 
                 <div class="input-field col s12">
@@ -22,6 +23,19 @@
                     <i class="material-icons prefix">lock</i>
                     <input id="password" type="password" name="password" class="validate" required>
                     <label for="password">Password</label>
+                    <span class="helper-text" data-error="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."></span>
+                </div>
+
+                <!-- User Type Selection using Dropdown -->
+                <div class="input-field col s12">
+    
+                    <!-- <select name="userType" id="userType" required> -->
+                    <select name="userType" id="userType" required onchange="console.log(this.value)">
+
+                        <option value="" disabled selected>Choose your role</option>
+                        <option value="client">Client</option>
+                        <option value="freelancer">Freelancer</option>
+                    </select>
                 </div>
 
                 <div class="input-field col s12">
@@ -35,11 +49,21 @@
     </div>
 </div>
 
+
+<script>
+    $(document).ready(function() {
+        M.updateTextFields(); // Initialize Materialize text fields
+        $('select').formSelect(); // Initialize Materialize select dropdown
+    });
+</script>
+
 <script>
     $(document).ready(function() {
         M.updateTextFields(); // Initialize Materialize text fields
     });
 </script>
+
+
 
 <script src="/js/register.js"></script>
 

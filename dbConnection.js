@@ -1,6 +1,8 @@
 // MongoDB connection
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const url = process.env.MONGODB_URL
+// const url = process.env.NODE_ENV === 'test' ? process.env.MONGODB_URL_TEST : process.env.MONGODB_URL;
+const url = process.env.MONGODB_URL;
+
 
 const client = new MongoClient(url, {
     serverApi: {

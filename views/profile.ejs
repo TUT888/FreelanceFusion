@@ -1,265 +1,314 @@
 <%- include('partials/header'); -%>
 
-<div class="container">
-    <h3 class="center-align">Profile Management</h3>
-    <!-- Feature: View detail -->
-    <div class="row">
-        <div class="col s12">
-            <ul class="tabs">
-                <li class="tab col s6"><a class="active" href="#profile">Profile Detail</a></li>
-                <li class="tab col s6"><a id="ratingreview_btn" href="#ratingreview">Rating and Review</a></li>
-            </ul>
-        </div>
+    <div class="container">
+        <h3 class="center-align">Profile Management</h3>
+        <!-- Feature: View detail -->
+        <div class="row">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s6"><a class="active" href="#profile">Profile Detail</a></li>
+                    <li class="tab col s6"><a id="ratingreview_btn" href="#ratingreview">Rating and Review</a></li>
+                </ul>
+            </div>
 
-        <div id="profile" class="col s12 z-depth-2 amber lighten-5">
-            <span id="role_caption" hidden><%= userData.role %></span>
-            <div class="profile-spacing">
-                <div>
-                    <% if (userData) { %>
-                        <% if (userData.role === "freelancer") { %>
+            <div id="profile" class="col s12 z-depth-2 amber lighten-5">
+                <span id="role_caption" hidden>
+                    <%= userData.role %>
+                </span>
+                <div class="profile-spacing">
+                    <div>
+                        <!-- RENDER USER DATA (if it exists) -->
+                        <% if (userData) { %>
+                            <% if (userData.role==="freelancer" ) { %>
                             <h4>
-                                <strong><%= userData.profile.name %></strong>
+                                <strong>
+                                    <%= userData.profile.name %>
+                                </strong>
                                 <span class="new badge blue" data-badge-caption="<%= userData.role %>"></span>
                             </h4>
-                        <% } else { %>
+                            <% } else { %>
                             <h5>
-                                <strong><%= userData.profile.name %></strong>
+                                <strong>
+                                    <%= userData.profile.name %>
+                                </strong>
                                 <span class="new badge orange" data-badge-caption="<%= userData.role %>"></span>
                             </h5>
                             <h6 class="blue-text text-darken-3">
-                                <strong><%= userData.profile.company_details %></strong>
+                                <strong>
+                                    <%= userData.profile.company_details %>
+                                </strong>
                             </h6>
+                            <% } %>
+
+                            <!-- Display account information -->
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>
+                                            <%= userData.email %>
+                                        </td>
+                                    </tr>
+                                    <% if (userData && userData.contact_info) { %>
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td>
+                                            <%= userData.contact_info.phone %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address</th>
+                                        <td>
+                                            <%= userData.contact_info.address %>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+
+                            <!-- Display skill & experience section for freelancer -->
+                            <% if (userData.role==="freelancer" ) { %>
+                                <div class="col s12 m6">
+                                    <h6><strong>Skills</strong></h6>
+                                    <% if (userData && userData.profile && userData.profile.skills) { %>
+                                    <ul class="collection">
+                                        <% userData.profile.skills.forEach(function (skill) { %>
+                                            <li class="collection-item">
+                                                <%= skill %>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                                    <% } %>
+                                </div>
+
+                                <div class="col s12 m6">
+                                    <h6><strong>Experience</strong></h6>
+                                    <% if (userData && userData.profile) { %>
+                                    <div class="card-panel teal lighten-5">
+                                        <%= userData.profile.experience %>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            <% } %>
+
+                        <% } else { %>
+                            <p>No user data available.</p>
                         <% } %>
+                        
+                        <!-- EDIT BUTTON -->
+                        <div class="right-align profile-spacing">
+                            <button id="show_edit_btn" class="btn">
+                                Edit Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th>Email</th>
-                                    <td><%= userData.email %></td>
-                                </tr>
-                                <tr>
-                                    <th>Phone</th>
-                                    <td><%= userData.contact_info.phone %></td>
-                                </tr>
-                                <tr>
-                                    <th>Address</th>
-                                    <td><%= userData.contact_info.address %></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <% if (userData.role === "freelancer") { %>
-                            <div class="col s12 m6">
-                                <h6><strong>Skills</strong></h6>
-                                <ul class="collection">
-                                    <% userData.profile.skills.forEach(function (skill) { %>
-                                        <li class="collection-item"><%= skill %></li>
-                                    <% }) %>
-                                </ul>
-                            </div>
-
-                            <div class="col s12 m6">
-                                <h6><strong>Experience</strong></h6>
-                                <div class="card-panel teal lighten-5"><%= userData.profile.experience %></div>
-                            </div>
-                        <% } %>
-
+            <div id="ratingreview" class="col s12 z-depth-2 orange lighten-5">
+                <% if (userData) {
+                    if (userData.role==="freelancer" ) { %>
+                        <%- include('partials/ratingForFreelancer'); -%>
                     <% } else { %>
-                        <p>No user data available.</p>
-                    <% } %>
-
-                    <div class="right-align profile-spacing">
-                        <button id="show_edit_btn" class="btn">
-                            Edit Profile
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ratingreview" class="col s12 z-depth-2 orange lighten-5">
-            <div class="row">
-                <div class="col s12">
-                    <h5 class="center-align"><strong>Your rating and reviews</strong></h5>
-                    <p class="center-align">You don't have any rating yet</p>
-                </div>
+                        <%- include('partials/ratingByClient'); -%>
+                    <% }
+                } %>
             </div>
         </div>
     </div>
 
+    <div class="container">
+        <!-- Feature: Edit detail -->
+        <div id="edit_section" class="row" hidden>
+            <div id="edit_profile" class="col s12 z-depth-2 amber lighten-5">
+                <h5 class="center-align"><strong>Edit Profile</strong></h5>
 
-    <!-- Feature: Edit detail -->
-    <div id="edit_section" class="row" hidden>
-        <div id="edit_profile" class="col s12 z-depth-2 amber lighten-5">
-            <h5 class="center-align"><strong>Edit Profile</strong></h5>
-            
-            <h6 id="update_result_mess" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>Result</h6>
-            
-            <form style="padding-left: 1rem; padding-right: 1rem;">
-                <!-- Contact -->
-                <div class="row">
-                    <div class="col s12">
-                        <h6><strong>Update Personal Information</strong></h6>
+                <h6 id="update_result_mess" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>
+                    Result</h6>
+
+                <form style="padding-left: 1rem; padding-right: 1rem;">
+                    <!-- Contact -->
+                    <div class="row">
+                        <div class="col s12">
+                            <h6><strong>Update Personal Information</strong></h6>
+                            <div class="row">
+                                <% if (userData && userData.profile) { %>
+                                    <div class="input-field col s4">
+                                        <input type="text" id="input_name" value="<%= userData.profile.name %>"
+                                            class="validate">
+                                        <label for="input_name">Your name</label>
+                                    </div>
+                                <% } %>
+                                <% if (userData && userData.email) { %>
+                                <div class="input-field col s8">
+                                    <input type="text" id="input_email" value="<%= userData.email%>" disabled>
+                                    <label for="input_email">Email</label>
+                                </div>
+                                <% } %>
+                            </div>
+                            <div class="row">
+                                <% if (userData && userData.contact_info) { %>
+                                <div class="input-field col s4">
+                                    <input type="text" id="input_phone" value="<%= userData.contact_info.phone %>"
+                                        class="validate">
+                                    <label for="input_phone">Phone number</label>
+                                </div>
+                                <div class="input-field col s8">
+                                    <input type="text" id="input_address" value="<%= userData.contact_info.address %>"
+                                        class="validate">
+                                    <label for="input_address">Address</label>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% if (userData.role=="freelancer" ) { %>
+                        <!-- Profile for Freelancer -->
                         <div class="row">
-                            <div class="input-field col s4">
-                                <input type="text" id="input_name" value="<%= userData.profile.name %>" class="validate">
-                                <label for="input_name">Your name</label>
+                            <div class="col s6">
+                                <div class="valign-wrapper">
+                                    <h6><strong>Update Your Skills</strong></h6>
+                                    <button id="add_skill_btn" class="btn-small green col s2"><i
+                                            class="material-icons">add</i></button>
+                                </div>
+                               
+                                <div id="input_skill_list">
+                                    <% if (userData && userData.profile && userData.profile.skills) { 
+                                    userData.profile.skills.forEach(function (skill) { %>
+                                        <div class="input-field valign-wrapper">
+                                            <input class="col s10" type="text" value="<%= skill %>">
+                                            <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i
+                                                    class="material-icons">clear</i></button>
+                                        </div>
+                                    <% })
+                                    } %>
+                                </div>
                             </div>
-                            <div class="input-field col s8">
-                                <input type="text" id="input_email" value="<%= userData.email%>" disabled>
-                                <label for="input_email">Email</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col s4">
-                                <input type="text" id="input_phone" value="<%= userData.contact_info.phone %>" class="validate">
-                                <label for="input_phone">Phone number</label>
-                            </div>
-                            <div class="input-field col s8">
-                                <input type="text" id="input_address" value="<%= userData.contact_info.address %>" class="validate">
-                                <label for="input_address">Address</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <% if (userData.role=="freelancer") { %>
-                <!-- Profile for Freelancer -->
-                <div class="row">
-                    <div class="col s6">
-                        <div class="valign-wrapper">
-                            <h6><strong>Update Your Skills</strong></h6>
-                            <button id="add_skill_btn" class="btn-small green col s2"><i class="material-icons">add</i></button>
-                        </div>
-                        <div id="input_skill_list">
-                            <% userData.profile.skills.forEach(function (skill) { %>
-                            <div class="input-field valign-wrapper">
-                                <input class="col s10" type="text" value="<%= skill %>">
-                                <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i class="material-icons">clear</i></button>
+                            <div class="col s6">
+                                <div class="valign-wrapper">
+                                    <h6><strong>Update Your Experience</strong></h6>
+                                </div>
+                                <% if (userData && userData.profile) { %>
+                                <div class="input-field">
+                                    <textarea id="input_experience" class="materialize-textarea"
+                                        value="<%= userData.profile.experience %>"><%= userData.profile.experience %></textarea>
+                                </div>
+                                <% } %>
                             </div>
-                            <% }) %>
                         </div>
-                    </div>
-                    
-                    <div class="col s6">
-                        <div class="valign-wrapper">
-                            <h6><strong>Update Your Experience</strong></h6>
-                        </div>
-                        <div class="input-field" >
-                            <textarea id="input_experience" class="materialize-textarea" value="<%= userData.profile.experience %>"><%= userData.profile.experience %></textarea>
-                        </div>
-                    </div>
-                </div>
-                <% } else { %>
-                
-                <!-- Profile for Client -->
-                <div class="row">
-                    <div class="col s12">
-                        <h6><strong>Update Company Information</strong></h6>
-                    </div>
-                    
-                    <div class="input-field col s4">
-                        <input type="text" id="input_company" value="<%= userData.profile.company_details %>" class="validate">
-                        <label for="input_company">Your company name</label>
-                    </div>
-                </div>
-                    
-                <% } %>
+                        <% } else { %>
 
-                <div class="row input-field right">
-                    <button class="btn teal lighten-3" id="cancel_changes">Cancel</button>
-                    <button class="btn teal darken-1" id="submit_changes">Confirm</button>
-                </div>
-            </form>
+                            <!-- Profile for Client -->
+                            <div class="row">
+                                <div class="col s12">
+                                    <h6><strong>Update Company Information</strong></h6>
+                                </div>
+
+                                <div class="input-field col s4">
+                                    <input type="text" id="input_company" value="<%= userData.profile.company_details %>"
+                                        class="validate">
+                                    <label for="input_company">Your company name</label>
+                                </div>
+                            </div>
+
+                            <% } %>
+
+                                <div class="row input-field right">
+                                    <button class="btn teal lighten-3" id="cancel_changes">Cancel</button>
+                                    <button class="btn teal darken-1" id="submit_changes">Confirm</button>
+                                </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Tabs
-    var el = document.querySelector('.tabs');
-    var instance = M.Tabs.init(el, {});
+    <script>
+        // Tabs
+        var el = document.querySelector('.tabs');
+        var instance = M.Tabs.init(el, {});
 
-    // Edit button
-    $('#show_edit_btn').on('click', function(){
-        $('#edit_section').show();
-    })
-    $('#ratingreview_btn').on('click', function(){
-        $('#edit_section').hide();
-    })
+        // Edit button
+        $('#show_edit_btn').on('click', function () {
+            $('#edit_section').show();
+        })
+        $('#ratingreview_btn').on('click', function () {
+            $('#edit_section').hide();
+        })
 
-    // Update skills
-    $(document).on('click', '.remove-skill-btn', function(){
-        event.preventDefault();
-        let wrappedNode = $(this).parent();
-        wrappedNode.remove();
-        console.log($('#input_skill_list').children());
-    })
+        // Update skills
+        $(document).on('click', '.remove-skill-btn', function () {
+            event.preventDefault();
+            let wrappedNode = $(this).parent();
+            wrappedNode.remove();
+            console.log($('#input_skill_list').children());
+        })
 
-    $('#add_skill_btn').on('click', function(){
-        event.preventDefault();
-        let newSkillNode = $(`
+        $('#add_skill_btn').on('click', function () {
+            event.preventDefault();
+            let newSkillNode = $(`
             <div class="input-field valign-wrapper">
                 <input class="col s10" type="text" value="">
                 <button class="btn-small red remove-skill-btn" style="margin-left: 2rem;"><i class="material-icons">clear</i></button>
             </div>
         `);
-        $('#input_skill_list').append(newSkillNode);
-    });
-
-    // Form submit
-    $('#submit_changes').on('click', function() {
-        event.preventDefault();
-
-        let skillList = [];
-        let skillElements = $('#input_skill_list').children();
-        skillElements.each(function() {
-            let skill = $(this).children(":first").val();
-            if (skill.trim().length != 0) {
-                skillList.push(skill);
-            }
+            $('#input_skill_list').append(newSkillNode);
         });
 
-        let formData = {};
-        formData.contact_info = {
-            phone: $("#input_phone").val(),
-            address: $("#input_address").val()
-        }
+        // Form submit
+        $('#submit_changes').on('click', function () {
+            event.preventDefault();
 
-        let currentRole = $('#role_caption').html();
-        if (currentRole==='freelancer') {
-            formData.profile = {
-                name: $("#input_name").val(),
-                experience: $("#input_experience").val(),
-                skills: skillList
-            }
-        } else {
-            formData.profile = {
-                name: $("#input_name").val(),
-                company_details: $("#input_company").val()
-            }
-        }
-        
-        $.ajax({
-            url: "/profile/update",
-            type: "PUT",
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function(result) {
-                $('#update_result_mess').show();
-                $('#update_result_mess').css('color', 'green');
-                $('#update_result_mess').html(result);
-                setTimeout(function() {
-                    window.location.href = "/profile";
-                }, 2000);
-            },
-            error: function(result) {
-                $('#update_result_mess').show();
-                $('#update_result_mess').css('color', 'red');
-                $('#update_result_mess').html(result.responseText);
-            }
-        })
-    });
-</script>
+            let skillList = [];
+            let skillElements = $('#input_skill_list').children();
+            skillElements.each(function () {
+                let skill = $(this).children(":first").val();
+                if (skill.trim().length != 0) {
+                    skillList.push(skill);
+                }
+            });
 
-<%- include('partials/footer'); -%>
+            let formData = {};
+            formData.contact_info = {
+                phone: $("#input_phone").val(),
+                address: $("#input_address").val()
+            }
+
+            let currentRole = $('#role_caption').html().trim();
+            if (currentRole === 'freelancer') {
+                formData.profile = {
+                    name: $("#input_name").val(),
+                    experience: $("#input_experience").val(),
+                    skills: skillList
+                }
+            } else {
+                formData.profile = {
+                    name: $("#input_name").val(),
+                    company_details: $("#input_company").val()
+                }
+            }
+
+            $.ajax({
+                url: "/profile/update",
+                type: "PUT",
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (result) {
+                    $('#update_result_mess').show();
+                    $('#update_result_mess').css('color', 'green');
+                    $('#update_result_mess').html(result);
+                    setTimeout(function () {
+                        window.location.href = "/profile";
+                    }, 2000);
+                },
+                error: function (result) {
+                    $('#update_result_mess').show();
+                    $('#update_result_mess').css('color', 'red');
+                    $('#update_result_mess').html(result.responseText);
+                }
+            })
+        });
+    </script>
+
+    <%- include('partials/footer'); -%>

@@ -1,0 +1,66 @@
+<%- include('partials/header'); -%>
+
+<div class="container">
+    <h4 class="center-align">Chat Box</h4>
+
+    <div class="row">
+        <div class="col s12 m8 offset-m2">
+            <div class="card-panel">
+
+                <!-- Message History Section -->
+                <div id="message-history" class="section">
+                    <!-- Display message history -->
+                    <% if (messages && messages.length > 0) { %>
+                        <% messages.forEach(function(message) { %>
+                            <div class="chip <%= message.type === 'sent' ? 'blue lighten-4' : 'green lighten-4' %>">
+                                <strong><%= message.username %>:</strong> <%= message.text %>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="grey-text">No messages yet...</p>
+                    <% } %>
+                </div>
+
+                <!-- Input field to send new messages -->
+                <div class="row">
+                    <div class="input-field col s9">
+                        <input id="message-input" type="text" name="message" placeholder="Type your message..." required>
+                    </div>
+                    <div class="input-field col s3">
+                        <button id="send-message" class="btn waves-effect waves-light">Send</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Scroll to the bottom of message history on page load
+        const messageHistory = $('#message-history');
+        messageHistory.scrollTop(messageHistory[0].scrollHeight);
+
+        // Send message on button click
+        $('#send-message').on('click', function () {
+            const messageInput = $('#message-input');
+            const messageText = messageInput.val();
+
+            if (messageText.trim()) {
+                // Emit message (implement with your backend)
+                $.post('/send-message', { message: messageText }, function(response) {
+                    if (response.success) {
+                        // Append new message (adjust message type and username based on your logic)
+                        const newMessage = `<div class="chip blue lighten-4"><strong>You:</strong> ${messageText}</div>`;
+                        messageHistory.append(newMessage);
+                        messageHistory.scrollTop(messageHistory[0].scrollHeight);
+                    }
+                });
+
+                // Clear the input field
+                messageInput.val('');
+            }
+        });
+    });
+</script>
