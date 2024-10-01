@@ -2,6 +2,7 @@
 let collection = require('../models/jobModel');
 const paginate = require('../utils/pagination');
 const jobModel = require('../models/jobModel');
+const { ObjectId } = require('mongodb');
 
 const getJobList = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -59,14 +60,18 @@ const getJobDetail = async (req, res) => {
 };
 
 
-// Render the Add Job form
 const getAddJobForm = (req, res) => {
     res.render('jobForm', { job: null, action: '/jobs/add', formTitle: 'Add Job',session: req.session });
 };
 
-// Handle Add Job form submission
 const addJob = async (req, res) => {
     const { title, description, payment_type, salary, requirements, status } = req.body;
+    const clientId = req.session.user.id; 
+    const userRole = req.session.user.role; 
+    
+    if (userRole !== 'client') {
+        return res.status(403).send('Forbidden: Only clients can add jobs');
+    }
     const jobData = {
         title,
         description,
@@ -74,22 +79,20 @@ const addJob = async (req, res) => {
         salary: parseFloat(salary),
         requirements: requirements.split(',').map(skill => skill.trim()),
         status,
+        client_id: new ObjectId(clientId),
         created_at: new Date(),
         updated_at: new Date()
     };
 
-    console.log("TEST:: ", jobData);
-
     try {
         await jobModel.createJob(jobData);
-        res.redirect('/jobs/search');
+        res.redirect('/jobs');
     } catch (error) {
         console.error('Error creating job:', error);
         res.status(500).send('Error creating job');
     }
 };
 
-// Render the Edit Job form
 const getEditJobForm = async (req, res) => {
     const jobId = req.params.id;
     try {
@@ -101,9 +104,13 @@ const getEditJobForm = async (req, res) => {
     }
 };
 
-// Handle Edit Job form submission
 const editJob = async (req, res) => {
-    const jobId = req.params.id;
+    const jobId = req.params.id; 
+    const userRole = req.session.user.role; 
+
+    if (userRole !== 'client') {
+        return res.status(403).send('Forbidden: Only clients can edit jobs');
+    }
     const { title, description, payment_type, salary, requirements, status } = req.body;
     const jobData = {
         title,
@@ -117,15 +124,38 @@ const editJob = async (req, res) => {
 
     try {
         await jobModel.updateJob(jobId, jobData);
-        res.redirect('/jobs/search');
+        res.redirect('/jobs');
     } catch (error) {
         console.error('Error updating job:', error);
         res.status(500).send('Error updating job');
     }
 };
 
+const getClientJobs = async (req, res) => {
+    const userId = req.session.user.id; 
+    const userRole = req.session.user.role; 
+   
+    if (userRole !== 'client') {
+        return res.status(403).send('Access denied');
+    }
+
+    try {
+        const jobs = await jobModel.getJobsByClientId(userId); 
+
+        res.render('clientJobs', {
+            jobsList: jobs,
+            session: req.session
+        });
+    } catch (err) {
+        console.error("Error fetching client jobs:", err);
+        res.status(500).send('Error fetching client jobs');
+    }
+};
+
+
 module.exports = {
     getJobList,
+    getClientJobs,
     getJobDetail,
     getAddJobForm,
     addJob,

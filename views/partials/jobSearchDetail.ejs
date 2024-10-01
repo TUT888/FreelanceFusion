@@ -13,9 +13,4 @@
     === 'project') { %> <strong>Pay:</strong> $<%= job.salary %> (on project
     delivery) <% } else { %> <strong>Pay:</strong> Not specified <% } %>
   </div>
-  <div class="edit-btn-container">
-    <% if (session && session.user && session.user.role == "client") { %>
-        <a href="edit/<%= job._id %>" class="btn edit-btn">Edit Job</a>
-    <% } %>
-</div>
 </div>

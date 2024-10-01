@@ -1,0 +1,87 @@
+<%- include('partials/header'); -%>
+
+<div class="container">
+    <h1>My Jobs</h1>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col s12">
+            <% if (session && session.user && session.user.role == "client") { %>
+                <a href="#" id="addJobBtn" class="btn waves-effect waves-light">Add Job</a>
+            <% } %>
+        </div>
+    </div>
+    <table class="highlight">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Payment Type</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% jobsList.forEach(job => { %>
+                <tr class="job-item" data-id="<%= job._id %>">
+                    <td><%= job.title %></td>
+                    <td><%= job.description %></td>
+                    <td><%= job.status %></td>
+                    <td><%= job.payment_type %></td>
+                    <td><%= job.salary %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <!-- Job Details Popup -->
+    <div id="jobDetailsPopup" class="modal">
+        <div class="modal-content">
+            <h4 id="jobTitle"></h4>
+            <p id="jobDescription"></p>
+            <p id="jobRequirements"></p>
+            <p id="jobStatus"></p>
+            <p id="jobPaymentType"></p>
+            <p id="jobSalary"></p>
+         
+        </div>
+        <div class="modal-footer">
+            <div class="input-field col s12" style="margin-top: -10px;">
+                <% if (session && session.user && session.user.role == "client") { %>
+                    <a href="#" id="editJobLink" class="btn waves-effect waves-light">Edit Job</a>
+                <% } %>
+                <a href="/jobs" class="btn grey waves-effect waves-light">Close</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+
+        // Show job details in popup
+        document.querySelectorAll('.job-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                const jobId = item.getAttribute('data-id');
+                const job = <%- JSON.stringify(jobsList) %>.find(job => job._id === jobId);
+
+                document.getElementById('jobTitle').innerText = job.title;
+                document.getElementById('jobDescription').innerText = job.description;
+                document.getElementById('jobRequirements').innerText = 'Requirements: ' + job.requirements.join(', ');
+                document.getElementById('jobStatus').innerText = 'Status: ' + job.status;
+                document.getElementById('jobPaymentType').innerText = 'Payment Type: ' + job.payment_type;
+                document.getElementById('jobSalary').innerText = 'Salary: ' + job.salary;
+
+                document.getElementById('editJobLink').setAttribute('href', `/jobs/edit/${jobId}`);
+
+                var instance = M.Modal.getInstance(document.getElementById('jobDetailsPopup'));
+                instance.open();
+            });
+        });
+
+        // Add new job button click handler
+        document.getElementById('addJobBtn').setAttribute('href', '/jobs/add');
+    });
+</script>
