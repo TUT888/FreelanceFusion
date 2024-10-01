@@ -74,6 +74,7 @@ io.on('connection', (socket) => {
     });
 });
 require('./utils/ratingNotification')(io);
+require('./utils/projectManagementNotification')(io);
 
 http.listen(port, () => {
     console.log("Server started: http://localhost:" + port);

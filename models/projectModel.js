@@ -63,6 +63,43 @@ const getCandidate = async (projectId) => {
     ]).toArray();
     return result;
 };
+const getProject = async(projectId)=>{
+    var query = {
+        _id: new ObjectId(projectId),
+    }
+    return await projectCollection.find(query).toArray();
+
+}
+
+// Insert a new project with the freelancer_id and job_id
+const insertProject = async (jobId, freelancerId, clientId) => {
+    const newProject = {
+        client_id: new ObjectId(clientId),
+        job_id: new ObjectId(jobId),
+        freelancer_id: new ObjectId(freelancerId),
+        status: 'in-progress',
+        created_at: new Date()
+    };
+
+    return await projectCollection.insertOne(newProject);
+};
+
+const deleteProject = async (projectId) => {
+    return await projectCollection.deleteOne({ _id: new ObjectId(projectId) });
+};
+
+
+const getProjectById = async (projectId) => {
+    try {
+        const project = await projectCollection.findOne({ _id: new ObjectId(projectId) });
+        return project;
+    } catch (error) {
+        console.error('Error fetching project:', error);
+        throw new Error('Error fetching project');
+    }
+};
+
+
 
 // Build the project filter query (similar to the job filter logic)
 const buildProjectFilterQuery = (filter) => {
@@ -88,21 +125,15 @@ const buildProjectFilterQuery = (filter) => {
     return query;
 };
 
-// Create a new project
-const createProject = async (projectData) => {
-    try {
-        const result = await projectCollection.insertOne(projectData);
-        return await getProjectById(result.insertedId); // Return the newly created project with job info
-    } catch (error) {
-        throw error;
-    }
-};
 
 
 
 module.exports = {
-    getData,       // Ensure the name matches what the paginate utility expects
-    countData,     // Ensure the name matches what the paginate utility expects
-    createProject,
-    getCandidate
+    getData,
+    countData,
+    getCandidate,
+    insertProject,
+    deleteProject,
+    getProject,
+    getProjectById
 };

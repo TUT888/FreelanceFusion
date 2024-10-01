@@ -1,5 +1,5 @@
 // Part 1: Set up global variables
-const socket = io();
+const projectSocket = io();
 let currentProjectId = "";
 let currentJobId = "";
 
@@ -43,45 +43,49 @@ function createTaskElement(task) {
 
 function createCandidateElement(candidate, template = 1) {
     let candidateHTML="";
-    switch (template) {
-        case 1:
-            candidateHTML = `
-                <li class="candidate" data-id="${candidate._id}">
+    if (candidate != undefined) {
+        switch (template) {
+            case 1:
+                candidateHTML = `
+                    <li class="candidate" data-id="${candidate.freelancer_id}">
+                        <div class="candidate-info">
+                            <span class="candidate-name">${candidate.freelancer_info.profile.name}</span>
+                            <p class="candidate-skills">Skills: ${candidate.freelancer_info.profile.skills.join(', ')}</p>
+                            <p class="candidate-skills">Description: ${candidate.cover_letter}</p>
+                        </div>
+                        <div class="candidate-actions">
+                            <button class="btn hire-btn" data-freelancer-id="${candidate.freelancer_id}">Hire</button>
+                            <button class="btn chat-btn" data-freelancer-id="${candidate.freelancer_id}">Chat</button>
+                        </div>
+                    </li>
+                `;
+                break;
+        
+            case 2:
+                candidateHTML = `
+                <li class="candidate" data-id="${candidate.freelancer_id}">
                     <div class="candidate-info">
                         <span class="candidate-name">${candidate.freelancer_info.profile.name}</span>
                         <p class="candidate-skills">Skills: ${candidate.freelancer_info.profile.skills.join(', ')}</p>
                         <p class="candidate-skills">Description: ${candidate.cover_letter}</p>
                     </div>
                     <div class="candidate-actions">
-                        <button class="btn hire-btn" data-freelancer-id="${candidate._id}">Hire</button>
-                        <button class="btn chat-btn" data-freelancer-id="${candidate._id}">Chat</button>
+                        <button class="btn delete-btn" data-freelancer-id="${candidate.freelancer_id}">Remove</button>
+                        <button class="btn chat-btn" data-freelancer-id="${candidate.freelancer_id}">Chat</button>
                     </div>
                 </li>
             `;
-            break;
+                break;
+        }
     
-        case 2:
-            candidateHTML = `
-            <li class="candidate" data-id="${candidate._id}">
-                <div class="candidate-info">
-                    <span class="candidate-name">${candidate.freelancer_info.profile.name}</span>
-                    <p class="candidate-skills">Skills: ${candidate.freelancer_info.profile.skills.join(', ')}</p>
-                    <p class="candidate-skills">Description: ${candidate.cover_letter}</p>
-                </div>
-                <div class="candidate-actions">
-                    <button class="btn chat-btn" data-freelancer-id="${candidate._id}">Chat</button>
-                </div>
-            </li>
-        `;
-            break;
+        
+        // Convert the HTML string to an actual DOM element and return it
+        const candidateElement = document.createElement('div');
+        candidateElement.innerHTML = candidateHTML.trim();
+        
+        return candidateElement.firstChild;  // Return the newly created element
     }
 
-    
-    // Convert the HTML string to an actual DOM element and return it
-    const candidateElement = document.createElement('div');
-    candidateElement.innerHTML = candidateHTML.trim();
-    
-    return candidateElement.firstChild;  // Return the newly created element
 }
 
 
@@ -101,14 +105,19 @@ async function loadTasks(projectId) {
     reinitializeSortable()
 }
 
-async function loadCandidate(projectId) {
+async function loadCandidate(jobId) {
     clearCandidateLists();
-    currentProjectId = projectId;
-    const response = await fetch(`/projects/${currentProjectId}/candidate`);
+    currentJobId = jobId;
+    const response = await fetch(`/projects/${currentJobId}/candidate`);
     const candidate = await response.json();
 
-    const candidateElement = createCandidateElement(candidate[0], 2);
-    document.getElementById('candidate_container').appendChild(candidateElement);
+    if (candidate[0] != undefined) {
+        updateData(jobId, candidate[0].project_info._id)
+        const candidateElement = createCandidateElement(candidate[0], 2);
+        document.getElementById('candidate_container').appendChild(candidateElement);
+    }
+    attachButtonListeners();
+
 
 }
 
@@ -118,11 +127,14 @@ async function loadCandidates(jobId) {
     currentJobId = jobId;
     const response =  await fetch(`/projects/${currentJobId}/candidates`);
     const candidates = await response.json();
+    updateData(jobId, "")
 
     candidates.forEach(candidate => {
         const candidateElement = createCandidateElement(candidate);
         document.getElementById('candidate_container').appendChild(candidateElement);
     });
+    attachButtonListeners();
+
 }
 
 // Clear task lists before loading new tasks
@@ -136,7 +148,7 @@ function clearCandidateLists() {
 }
 
 function createTask(task) {
-    socket.emit('create-task', { ...task, currentProjectId });
+    projectSocket.emit('create-task', { ...task, currentProjectId });
 }
 
 
@@ -178,13 +190,6 @@ async function updateTaskStatus(taskId, newStatus, newPosition) {
     });
 }
 
-async function hireFreelancer(freelancer_id, job_id) {
-    await fetch(`/projects/create`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobId: job_id, freelancerId: freelancer_id })
-    });
-}
 
 async function getJobDetail(jobId) {
     // Make an AJAX request to fetch the rendered partial
@@ -200,11 +205,21 @@ async function getJobDetail(jobId) {
         });
 }
 
+function updateData(id, newdata){
+    if (newdata) {
+        currentProjectId = newdata;
 
+    }else{
+        currentProjectId = '';
+
+    }
+    const elem = document.getElementById(id);
+    elem.setAttribute('data-project-id', newdata);
+}
 
 //Part 3: Set up socket event
 // Listen for task updates from the server
-socket.on('task-update', function (data) {
+projectSocket.on('task-update', function (data) {
     const { taskId, status, position } = data;
 
     // Find the task element by its data-id attribute
@@ -240,7 +255,7 @@ socket.on('task-update', function (data) {
 });
 
 // Listen for task creation and updates
-socket.on('new-task', function (task) {
+projectSocket.on('new-task', function (task) {
     if (task.project_id === currentProjectId) {
         const taskElement = createTaskElement(task);
         document.getElementById(`${task.progress}-list`).appendChild(taskElement);
@@ -281,6 +296,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems);
 
+    // Initialize all modals on the page
+    var modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
+
     var jobListElement = document.getElementById('job-list');
 
     // When a job item is clicked, update the job details on the right
@@ -312,6 +331,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.getElementById('job-details').innerHTML = html;
                         var el = document.querySelector('.tabs');
                         var instance = M.Tabs.init(el, {});
+                        loadCandidate(jobId);
                     })
                     .catch(error => {
                         console.error(error)
@@ -329,3 +349,123 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+// Function to attach the event listeners for hire and delete buttons
+// Function to attach the event listeners for hire and delete buttons
+function attachButtonListeners() {
+    const hireBtns = document.querySelectorAll('.hire-btn');
+    const deleteBtns = document.querySelectorAll('.delete-btn');
+
+    hireBtns.forEach(hireBtn => {
+        const existingListener = hireBtn.dataset.listener; // Check if a listener has already been added
+        if (!existingListener) {
+            hireBtn.addEventListener('click', function handleHireClick() {
+                const freelancerId = hireBtn.getAttribute('data-freelancer-id');
+                const jobId = currentJobId;
+
+                // Send the freelancer_id and job_id to the backend
+                fetch(`/projects/create/${jobId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ freelancerId, jobId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Freelancer hired successfully!');
+                        loadCandidate(jobId); // Reload the candidate list
+                    } else {
+                        alert('Error hiring freelancer: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+            hireBtn.dataset.listener = true; // Mark that a listener has been added
+        }
+    });
+
+    deleteBtns.forEach(deleteBtn => {
+        const existingListener = deleteBtn.dataset.listener; // Check if a listener has already been added
+        if (!existingListener) {
+            deleteBtn.addEventListener('click', function handleDeleteClick() {
+                const projectId = currentProjectId;
+
+                // Confirm before deleting
+                if (confirm('Are you sure you want to delete this project?')) {
+                    // Send DELETE request to the backend
+                    fetch(`/projects/${projectId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Project deleted successfully!');
+                            const listItem = document.getElementById(currentJobId);
+                            listItem.removeAttribute('data-project-id');
+                            loadCandidates(currentJobId); // Reload the candidate list
+                        } else {
+                            alert('Error deleting project: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+
+            deleteBtn.dataset.listener = true; // Mark that a listener has been added
+        }
+    });
+}
+
+document.getElementById('add-task-btn').addEventListener('click', function () {
+    const modal = document.getElementById('task-creation-modal');
+    const instance = M.Modal.getInstance(modal);
+    instance.open();
+});
+
+
+document.getElementById('create-task-btn').addEventListener('click', async function () {
+    const taskTitle = document.getElementById('new-task-title').value;
+    const taskContent = document.getElementById('new-task-content').value;
+    const totalTasks = document.querySelectorAll('#todo-list .task').length;
+    const newPosition = (totalTasks + 1) * 100000; 
+
+    if (taskTitle.trim() !== '') {
+        const taskData = {
+            title: taskTitle,
+            content: taskContent,
+            progress: 'todo', // Defaulting to 'todo' list
+            position: newPosition,
+            projectId: currentProjectId // Using the current project ID
+        };
+
+        // Send the new task to the backend
+        const response = await fetch(`/projects/${currentProjectId}/tasks/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(taskData)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            // Append the new task to the list
+            const newTaskElement = createTaskElement(result.task);
+            document.getElementById('todo-list').appendChild(newTaskElement);
+            reinitializeSortable();
+        } else {
+            alert('Error creating task: ' + result.error);
+        }
+    } else {
+        alert('Please enter a valid task title.');
+    }
+});

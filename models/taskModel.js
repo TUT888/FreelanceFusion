@@ -24,8 +24,26 @@ const updateTaskStatus = async (taskId, newStatus, newPosition) => {
     );
 };
 
+const insertOne = async (taskData) => {
+    const result = await taskCollection.insertOne(taskData);
+    return result;
+};
+
+const getTaskById = async (taskId) => {
+    try {
+        const task = await taskCollection.findOne({ _id: new ObjectId(taskId) });
+        return task;
+    } catch (error) {
+        console.error('Error fetching task:', error);
+        throw new Error('Error fetching task');
+    }
+};
+
+
 module.exports = {
     getTasksByProject,
     createTask,
-    updateTaskStatus
+    updateTaskStatus,
+    insertOne,
+    getTaskById 
 };

@@ -1,7 +1,14 @@
 <%- include('partials/header'); -%>
 
     <div class="container">
-        
+        <div class="row" style="margin-top: 20px;">
+            <div class="col s12">
+                <% if (session && session.user && session.user.role=="client" ) { %>
+                    <a href="/jobs/add" class="btn waves-effect waves-light">Add Job</a>
+                    <% } %>
+            </div>
+        </div>
+
         <!-- Filter Section Row -->
         <div class="row">
 
@@ -69,48 +76,46 @@
         <div class="row">
             <!-- Left Side: Job List -->
             <div class="col s12 m5">
-              <% if (jobsList && jobsList.length> 0) { %>
+                <% if (jobsList && jobsList.length> 0) { %>
 
-              <ul class="collection" id="job-list" data-jobs='<%= JSON.stringify(jobsList).replace(/' /g, "&#39;"
+                    <ul class="collection" id="job-list" data-jobs='<%= JSON.stringify(jobsList).replace(/' /g, "&#39;"
                         ) %>
                         '>
-                <% jobsList.forEach(function(job, index) { %>
-                <li class="collection-item job-item <%= index === 0 ? 'active' : '' %>" data-id="<%= job._id %>">
-                  <span class="title">
-                    <%= job.title %>
-                  </span>
-                  <p>
-                    <strong>Description:</strong>
-                    <%= job.description.substring(0, 100) %>...<br>
-                    <% if (job.payment_type === 'hourly') { %>
-                    <strong>Pay:</strong> $<%= job.salary %>/hr
-                    <% } else if (job.payment_type === 'project') { %>
-                    <strong>Pay:</strong> $<%= job.salary %> (on project delivery)
-                    <% } else { %>
-                    <strong>Pay:</strong> Not specified
-                    <% } %>
-                  </p>
-                </li>
-                <% }) %>
-              </ul>
-              <!-- Include Pagination Partial -->
-              <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
+                        <% jobsList.forEach(function(job, index) { %>
+                            <li class="collection-item job-item <%= index === 0 ? 'active' : '' %>"
+                                data-id="<%= job._id %>">
+                                <span class="title">
+                                    <%= job.title %>
+                                </span>
+                                <p>
+                                    <strong>Description:</strong>
+                                    <%= job.description.substring(0, 100) %>...<br>
+                                        <% if (job.payment_type==='hourly' ) { %>
+                                            <strong>Pay:</strong> $<%= job.salary %>/hr
+                                                <% } else if (job.payment_type==='project' ) { %>
+                                                    <strong>Pay:</strong> $<%= job.salary %> (on project delivery)
+                                                        <% } else { %>
+                                                            <strong>Pay:</strong> Not specified
+                                                            <% } %>
+                                </p>
+                            </li>
+                            <% }) %>
+                    </ul>
+                    <!-- Include Pagination Partial -->
+                    <%- include('partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
 
-              <% } else { %>
-              <!-- Display message if no jobs are available -->
-              <p>No jobs available.</p>
-              <% } %>
+                        <% } else { %>
+                            <!-- Display message if no jobs are available -->
+                            <p>No jobs available.</p>
+                            <% } %>
 
             </div>
 
 
             <!-- Right Side: Job Detail View -->
-             
-            <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
-                <% if (jobsList && jobsList.length> 0) { %>
-                <%- include('partials/jobSearchDetail', { job: jobsList[0], session: session }) %>
 
-                <% } %>
+            <div class="col s12 m7" id="job-details" style="position: sticky; top: 20px;">
+      
             </div>
         </div>
     </div>
@@ -119,24 +124,69 @@
 
         <!-- Update Job Details Section When a Job is Clicked -->
         <script>
+            function attachApplyButtonListener() {
+                const applyBtn = document.querySelector('.apply-btn');
+
+                if (applyBtn) {
+                    applyBtn.addEventListener('click', function () {
+                        const jobId = applyBtn.getAttribute('data-job-id');
+                        const coverLetter = prompt('Please enter a cover letter (optional):', '');
+
+                        fetch(`/jobs/apply/${jobId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ cover_letter: coverLetter })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Application submitted successfully!');
+                                loadJobDetail(jobId)
+
+                            } else {
+                                alert('Error applying for the job: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while submitting your application.');
+                        });
+                    });
+                }
+            }
+
+            function loadJobDetail(jobId){
+                     // Make an AJAX request to fetch the rendered partial
+                     fetch(`/jobs/search/${jobId}`)
+                            .then(response => response.text()) // Return the response as HTML
+                            .then(html => {
+                                // Update the job details section with the rendered partial
+                                document.getElementById('job-details').innerHTML = html;
+                                attachApplyButtonListener();
+                            })
+                            .catch(error => {
+                                console.error(error)
+                            });
+
+             
+            }
+
             document.addEventListener('DOMContentLoaded', function () {
                 var jobListElement = document.getElementById('job-list');
+                const firstProjectItem = document.querySelector('.job-item');
+                if (firstProjectItem) {
+                    const firstJobId = firstProjectItem.getAttribute('data-id');
+                    loadJobDetail(firstJobId)
+
+                }
 
                 // When a job item is clicked, update the job details on the right
                 document.querySelectorAll('.job-item').forEach(function (item) {
                     item.addEventListener('click', function () {
                         var jobId = item.getAttribute('data-id');
-
-                        // Make an AJAX request to fetch the rendered partial
-                        fetch(`/jobs/search/${jobId}`)
-                            .then(response => response.text()) // Return the response as HTML
-                            .then(html => {
-                                // Update the job details section with the rendered partial
-                                document.getElementById('job-details').innerHTML = html;
-                            })
-                            .catch(error => {
-                                console.error(error)
-                            });
+                        loadJobDetail(jobId)
 
                         // Set the clicked job as active
                         document.querySelectorAll('.job-item').forEach(function (el) {
@@ -145,7 +195,6 @@
                         item.classList.add('active');
                     });
                 });
-
 
 
                 const filterForm = document.getElementById('job-filter-form');
