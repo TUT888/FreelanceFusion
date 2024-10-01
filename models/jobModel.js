@@ -136,10 +136,23 @@ const updateJob = async (id, jobData) => {
     }
 };
 
+const getJobsByClientId = async (clientId) => {
+
+    try {
+        const jobs = await collection.find({ client_id: new ObjectId(clientId) }).toArray();
+        return jobs;
+    } catch (err) {
+        console.error("Error fetching jobs by client ID:", err);
+        throw err;
+    }
+};
+
+
 module.exports = {
     getData,
     countData,
     getJobById,
     createJob,
-    updateJob
+    updateJob,
+    getJobsByClientId
 };

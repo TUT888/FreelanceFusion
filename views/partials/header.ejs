@@ -29,6 +29,10 @@
             <ul id="nav-mobile" class="right">
                 <!-- Find Jobs -->
                 <li><a href="/jobs/search">Find Jobs</a></li>
+                <% if (session.user && session.user.role === 'client') { %>
+                    <!-- Find My Jobs -->
+                    <li><a href="/jobs/">My Jobs</a></li>
+                <% } %>                
                 <!-- Find Freelancers -->
                 <li><a href="/freelancers/search">Find Freelancer</a></li>
 
