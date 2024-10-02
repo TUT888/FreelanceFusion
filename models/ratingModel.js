@@ -84,7 +84,7 @@ const addNewRating = async (dataObj, callback) => {
 }
 
 // PROJECT THINGS within RATING MODELS
-// Project related things: This may be transferred to projectModel
+// Get project date and status
 const getProjectDateAndStatus = async (projectID) => {
     console.log(projectID);
     let query = { _id: projectID };
@@ -110,7 +110,7 @@ const getProjectDateAndStatus = async (projectID) => {
     return projectDetail;
 }
 
-// Get available project selection: This may be transferred to projectModel
+// Get available project for selection
 const getProjectForRating = async (raterID, callback) => {
     let query = { client_id: raterID };
 
@@ -156,7 +156,7 @@ const processProjectForRating = async (availableProjects) => {
     return processedProjectData;
 }
 
-// Get specific project detail: This may be transferred to projectModel
+// Get specific project detail
 const getProjectDetailForRating = async (projectID, callback) => {
     let query = { _id: new ObjectId(projectID) };
 
@@ -201,7 +201,7 @@ const processProjectDetailForRating = async (projectData) => {
     return processedProjectData;
 }
 
-// Get specific project detail: This may be transferred to projectModel
+// Change project status to done
 const changeStatusToDone = async (projectID, callback) => {
     let filter = { _id: new ObjectId(projectID) };
     let updateDoc = { $set: { status: "done" } };
