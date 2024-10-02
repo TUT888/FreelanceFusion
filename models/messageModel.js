@@ -22,7 +22,7 @@ const ChatModel = {
                     { sender_id: objectUserId1, receiver_id: objectUserId2 },
                     { sender_id: objectUserId2, receiver_id: objectUserId1 }
                 ]
-            }).sort({ timestamp: -1  }).toArray(); // Sort by timestamp
+            }).sort({ timestamp: 1  }).toArray(); // Sort by timestamp
 
         } catch (error) {
             // Catch and log any errors that occur during the query

@@ -23,10 +23,6 @@ const mongoStore = MongoStore.create({
   autoRemove: "native",
 });
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -39,11 +35,6 @@ app.use(session({
     },
   })
 );
-    cookie: {
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24
-    }
-}));
 
 app.use((req, res, next) => {
   console.log("Session:", req.session);
