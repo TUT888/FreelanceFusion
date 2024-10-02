@@ -46,6 +46,7 @@ const getFreelancerDetail = async (req, res) => {
     }
 };
 
+
 module.exports = {
     getFreelancerList,
     getFreelancerDetail

@@ -6,8 +6,31 @@ const { ObjectId } = require('mongodb');
 // Fetch jobs with optional filtering
 const getData = async ({ filter, skip, limit }) => {
     let query = buildJobFilterQuery(filter);  // Build the query using the filters
-    return await collection.find(query).skip(skip).limit(limit).toArray();
+    // return await collection.find(query).skip(skip).limit(limit).toArray();
+    let result = await collection.aggregate([
+        { $match: query }, // Match projects based on filter criteria
+        {
+            $lookup: {
+                from: 'projects',
+                localField: '_id',
+                foreignField: 'job_id',
+                as: 'project_info'
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'freelancer_id',
+                foreignField: '_id',
+                as: 'freelancer_info'
+            }
+        },
+        { $skip: skip }, // Pagination: Skip the specified number of documents
+        { $limit: limit } // Pagination: Limit the number of documents returned
+    ]).toArray();
+    return result;
 };
+
 
 
 const countData = async (filter) => {
@@ -17,6 +40,8 @@ const countData = async (filter) => {
 
 
 const getJobById = async (id) => {
+
+    
     try {
         const job = await collection.findOne({ _id: new ObjectId(id) }); 
         if (!job) {
@@ -70,6 +95,18 @@ const buildJobFilterQuery = (filter) => {
         query.status = filter.status;  // e.g., { status: 'open' }
     }
 
+    if (filter.client_id) {
+        query.client_id = new ObjectId(filter.client_id);
+    }
+
+    // Filter by freelancer_id (if provided)
+    if (filter.freelancer_id) {
+        query.freelancer_id = new ObjectId(filter.freelancer_id);
+    }
+
+    if (filter.id) {
+        query._id = new ObjectId(filter.id);
+    }
     return query;
 };
 
@@ -99,10 +136,23 @@ const updateJob = async (id, jobData) => {
     }
 };
 
+const getJobsByClientId = async (clientId) => {
+
+    try {
+        const jobs = await collection.find({ client_id: new ObjectId(clientId) }).toArray();
+        return jobs;
+    } catch (err) {
+        console.error("Error fetching jobs by client ID:", err);
+        throw err;
+    }
+};
+
+
 module.exports = {
     getData,
     countData,
     getJobById,
     createJob,
-    updateJob
+    updateJob,
+    getJobsByClientId
 };

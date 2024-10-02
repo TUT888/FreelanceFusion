@@ -26,6 +26,10 @@ const mongoStore = MongoStore.create({
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
+
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: mongoStore,
@@ -35,6 +39,11 @@ app.use(
     },
   })
 );
+    cookie: {
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 24
+    }
+}));
 
 app.use((req, res, next) => {
   console.log("Session:", req.session);
@@ -45,8 +54,8 @@ app.use((req, res, next) => {
 let homeRouter = require("./routers/homeRouter");
 let profileRouter = require("./routers/profileRouter");
 let jobRouter = require("./routers/jobRouter");
-
 let freelancerRouter = require("./routers/freelancerRouter");
+let projectRouter = require('./routers/projectRouter');
 let messageRouter = require("./routers/messageRouter");
 const { ObjectId } = require('mongodb'); 
 
@@ -54,12 +63,13 @@ app.use("/", homeRouter);
 app.use("/profile", profileRouter);
 app.use("/jobs", jobRouter);
 app.use("/freelancers", freelancerRouter);
+app.use('/projects', projectRouter);
 app.use("/messages", messageRouter);
 
 // Socket
 let http = require("http").createServer(app);
 let io = require("socket.io")(http);
-
+app.set('io', io);
 // Handle sending messages
 io.on('connection', (socket) => {
     console.log("User connected!");
@@ -86,6 +96,8 @@ io.on('connection', (socket) => {
 });
 
 
+require('./utils/ratingNotification')(io);
+require('./utils/projectManagementNotification')(io);
 
 http.listen(port, () => {
   console.log("Server started: http://localhost:" + port);

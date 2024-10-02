@@ -1,5 +1,8 @@
 let collection = require('../models/user');
+let ratingCollection = require('../models/ratingModel');
+let projectCollection = require('../models/ratingModel');
 
+// PROFILE MANAGEMENT feature (view), RATING AND REVIEW feature (view)
 const displayProfile = (req, res) => {
     try {
         // Get user email from session
@@ -8,14 +11,19 @@ const displayProfile = (req, res) => {
             return res.redirect('/sign-in');
         }
 
-        collection.getUserProfile(userEmail, (result) => {     
-            if (!result) {
+        // Get user data
+        collection.getUserProfile(userEmail, (userData) => {     
+            if (!userData) {
                 res.redirect('/');
             }
             
-            res.render("profile", {
-                userData: result,
-                session: req.session
+            // Get ratings data
+            ratingCollection.getUserRating(userData._id, userData.role, (userRating) => {
+                res.render("profile", {
+                    userData: userData,
+                    allUserRating: userRating,
+                    session: req.session
+                });
             });
         });
     } catch (err) {
@@ -24,51 +32,7 @@ const displayProfile = (req, res) => {
     }
 }
 
-/* THIS IS NOT WORKING, IT SEEMS THAT THE RETURN FROM getUserData DOES NOT MATCH THIS
-const displayProfile = async (req, res) => {
-
-    console.log('Session Data:', req.session);
-
-    try {
-        let userEmail = req.session.user.email;
-
-        if (!req.session.user) {
-            return res.redirect('/sign-in');
-        }
-
-        const result = await collection.getUserData(userEmail);
-        if (result.length === 0) {
-            return res.redirect('/sign-in'); // Redirect if no user found
-        }
-
-        console.log('User Data:', result);
-
-        res.render("profile", {
-            userData: result[0], // Ensure userData is defined and passed
-            session: req.session
-        });
-    } catch (err) {
-        console.error('Error retrieving user data:', err);
-        res.redirect('/sign-in');
-    }
-};
-*/
-
-/* THIS SHOULD NOT BE HERE! IT SHOULD BE IN THE USER MODEL
-function getUserData(userEmail, callback) {
-    let query = { email: userEmail };
-    collection.find(query).toArray(callback);
-
-    if (err) {
-        console.error('Error querying database:', err);
-        return callback(err);
-    }
-
-    console.log('Database Query Result:', result);
-        callback(null, result);
-}
-*/
-
+// USER AUTHENTICATION feature
 function registerUser(user, callback) {
     bcrypt.hash(user.password, 10, (err, hash) => {
         if (err) return callback(err);
@@ -87,6 +51,7 @@ function authenticateUser(email, password, callback) {
     });
 }
 
+// PROFILE MANAGEMENT feature (update)
 const updateProfile = (req, res) => {
     try {
         let userData = req.body;
@@ -100,19 +65,144 @@ const updateProfile = (req, res) => {
             if (result.matchedCount!=0) {
                 if (result.modifiedCount==0) { // No changes made
                     console.log("Failed updated profile!");
-                    res.status(400).send("There are no changes made.");
+                    res.status(400).json({ success: false, message: "There are no changes made."});
                 } else { // Change successfully
                     console.log("Successfully updated profile!");
-                    res.status(200).send("Successfully updated profile! Page will be reloaded in few second...");
+                    res.status(200).json({ success: true, message: "Successfully updated profile! Page will be reloaded in few second...", modifiedCount: result.modifiedCount});
                 }
             } else { // No data found
                 console.log("Failed updated profile!");
-                res.status(400).send("There is an error when updating your profile. Please try again later!");
+                res.status(400).json({ success: false, message: "There is an error when updating your profile. Please try again later!"});
             }
         });
     } catch (err) {
-        console.error('Error updating user data:', err);
-        res.redirect('/sign-in');
+        console.error(`Error updating user data: ${err}`);
+        res.status(400).json({ success: false, message: `Error updating user data: ${err}`});
+    }
+}
+
+// RATING & REVIEW feature
+const deleteRating = async (req, res) => {
+    try {
+        let rating_id = req.body.ratingID; 
+        
+        ratingCollection.deleteGivenRating(rating_id, (result) => {
+            if (result.deletedCount === 1) {
+                console.log("Successfully deleted one document.");
+                res.status(200).json({ success: true, message: "Successfully deleted your review!"});
+            } else {
+                console.log("No documents matched the query. Deleted 0 documents.");
+                res.status(400).json({ success: false, message: "No documents matched the query. Deleted 0 documents."});   
+            }
+        })
+    } catch (err) {
+        console.error("There was an error when trying to delete a document: ", err);
+        res.status(400).json({ success: false, message: `There was an error when trying to delete a document: ${err}`});   
+    }
+}
+
+const addNewRating = (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        let data = req.body;
+
+        ratingCollection.addNewRating(data, (result) => {
+            if (result.insertedId) {
+                res.status(200).json({
+                    statuscocde:200, 
+                    message: `Successfully added new rating. Redirecting in few seconds...`,
+                    insertedId: result.insertedId
+                });
+            } else {
+                res.status(400).json({
+                    statuscocde:400, 
+                    message: `Insertion failed. Please try again later.`
+                });
+            }
+        })
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
+}
+
+const displayAddRatingForm = (req, res) => {
+    try {
+        // Get user email from session
+        let userEmail = req.session.user.email;
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        // Get user data
+        collection.getUserProfile(userEmail, (userData) => {     
+            if (!userData) {
+                res.redirect('/');
+            }
+            
+            // Get available projects for rating
+            projectCollection.getProjectForRating(userData._id, (allProjectsForRating) => {
+                res.render("ratingForm", {
+                    allProjectsForRating: allProjectsForRating,
+                    session: req.session
+                });
+            });
+        });
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
+}
+
+const getProjectDetailForRating = (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        let projectID = req.query.id;
+
+        // Get project detail for rating
+        projectCollection.getProjectDetailForRating(projectID, (projectDetailForRating) => {
+            res.json({
+                statuscocde:200, 
+                projectDetail: projectDetailForRating
+            });
+        });
+    } catch (err) {
+        console.error('Error retrieving user data:', err);
+        res.redirect('/');
+    }
+}
+
+const changeProjectStatus = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        let projectID = req.body.id;
+
+        projectCollection.changeStatusToDone(projectID, (result) => {
+            if (result.matchedCount!=0) {
+                if (result.modifiedCount==0) { // No changes made
+                    console.log("Failed updated project status!");
+                    res.status(400).json({ success: false, message: "There are no changes made."});
+                } else { // Change successfully
+                    console.log("Successfully project status!");
+                    res.status(200).json({ success: true, message: "Successfully updated project status! Page will be reloaded in few second...", modifiedCount: result.modifiedCount});
+                }
+            } else { // No data found
+                console.log("Failed project status!");
+                res.status(400).json({ success: false, message: "There is an error when updating your project status. Please try again later!"});
+            }
+        });
+    } catch (err) {
+        console.error(`Error updating project status: ${err}`);
+        res.status(400).json({ success: false, message: `Error updating project status: ${err}`});
     }
 }
 
@@ -120,5 +210,10 @@ module.exports = {
     registerUser,
     authenticateUser,
     displayProfile,
-    updateProfile
+    updateProfile,
+    deleteRating,
+    displayAddRatingForm,
+    getProjectDetailForRating,
+    addNewRating,
+    changeProjectStatus
 }

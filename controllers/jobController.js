@@ -2,6 +2,8 @@
 let collection = require('../models/jobModel');
 const paginate = require('../utils/pagination');
 const jobModel = require('../models/jobModel');
+const applicationModel = require('../models/applicationModel');
+const { ObjectId } = require('mongodb');
 
 const getJobList = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -47,8 +49,15 @@ const getJobDetail = async (req, res) => {
     // Fetch the job details asynchronously from the model
     try {
         let job = await collection.getJobById(jobId);
+        // Check if the user has already applied
+        const existingApplication = await applicationModel.findOne({
+            job_id: new ObjectId(jobId),
+            freelancer_id: new ObjectId(session.user.id),
+        });
+
+        
         if (job) {
-            res.render('partials/jobSearchDetail', { job, session });
+            res.render('partials/jobSearchDetail', { job, session, alreadyApplied: existingApplication ? true : false });
         } else {
             res.status(404).send('Job not found');
         }
@@ -59,38 +68,45 @@ const getJobDetail = async (req, res) => {
 };
 
 
-// Render the Add Job form
 const getAddJobForm = (req, res) => {
     res.render('jobForm', { job: null, action: '/jobs/add', formTitle: 'Add Job',session: req.session });
 };
 
-// Handle Add Job form submission
 const addJob = async (req, res) => {
+    const session = req.session;
+
     const { title, description, payment_type, salary, requirements, status } = req.body;
+    const clientId = req.session.user.id; 
+    const userRole = req.session.user.role; 
+    
+    if (userRole !== 'client') {
+        return res.status(403).send('Forbidden: Only clients can add jobs');
+    }
     const jobData = {
+        client_id: new ObjectId(session.user.id),
         title,
         description,
         payment_type,
         salary: parseFloat(salary),
         requirements: requirements.split(',').map(skill => skill.trim()),
         status,
+        client_id: new ObjectId(clientId),
         created_at: new Date(),
         updated_at: new Date()
     };
 
-
     try {
         await jobModel.createJob(jobData);
-        res.redirect('/jobs/search');
+        res.redirect('/jobs');
     } catch (error) {
         console.error('Error creating job:', error);
         res.status(500).send('Error creating job');
     }
 };
 
-// Render the Edit Job form
 const getEditJobForm = async (req, res) => {
     const jobId = req.params.id;
+
     try {
         const job = await jobModel.getJobById(jobId);
         res.render('jobForm', { job, action: `/jobs/edit/${jobId}`, formTitle: 'Edit Job' ,session: req.session});
@@ -100,9 +116,13 @@ const getEditJobForm = async (req, res) => {
     }
 };
 
-// Handle Edit Job form submission
 const editJob = async (req, res) => {
-    const jobId = req.params.id;
+    const jobId = req.params.id; 
+    const userRole = req.session.user.role; 
+
+    if (userRole !== 'client') {
+        return res.status(403).send('Forbidden: Only clients can edit jobs');
+    }
     const { title, description, payment_type, salary, requirements, status } = req.body;
     const jobData = {
         title,
@@ -116,18 +136,75 @@ const editJob = async (req, res) => {
 
     try {
         await jobModel.updateJob(jobId, jobData);
-        res.redirect('/jobs/search');
+        res.redirect('/jobs');
     } catch (error) {
         console.error('Error updating job:', error);
         res.status(500).send('Error updating job');
     }
 };
 
+const getClientJobs = async (req, res) => {
+    const userId = req.session.user.id; 
+    const userRole = req.session.user.role; 
+   
+    if (userRole !== 'client') {
+        return res.status(403).send('Access denied');
+    }
+
+    try {
+        const jobs = await jobModel.getJobsByClientId(userId); 
+
+        res.render('clientJobs', {
+            jobsList: jobs,
+            session: req.session
+        });
+    } catch (err) {
+        console.error("Error fetching client jobs:", err);
+        res.status(500).send('Error fetching client jobs');
+    }
+};
+
+
+const applyForJob = async (req, res) => {
+    const jobId = req.params.jobId;
+    const session = req.session;
+    console.log(jobId)
+    // Ensure the user is logged in
+    if (!session || !session.user || session.user.role !== 'freelancer') {
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+
+    try {
+        // Prepare the application data
+        const applicationData = {
+            job_id: new ObjectId(jobId),
+            freelancer_id: new ObjectId(session.user.id),
+            status: 'pending',
+            cover_letter: req.body.cover_letter || '',
+            applied_at: new Date(),
+            updated_at: new Date()
+        };
+
+        // Insert the application into the collection
+        await applicationModel.insertApplication(applicationData);
+
+        // Respond with success
+        res.json({ success: true, message: 'Application submitted successfully!' });
+
+    } catch (error) {
+        console.error('Error applying for job:', error);
+        res.status(500).json({ success: false, error: 'Error applying for the job' });
+    }
+};
+
+
 module.exports = {
     getJobList,
+    getClientJobs,
     getJobDetail,
     getAddJobForm,
     addJob,
     getEditJobForm,
-    editJob
+    editJob,
+    applyForJob
 };

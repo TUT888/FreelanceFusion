@@ -4,3 +4,4 @@ node_modules/
 scripts/
 models/dbSetup.js
 drafts/
+dbInit/

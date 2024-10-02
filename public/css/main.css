@@ -59,6 +59,80 @@
     color: #fff;
   }
 
+
+  
+  .custom_container{
+    margin:20px;
+  }
+
+  .board {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.column {
+    width: 32.5%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    min-height: 400px;
+}
+
+.task-list {
+    min-height: 380px;
+    list-style-type: none;
+    padding: 0;
+}
+
+.task {
+    background-color: #e0e0e0;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+/* Styling the candidate list items as cards */
+.candidate {
+  display: block;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling the candidate info section */
+.candidate-info {
+  margin-bottom: 12px;
+}
+
+/* Styling the candidate name */
+.candidate-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Styling the candidate skills paragraph */
+.candidate-skills {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Styling the actions buttons (Hire and Chat) */
+.candidate-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+
+
   .message{
     width: fit-content !important;
   }
