@@ -195,9 +195,9 @@ const createJobAndProjects = async (clientID, freelancerID) => {
             freelancer_id: freelancerID,
             job_id: jobID,
             status: "done",
-            progress: "Finish deployment",
+            // progress: "Finish deployment",
             created_at: new Date(),
-            updated_at: new Date()
+            // updated_at: new Date()
         };
         let projectResult = await projectCollection.insertOne(projectData);
         const projectID = projectResult.insertedId;
