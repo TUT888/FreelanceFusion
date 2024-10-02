@@ -11,10 +11,14 @@
 		<p><strong>Requirements:</strong>
 			<%= job.requirements.join(', ') %></p>
     <p><strong>Status:</strong> <%= job.status %></p>
-    <% if (job.payment_type === ' hourly') { %>
-				<strong>Pay:</strong> $<%= job.salary %>/hr <% } else if (job.payment_type==='project' ) { %>
-						<strong>Pay:</strong> $<%= job.salary %> (on project
-							delivery) <% } else { %> <strong>Pay:</strong> Not specified <% } %>
+    <% if (job.payment_type === 'hourly') { %>
+				<strong>Pay:</strong> $<%= job.salary %>/hr 
+	<% } else if (job.payment_type==='project' ) { %>
+				<strong>Pay:</strong> 
+	$<%= job.salary %> (on projectdelivery) 
+	<% } else { %> 
+		
+		<strong>Pay:</strong> Not specified <% } %>
 	</div>
 	<div class="edit-btn-container">
 		<% if (session && session.user && session.user.role=="freelancer" ) { %>
