@@ -6,7 +6,7 @@ module.exports = (io) => {
 
         // When the user logs in or connects, register their socket ID with their user ID
         socket.on('register', (userId) => {
-            onlineUsers[userId] = socket.id; // Store the socket ID by user ID
+            onlineUsers[userId] = socket.id;
             console.log(`User ${userId} connected with socket ID ${socket.id}`);
         });
 
@@ -26,7 +26,7 @@ module.exports = (io) => {
 
 // Utility function to emit notifications to a specific user
 module.exports.sendNotificationToUser = (io, userId, message) => {
-    const socketId = onlineUsers[userId]; // Look up the socket ID for the user
+    const socketId = onlineUsers[userId];
     if (socketId) {
         io.to(socketId).emit('task-notification', { message: message });
         console.log(`Notification sent to user ${userId}`);

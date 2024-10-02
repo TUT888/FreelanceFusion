@@ -2,6 +2,7 @@
 const projectSocket = io();
 let currentProjectId = "";
 let currentJobId = "";
+let createTaskStatus = false;
 
 // Handle task drag-and-drop logic with Socket.io
 
@@ -256,10 +257,12 @@ projectSocket.on('task-update', function (data) {
 
 // Listen for task creation and updates
 projectSocket.on('new-task', function (task) {
-    if (task.project_id === currentProjectId) {
-        const taskElement = createTaskElement(task);
-        document.getElementById(`${task.progress}-list`).appendChild(taskElement);
+    let newTask = task.task
+    if (task.project_id === currentProjectId && !createTaskStatus) {
+        const taskElement = createTaskElement(newTask);
+        document.getElementById(`${newTask.progress}-list`).appendChild(taskElement);
     }
+    createTaskStatus = false;
 });
 
 //Part 4: Set up Event
@@ -428,23 +431,35 @@ function attachButtonListeners() {
 }
 
 function attachTaskButtonListeners() {
-    document.getElementById('add-task-btn').addEventListener('click', function () {
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const createTaskBtn = document.getElementById('create-task-btn');
+
+    // Remove existing event listeners, if any
+    addTaskBtn.replaceWith(addTaskBtn.cloneNode(true));
+    createTaskBtn.replaceWith(createTaskBtn.cloneNode(true));
+
+    const newAddTaskBtn = document.getElementById('add-task-btn');
+    const newCreateTaskBtn = document.getElementById('create-task-btn');
+
+    // Add new event listeners
+    newAddTaskBtn.addEventListener('click', function () {
         const modal = document.getElementById('task-creation-modal');
-    if (modal) {  // Check if modal exists
-        const instance = M.Modal.getInstance(modal);
-        if (instance) {
-            instance.open();
+        if (modal) {  // Check if modal exists
+            const instance = M.Modal.getInstance(modal);
+            if (instance) {
+                instance.open();
+            } else {
+                // If the modal hasn't been initialized yet, initialize it and open it
+                M.Modal.init(modal);
+                M.Modal.getInstance(modal).open();
+            }
         } else {
-            // If the modal hasn't been initialized yet, initialize it and open it
-            M.Modal.init(modal);
-            M.Modal.getInstance(modal).open();
+            console.error("Modal with ID 'task-creation-modal' not found.");
         }
-    } else {
-        console.error("Modal with ID 'task-creation-modal' not found.");
-    }
     });
 
-    document.getElementById('create-task-btn').addEventListener('click', async function () {
+    newCreateTaskBtn.addEventListener('click', async function () {
+        createTaskStatus = true;
         const taskTitle = document.getElementById('new-task-title').value;
         const taskContent = document.getElementById('new-task-content').value;
         const totalTasks = document.querySelectorAll('#todo-list .task').length;

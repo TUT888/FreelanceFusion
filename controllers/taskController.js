@@ -37,7 +37,16 @@ const createTask = async (req, res) => {
 
         const result = await taskModel.insertOne(newTask);
         newTask._id = result.insertedId;
+        const io = req.app.get('io');
+        io.emit('new-task', { task: newTask, project_id: projectId });
+        const project = await projectModel.getProjectById(projectId);
+        const createdBy = req.session.user.role;
+        const assignedTo = createdBy === 'client' ? project.freelancer_id : project.client_id;
 
+        // Send notification to the assigned user
+        socket.sendNotificationToUser(io, assignedTo, `New task created by ${req.session.user.email}`);
+
+        
         // Respond with the newly created task
         res.json({ success: true, task: newTask });
     } catch (error) {
