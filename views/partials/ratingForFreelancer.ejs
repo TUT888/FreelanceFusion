@@ -38,7 +38,7 @@
                             <i class="material-icons Small orange-text">star</i>
                         <% } else if (rate2 > 0.25) { %>
                             <i class="material-icons Small orange-text">star_half</i>
-                        <% } else if (rate2 > 0) { %>
+                        <% } else if ((rate2 > 0) && (rate1 < 5)) { %>
                             <i class="material-icons Small orange-text">star_border</i>
                         <% } 
                         for (let i=0; i<5-rate1-1; i++) { %>
