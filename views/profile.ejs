@@ -11,7 +11,7 @@
                 </ul>
             </div>
 
-            <div id="profile" class="col s12 z-depth-2 amber lighten-5">
+            <div id="profile" class="col s12 z-depth-2 lighten-5">
                 <span id="role_caption" hidden>
                     <%= userData.role %>
                 </span>
@@ -31,7 +31,7 @@
                                 <strong>
                                     <%= userData.profile.name %>
                                 </strong>
-                                <span class="new badge orange" data-badge-caption="<%= userData.role %>"></span>
+                                <span class="new badge user-role" data-badge-caption="<%= userData.role %>"></span>
                             </h5>
                             <h6 class="blue-text text-darken-3">
                                 <strong>
@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <div id="ratingreview" class="col s12 z-depth-2 orange lighten-5">
+            <div id="ratingreview" class="col s12 z-depth-2 lighten-5">
                 <% if (userData) {
                     if (userData.role==="freelancer" ) { %>
                         <%- include('partials/ratingForFreelancer'); -%>
@@ -120,7 +120,7 @@
     <div class="container">
         <!-- Feature: Edit detail -->
         <div id="edit_section" class="row" hidden>
-            <div id="edit_profile" class="col s12 z-depth-2 amber lighten-5">
+            <div id="edit_profile" class="col s12 z-depth-2 lighten-5">
                 <h5 class="center-align"><strong>Edit Profile</strong></h5>
 
                 <h6 id="update_result_mess" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>
@@ -216,8 +216,8 @@
                             <% } %>
 
                                 <div class="row input-field right">
-                                    <button class="btn teal lighten-3" id="cancel_changes">Cancel</button>
-                                    <button class="btn teal darken-1" id="submit_changes">Confirm</button>
+                                    <button class="btn  lighten-3" id="cancel_changes">Cancel</button>
+                                    <button class="btn  darken-1" id="submit_changes">Confirm</button>
                                 </div>
                 </form>
             </div>

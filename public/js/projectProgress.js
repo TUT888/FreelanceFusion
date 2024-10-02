@@ -102,7 +102,7 @@ async function loadTasks(projectId) {
         const taskElement = createTaskElement(task);
         document.getElementById(`${task.progress}-list`).appendChild(taskElement);
     });
-    reinitializeSortable()
+    reinitializeSortable();
 }
 
 async function loadCandidate(jobId) {
@@ -117,7 +117,7 @@ async function loadCandidate(jobId) {
         document.getElementById('candidate_container').appendChild(candidateElement);
     }
     attachButtonListeners();
-
+    attachTaskButtonListeners();
 
 }
 
@@ -134,7 +134,7 @@ async function loadCandidates(jobId) {
         document.getElementById('candidate_container').appendChild(candidateElement);
     });
     attachButtonListeners();
-
+    attachTaskButtonListeners();
 }
 
 // Clear task lists before loading new tasks
@@ -300,6 +300,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var modals = document.querySelectorAll('.modal');
     M.Modal.init(modals);
 
+    attachTaskButtonListeners();
+
     var jobListElement = document.getElementById('job-list');
 
     // When a job item is clicked, update the job details on the right
@@ -425,47 +427,58 @@ function attachButtonListeners() {
     });
 }
 
-document.getElementById('add-task-btn').addEventListener('click', function () {
-    const modal = document.getElementById('task-creation-modal');
-    const instance = M.Modal.getInstance(modal);
-    instance.open();
-});
-
-
-document.getElementById('create-task-btn').addEventListener('click', async function () {
-    const taskTitle = document.getElementById('new-task-title').value;
-    const taskContent = document.getElementById('new-task-content').value;
-    const totalTasks = document.querySelectorAll('#todo-list .task').length;
-    const newPosition = (totalTasks + 1) * 100000; 
-
-    if (taskTitle.trim() !== '') {
-        const taskData = {
-            title: taskTitle,
-            content: taskContent,
-            progress: 'todo', // Defaulting to 'todo' list
-            position: newPosition,
-            projectId: currentProjectId // Using the current project ID
-        };
-
-        // Send the new task to the backend
-        const response = await fetch(`/projects/${currentProjectId}/tasks/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(taskData)
-        });
-        
-        const result = await response.json();
-        if (result.success) {
-            // Append the new task to the list
-            const newTaskElement = createTaskElement(result.task);
-            document.getElementById('todo-list').appendChild(newTaskElement);
-            reinitializeSortable();
+function attachTaskButtonListeners() {
+    document.getElementById('add-task-btn').addEventListener('click', function () {
+        const modal = document.getElementById('task-creation-modal');
+    if (modal) {  // Check if modal exists
+        const instance = M.Modal.getInstance(modal);
+        if (instance) {
+            instance.open();
         } else {
-            alert('Error creating task: ' + result.error);
+            // If the modal hasn't been initialized yet, initialize it and open it
+            M.Modal.init(modal);
+            M.Modal.getInstance(modal).open();
         }
     } else {
-        alert('Please enter a valid task title.');
+        console.error("Modal with ID 'task-creation-modal' not found.");
     }
-});
+    });
+
+    document.getElementById('create-task-btn').addEventListener('click', async function () {
+        const taskTitle = document.getElementById('new-task-title').value;
+        const taskContent = document.getElementById('new-task-content').value;
+        const totalTasks = document.querySelectorAll('#todo-list .task').length;
+        const newPosition = (totalTasks + 1) * 100000;
+
+        if (taskTitle.trim() !== '') {
+            const taskData = {
+                title: taskTitle,
+                content: taskContent,
+                progress: 'todo', // Defaulting to 'todo' list
+                position: newPosition,
+                projectId: currentProjectId // Using the current project ID
+            };
+
+            // Send the new task to the backend
+            const response = await fetch(`/projects/${currentProjectId}/tasks/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(taskData)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                // Append the new task to the list
+                const newTaskElement = createTaskElement(result.task);
+                document.getElementById('todo-list').appendChild(newTaskElement);
+                reinitializeSortable();
+            } else {
+                alert('Error creating task: ' + result.error);
+            }
+        } else {
+            alert('Please enter a valid task title.');
+        }
+    });
+}
