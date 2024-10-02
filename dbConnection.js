@@ -1,6 +1,8 @@
 // MongoDB connection
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const url = process.env.MONGODB_URL
+// const url = process.env.NODE_ENV === 'test' ? process.env.MONGODB_URL_TEST : process.env.MONGODB_URL;
+const url = process.env.MONGODB_URL;
+
 
 const client = new MongoClient(url, {
     serverApi: {
@@ -10,6 +12,12 @@ const client = new MongoClient(url, {
     }
 })
 
-client.connect();
+client.connect()
+    .then(() => {
+        console.log('Connected to MongoDB');
+    })
+    .catch(err => {
+        console.error('Failed to connect to MongoDB', err);
+    });
 
 module.exports = client;

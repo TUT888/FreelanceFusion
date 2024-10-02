@@ -1,0 +1,71 @@
+<!-- views/jobForm.ejs -->
+<%- include('partials/header'); -%>
+
+<div class="container">
+    <h4><%= formTitle %></h4>
+    <form action="<%= action %>" method="POST">
+        <div class="row">
+            <!-- Job Title -->
+            <div class="input-field col s12">
+                <input type="text" name="title" id="title" value="<%= job ? job.title : '' %>" required>
+                <label for="title" class="<%= job ? 'active' : '' %>">Job Title</label>
+            </div>
+
+            <!-- Description -->
+            <div class="input-field col s12">
+                <textarea name="description" id="description" class="materialize-textarea" required><%= job ? job.description : '' %></textarea>
+                <label for="description" class="<%= job ? 'active' : '' %>">Job Description</label>
+            </div>
+
+            <!-- Payment Type -->
+            <div class="input-field col s6">
+                <select name="payment_type" id="payment_type" required>
+                    <option value="" disabled <%= !job || !job.payment_type ? 'selected' : '' %>>Choose payment type</option>
+                    <option value="hourly" <%= job && job.payment_type === 'hourly' ? 'selected' : '' %>>Hourly</option>
+                    <option value="project" <%= job && job.payment_type === 'project' ? 'selected' : '' %>>Project based</option>
+                </select>
+                <label for="payment_type">Payment Type</label>
+            </div>
+
+            <!-- Salary -->
+            <div class="input-field col s6">
+                <input type="number" step="0.01" name="salary" id="salary" value="<%= job ? job.salary : '' %>" required>
+                <label for="salary" class="<%= job ? 'active' : '' %>">Salary</label>
+            </div>
+
+            <!-- Requirements -->
+            <div class="input-field col s12">
+                <input type="text" name="requirements" id="requirements" placeholder="e.g., React, Node.js" value="<%= job ? job.requirements.join(', ') : '' %>" required>
+                <label for="requirements" class="<%= job ? 'active' : '' %>">Requirements (comma-separated)</label>
+            </div>
+
+            <!-- Status -->
+            <div class="input-field col s12">
+                <select name="status" id="status" required>
+                    <option value="" disabled <%= !job || !job.status ? 'selected' : '' %>>Choose status</option>
+                    <option value="open" <%= job && job.status === 'open' ? 'selected' : '' %>>Open</option>
+                    <option value="closed" <%= job && job.status === 'closed' ? 'selected' : '' %>>Closed</option>
+                </select>
+                <label for="status">Job Status</label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="input-field col s12">
+                <button type="submit" class="btn waves-effect waves-light">
+                    <%= formTitle %>
+                </button>
+                <a href="/jobs" class="btn grey waves-effect waves-light">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Materialize select elements
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+    });
+</script>

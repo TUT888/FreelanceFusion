@@ -1,0 +1,79 @@
+<div class="row project_container z-depth-2" id="project_container" data-id ="<%= (session && session.user.role) ? session.user.role : 'client' %>">
+    <div class="col s5">
+        <ul class="tabs">
+            <li class="tab col s6"><a class="active" href="#progress">Progress</a></li>
+            <% if (session && session.user && session.user.role == "client") { %>
+                <li class="tab col s6"><a href="#candidate">Candidate</a>
+
+            <% }else{ %>
+                <li class="tab col s6"><a href="#project_info">General Info</a>
+
+            <% } %>
+
+            </li>
+        </ul>
+    </div>
+    <div class="col s12">
+        <div id="progress" class="col s12">
+            <div class="row">
+                <div class="col s12"><br>
+                    <button id="add-task-btn" class="btn">Add Task</button>
+                    <div class="board">
+                        <div class="column" id="todo">
+                            <h5>To-do</h5>
+
+                            <ul class="task-list" id="todo-list">
+                            </ul>
+                        </div>
+                        <div class="column" id="in-progress">
+                            <h5>In Progress</h5>
+                            <ul class="task-list" id="in-progress-list"></ul>
+                        </div>
+                        <div class="column" id="completed">
+                            <h5>Completed</h5>
+
+                            <ul class="task-list" id="completed-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% if (session && session.user && session.user.role == "client") { %>
+            <div id="candidate" class="col s12 ">
+                <div class="row">
+                    <div class="col s12" id ="">
+                        <ul class="task-list" id="candidate_container">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        <% }else{ %>
+            <div id="project_info" class="col s12 ">
+                <div class="row">
+                    <div class="col s12" id="project_info_container">
+    
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+</div>
+
+<div id="task-creation-modal" class="modal">
+    <div class="modal-content">
+      <h4>Create a New Task</h4>
+      <div class="input-field">
+        <input id="new-task-title" type="text" placeholder="Task Title">
+      </div>
+      <div class="input-field">
+        <input id="new-task-content" type="text" placeholder="Task Content">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" id="create-task-btn" class="modal-close btn">Create Task</a>
+    </div>
+  </div>
+
+<script src="/js/projectProgress.js"></script>

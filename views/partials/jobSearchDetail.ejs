@@ -1,0 +1,37 @@
+<!-- partials/jobSearchDetail.ejs -->
+<div class="card">
+	<div class="card-content">
+		<span class="card-title">
+			<%= job.title %>
+		</span>
+		<p>
+			<strong>Description:</strong>
+			<%= job.description %>
+		</p>
+		<p><strong>Requirements:</strong>
+			<%= job.requirements.join(', ') %></p>
+    <p><strong>Status:</strong> <%= job.status %></p>
+    <% if (job.payment_type === 'hourly') { %>
+				<strong>Pay:</strong> $<%= job.salary %>/hr 
+	<% } else if (job.payment_type==='project' ) { %>
+				<strong>Pay:</strong> 
+	$<%= job.salary %> (on projectdelivery) 
+	<% } else { %> 
+		
+		<strong>Pay:</strong> Not specified <% } %>
+	</div>
+	<div class="edit-btn-container">
+		<% if (session && session.user && session.user.role=="freelancer" ) { %>
+			<% if (alreadyApplied) { %>
+                <!-- If already applied, disable the button -->
+                <button class="btn disabled">Applied</button>
+            <% } else { %>
+                <!-- If not applied, show Apply button -->
+                <button class="btn apply-btn" data-job-id="<%= job._id %>">Apply</button>
+            <% } %>
+			
+		<% } %>
+
+
+	</div>
+</div>

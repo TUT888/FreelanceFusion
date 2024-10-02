@@ -4,21 +4,77 @@
 <head>
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Include Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <!--Import materialize-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="css/main.css">
+    <link type="text/css" rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a class="brand-logo left">FreelanceFusion</a>
+            <a href="/" class="brand-logo left">FreelanceFusion</a>
             <ul id="nav-mobile" class="right ">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
+                
+            </ul>
+            <ul id="nav-mobile" class="right">
+                <!-- Find Jobs -->
+                <li><a href="/jobs/search">Find Jobs</a></li>
+                
+                <!-- Find Freelancers -->
+                <li><a href="/freelancers/search">Find Freelancer</a></li>
+
+                <% if (!session.user) { %>
+                <li><a href="/sign-in">Sign In</a></li>
+                <li><a href="/register">Join</a></li>
+                <% } else { %>
+                    <!-- Mailbox Icon -->
+                    <li>
+                        <a href="/messages">
+                            <i class="material-icons">mail</i>
+                        </a>
+                    </li>
+                    <!-- Avatar Dropdown -->
+                    <li>
+                        <a class="dropdown-trigger" href="#!" data-target="dropdown1">
+                            <i class="material-icons">account_circle</i>
+                        </a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </nav>
+
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <% if (session.user && session.user.role === 'client') { %>
+            <!-- Find My Jobs -->
+            <li><a href="/jobs/">My Jobs</a></li>
+        <% } %>
+        <li><a href="/projects">My Projects</a></li>
+        <li><a href="/profile">My Profile</a></li>
+        <li class="divider"></li>
+        <li><a href="/logout">Log Out</a></li>
+    </ul>
+
+    <!--Import jQuery before materialize.js-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize dropdown
+            $('.dropdown-trigger').dropdown({
+                coverTrigger: false
+            });
+            // Initialize tooltips
+            $('.tooltipped').tooltip();
+        });
+    </script>
