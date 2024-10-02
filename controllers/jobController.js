@@ -78,7 +78,6 @@ const addJob = async (req, res) => {
         updated_at: new Date()
     };
 
-    console.log("TEST:: ", jobData);
 
     try {
         await jobModel.createJob(jobData);

@@ -58,3 +58,14 @@
   .edit-btn-container a {
     color: #fff;
   }
+
+  .message{
+    width: fit-content !important;
+  }
+
+  #message-history {
+    display: flex;
+    flex-direction: column-reverse;
+    max-height: 100px;
+    overflow-y: auto;
+  }
