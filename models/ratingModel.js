@@ -86,16 +86,25 @@ const addNewRating = async (dataObj, callback) => {
 // PROJECT THINGS within RATING MODELS
 // Project related things: This may be transferred to projectModel
 let getProjectDateAndStatus = async (projectID) => {
+    console.log(projectID);
     let query = { _id: projectID };
     let result = await projectCollection.findOne(query);
+
+    let projectDetail;
     if (!result) {
         console.log("No user project found");
-    }
-
-    // Process data
-    let projectDetail = {
-        status: result.status,
-        totalDays: Math.ceil((result.updated_at-result.created_at)/(1000*60*60*24))
+        projectDetail = {
+            status: "Unknown",
+            totalDays: 0
+        }
+    } else {
+        // Process data
+        let currentDate = new Date();
+        projectDetail = {
+            status: result.status,
+            // totalDays: Math.ceil((result.updated_at-result.created_at)/(1000*60*60*24))
+            totalDays: Math.ceil((currentDate-result.created_at)/(1000*60*60*24))
+        }
     }
 
     return projectDetail;

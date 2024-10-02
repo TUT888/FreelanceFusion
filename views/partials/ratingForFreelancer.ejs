@@ -37,7 +37,7 @@
                             <i class="material-icons Small orange-text">star</i>
                         <% } else if (rate2 > 0.25) { %>
                             <i class="material-icons Small orange-text">star_half</i>
-                        <% } else { %>
+                        <% } else if (rate2 > 0) { %>
                             <i class="material-icons Small orange-text">star_border</i>
                         <% } 
                         for (let i=0; i<5-rate1-1; i++) { %>
@@ -94,7 +94,7 @@
                     </div>
                     <div style="padding-left: 3%; padding-right: 3%;">
                         <p class="yellow lighten-4" style="padding: 3%;">
-                            <span>Duration: <%= rating.project_duration %> days</span>
+                            <span>Project: <%= rating.project_duration %> day(s) ago</span>
                             <span class="new badge green" data-badge-caption="<%= rating.project_status %>"></span>
                         </p>
                     </div>
