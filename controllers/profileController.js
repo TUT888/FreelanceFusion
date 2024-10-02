@@ -178,6 +178,34 @@ const getProjectDetailForRating = (req, res) => {
     }
 }
 
+const changeProjectStatus = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.redirect('/sign-in');
+        }
+
+        let projectID = req.body.id;
+
+        projectCollection.changeStatusToDone(projectID, (result) => {
+            if (result.matchedCount!=0) {
+                if (result.modifiedCount==0) { // No changes made
+                    console.log("Failed updated project status!");
+                    res.status(400).json({ success: false, message: "There are no changes made."});
+                } else { // Change successfully
+                    console.log("Successfully project status!");
+                    res.status(200).json({ success: true, message: "Successfully updated project status! Page will be reloaded in few second...", modifiedCount: result.modifiedCount});
+                }
+            } else { // No data found
+                console.log("Failed project status!");
+                res.status(400).json({ success: false, message: "There is an error when updating your project status. Please try again later!"});
+            }
+        });
+    } catch (err) {
+        console.error(`Error updating project status: ${err}`);
+        res.status(400).json({ success: false, message: `Error updating project status: ${err}`});
+    }
+}
+
 module.exports = {
     registerUser,
     authenticateUser,
@@ -186,5 +214,6 @@ module.exports = {
     deleteRating,
     displayAddRatingForm,
     getProjectDetailForRating,
-    addNewRating
+    addNewRating,
+    changeProjectStatus
 }

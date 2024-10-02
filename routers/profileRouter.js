@@ -12,5 +12,6 @@ router.get('/rating/form', isAuthenticated, controller.displayAddRatingForm);
 router.post('/rating/add', isAuthenticated, controller.addNewRating);
 
 router.get('/rating/get_project', isAuthenticated, controller.getProjectDetailForRating);
+router.put('/rating/change_project_status', isAuthenticated, controller.changeProjectStatus);
 
 module.exports = router;

@@ -44,18 +44,18 @@
                                     <th>Status</th>
                                     <td id="td_status" style="font-weight: bold;">Data</td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th>Progress</th>
                                     <td id="td_progress">Data</td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <th>Start</th>
                                     <td id="td_start_date">Data</td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th>Last update</th>
                                     <td id="td_last_date">Data</td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                     </div>
@@ -85,6 +85,15 @@
                 <!-- Rating & Review: hidden by default -->
                 <div class="row">
                     <h6 id="announcement_message" class="center-align" style="font-weight: bold; color: rgb(216, 12, 12);" hidden>Result</h6>
+                    <div class="valign-wrapper center" >
+                        <!-- <span class="col s12">Do you want to change the project status to complete?</span>
+                        <a id="add_rating_btn" class="btn right" href="/profile/rating/form">Add</a> -->
+                        <span id="change_status_section" class="col s12" hidden>
+                            <a id="change_status_btn" class="btn">Change project status to done</a>
+                        </span>
+                        
+                    </div>
+                    <p class="col s12 center" id="change_status_mess" style="font-weight: bold; color: red;" hidden>Result</p>
                 </div>
 
                 <div id="give_rating_section" hidden>
@@ -140,6 +149,7 @@
         $('#project_detail_section').hide();
         $('#error_message').hide();
         $('#announcement_message').hide();
+        $('#change_status_section').hide();
         $('#give_rating_section').hide();
 
         $('#add_rating_form').trigger("reset");
@@ -152,6 +162,38 @@
         if ($('#project_selection').val()) {
             showProjectDetail();
         }
+    });
+
+    // Change project status
+    $('#change_status_btn').on('click', function () {
+        let project_id = $('#project_selection').find(':selected').data('projectid');
+        $.ajax({
+            url: `/profile/rating/change_project_status`,
+            type: "PUT",
+            contentType: 'application/json',
+            data: JSON.stringify({ id: project_id }),
+            success: function (result) {
+                $('#change_status_mess').show();
+                $('#change_status_mess').css('color', 'green');
+                if (result.responseJSON) {
+                    $('#change_status_mess').html(result.responseJSON.message);
+                } else {
+                    $('#change_status_mess').html(result.message);
+                }
+                setTimeout(function () {
+                    window.location.href = "/profile/rating/form";
+                }, 2000);
+            },
+            error: function (result) {
+                $('#change_status_mess').show();
+                $('#change_status_mess').css('color', 'red');
+                if (result.responseJSON) {
+                    $('#change_status_mess').html(result.responseJSON.message);
+                } else {
+                    $('#change_status_mess').html(result.message);
+                }
+            }
+        })
     });
 
     function renderProjectDetail(project) { 
@@ -167,9 +209,9 @@
         } else {
             $('#td_status').css("color", "darkred");
         }
-        $('#td_progress').text(project.project_info.progress);
+        // $('#td_progress').text(project.project_info.progress);
         $('#td_start_date').text(project.project_info.start_date);
-        $('#td_last_date').text(project.project_info.last_date);
+        // $('#td_last_date').text(project.project_info.last_date);
         
         $('#td_job_title').text(project.job_info.job_title);
         $('#td_job_post_date').text(project.job_info.job_post_date);
@@ -178,12 +220,15 @@
         $('#project_detail_section').show();
         $('#error_message').hide();
         $('#announcement_message').hide();
+        $('#change_status_section').hide();
     }
 
     function showAnnouncementMessage(announcementMessage) {
-        $('#announcement_message').show()
+        $('#announcement_message').show();
         $('#announcement_message').css('color', 'brown');
         $('#announcement_message').html(announcementMessage);
+
+        $('#change_status_section').show();
     }
 
     function showErrorMessage(errorMessage) {
@@ -191,7 +236,11 @@
         $('#give_rating_section').hide();
         $('#error_message').show();
         $('#error_message').css('color', 'red');
-        $('#error_message').html("There was an error when retrieving project data, please try again later");
+        if (errorMessage) {
+            $('#error_message').html(errorMessage);
+        } else {
+            $('#error_message').html("There was an error when retrieving project data, please try again later");
+        }
     }
     
     function showProjectDetail() {

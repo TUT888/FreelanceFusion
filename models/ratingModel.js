@@ -134,7 +134,8 @@ const processProjectForRating = async (availableProjects) => {
 
             let projectCreatedDateObj = new Date(projectData.created_at);
             let projectUpdateDateObj = new Date(projectData.updated_at);
-            let duration = `${projectCreatedDateObj.toLocaleDateString()} - ${projectUpdateDateObj.toLocaleDateString()}`;
+            // let duration = `${projectCreatedDateObj.toLocaleDateString()} - ${projectUpdateDateObj.toLocaleDateString()}`;
+            let duration = projectCreatedDateObj.toLocaleDateString();
 
             let project_info = `${freelancer_data.profile.name}: project ${(projectData.status).replace("_", " ")} (${duration})`
             processedProjectData.push({  
@@ -169,7 +170,7 @@ const processProjectDetailForRating = async (projectData) => {
     let jobPostDateObj = new Date(job_data.created_at);
 
     let start_date = `${projectCreatedDateObj.toLocaleDateString()} - ${projectCreatedDateObj.toLocaleTimeString()}`;
-    let last_date = `${projectUpdateDateObj.toLocaleDateString()} - ${projectUpdateDateObj.toLocaleTimeString()}`;
+    // let last_date = `${projectUpdateDateObj.toLocaleDateString()} - ${projectUpdateDateObj.toLocaleTimeString()}`;
     let job_post_date = `${jobPostDateObj.toLocaleDateString()} - ${jobPostDateObj.toLocaleTimeString()}`;
     processedProjectData = {  
         project_id: projectData._id,
@@ -178,9 +179,9 @@ const processProjectDetailForRating = async (projectData) => {
         project_info: {
             freelancer_name: freelancer_data.profile.name,
             status: (projectData.status).replace("_", " "),
-            progress: projectData.progress,
+            // progress: projectData.progress,
             start_date: start_date,
-            last_date: last_date
+            // last_date: last_date
         },
         job_info: {
             job_title: job_data.title,
@@ -191,10 +192,24 @@ const processProjectDetailForRating = async (projectData) => {
     return processedProjectData;
 }
 
+// Get specific project detail: This may be transferred to projectModel
+let changeStatusToDone = async (projectID, callback) => {
+    let filter = { _id: new ObjectId(projectID) };
+    let updateDoc = { $set: { status: "done" } };
+    
+    projectCollection.updateOne(filter, updateDoc).then((result)=>{
+        console.log(
+            `Found ${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+        );
+        callback(result);
+    })
+}
+
 module.exports = {
     getUserRating,
     deleteGivenRating,
     getProjectForRating,
     getProjectDetailForRating,
-    addNewRating
+    addNewRating,
+    changeStatusToDone
 }
