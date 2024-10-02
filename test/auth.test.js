@@ -15,6 +15,8 @@ const clearCollections = async () => {
     await usersCollection.deleteMany({ email: 'test@example.com' });
     await authCollection.deleteMany({ email: 'duplicate@example.com' });
     await usersCollection.deleteMany({ email: 'duplicate@example.com' });
+    await authCollection.deleteMany({ username: 'testuser' });
+    await authCollection.deleteMany({ username: 'newuser' });
 };
 
 
