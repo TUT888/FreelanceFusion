@@ -1,9 +1,70 @@
+
+body{
+  color: #1f3650! important;
+  /* font-family:Verdana, Geneva, Tahoma, sans-serif; */
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+nav, .page-footer{
+background-color: #0A3D64 !important;
+font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+nav ul a{
+  color: #fff4f0!important;
+}
+.brand-logo{
+  color: #fff4f0 !important;
+  padding-left:20px !important;
+}
+.btn{
+  background-color: #8E4A49;
+}
+.btn:hover, .btn-large:hover, .btn-small:hover{
+  background-color: #912c2a ;
+}
+
+.collection .collection-item.active {
+  background-color: #0A3D64;
+  color: #fff4f0;
+}
+
+
+.footer_container{
+  margin-bottom: 0px !important;
+  color: #fff4f0 !important;
+}
+
+.tabs .tab a{
+  color: #a82b17!important;
+}
+.tabs .tab a:hover, .tabs .tab a.active{
+  color: #912c2a! important
+}
+
+.pagination li.active{
+  background-color: #034078;
+}
+
+.dropdown-content{
+  min-width:200px !important;
+}
+
+.dropdown-content li>a, .dropdown-content li>span{
+  color:#1f3650!important
+}
+
+
+.tabs .indicator{
+  background-color: #a82b17;
+}
 .profile-spacing {
     padding-top: 1rem;
     padding-left: 1rem; 
     padding-bottom: 1rem;
 }
-
+.user-role{
+  background-color: #A8B293;
+}
 .page-footer {
     padding: 0.1%;
 }
@@ -76,7 +137,7 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #d5f2ffba;
     min-height: 400px;
 }
 
@@ -87,11 +148,12 @@
 }
 
 .task {
-    background-color: #e0e0e0;
+    background-color: #ffddd8;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
     cursor: pointer;
+    box-shadow: #912c2a;
 }
 
 
