@@ -131,3 +131,15 @@
   gap: 12px;
 }
 
+
+
+  .message{
+    width: fit-content !important;
+  }
+
+  #message-history {
+    display: flex;
+    flex-direction: column;
+    max-height: 100px;
+    overflow-y: auto;
+  }
