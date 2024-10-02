@@ -13,8 +13,9 @@
                     let totalStar = 0;
                     let countStar = [0, 0, 0, 0, 0];
                     allUserRating.forEach(function (rating) {
-                        totalStar += rating.rating;
-                        countStar[rating.rating-1] += 1;
+                        let rt = parseInt(rating.rating);
+                        totalStar += rt;
+                        countStar[rt-1] += 1;
                     })
                     totalStar = totalStar/allUserRating.length;
                     let allPercentStar = [0, 0, 0, 0, 0];
