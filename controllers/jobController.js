@@ -50,10 +50,16 @@ const getJobDetail = async (req, res) => {
     try {
         let job = await collection.getJobById(jobId);
         // Check if the user has already applied
-        const existingApplication = await applicationModel.findOne({
-            job_id: new ObjectId(jobId),
-            freelancer_id: new ObjectId(session.user.id),
-        });
+        let existingApplication = false;
+
+        // Check if the session and user data exist
+        if (session && session.user) {
+            existingApplication = await applicationModel.findOne({
+                job_id: new ObjectId(jobId),
+                freelancer_id: new ObjectId(session.user.id),
+            });
+        }
+
 
         
         if (job) {
