@@ -29,7 +29,7 @@ const createTask = async (req, res) => {
             content,
             progress,
             project_id: new ObjectId(projectId),
-            position: position, // Default position value
+            position: position,
             created_at: new Date(),
             updated_at: new Date(),
 

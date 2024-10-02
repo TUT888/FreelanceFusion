@@ -158,19 +158,17 @@
             }
 
             function loadJobDetail(jobId){
-                     // Make an AJAX request to fetch the rendered partial
-                     fetch(`/jobs/search/${jobId}`)
-                            .then(response => response.text()) // Return the response as HTML
-                            .then(html => {
-                                // Update the job details section with the rendered partial
-                                document.getElementById('job-details').innerHTML = html;
-                                attachApplyButtonListener();
-                            })
-                            .catch(error => {
-                                console.error(error)
-                            });
-
-             
+                // Make an AJAX request to fetch the rendered partial
+                fetch(`/jobs/search/${jobId}`)
+                .then(response => response.text()) // Return the response as HTML
+                .then(html => {
+                    // Update the job details section with the rendered partial
+                    document.getElementById('job-details').innerHTML = html;
+                    attachApplyButtonListener();
+                })
+                .catch(error => {
+                    console.error(error)
+                });
             }
 
             document.addEventListener('DOMContentLoaded', function () {
