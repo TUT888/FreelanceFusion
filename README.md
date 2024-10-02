@@ -25,7 +25,7 @@ This software project includes following features:
     - Freelancer:
         - Apply for a job
 - **Project Management**: 
-    - Manage your project with tasks can boards (To-do, In progress and Completed)
+    - Manage your project with tasks can boards (To-do, In progress and Completed). This feature is real-time sync between client and freelancer.
     - Client:
         - Accept application from freelancer
         - Remove freelancer from current project
@@ -37,6 +37,7 @@ This software project includes following features:
         - Delete your ratings and reviews
     - Freelacner:
         - View your received ratings
+    - Real-time notification is sent to target freelancer immediately when a new rating is added for them
 
 [Back to top](#introduction)
 
@@ -90,8 +91,8 @@ npm test
 
 ## Contribution
 Our team members:
-- Alice Tat: responsible for Profile Management, Ratings and Reviews features
-- Tuan Phong Nguyen: responsible for Job/Freelancer Search, Project Management features
+- Alice Tat: responsible for profile management, ratings and reviews features
+- Tuan Phong Nguyen: responsible for job/freelancer search, project management features
 - Caroline Nguyen: responsible for UI of homepage, login, register (frontend)
 - Sumedh Vartak: responsible for user authentication (backend) and real-time communication
 - Misa Aghera: responsible for job post management and real-time communication
