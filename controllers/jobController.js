@@ -195,7 +195,7 @@ const applyForJob = async (req, res) => {
         await applicationModel.insertApplication(applicationData);
 
         // Respond with success
-        res.json({ success: true, message: 'Application submitted successfully!' });
+        res.status(201).json({ success: true, message: 'Application submitted successfully!' });
 
     } catch (error) {
         console.error('Error applying for job:', error);

@@ -48,6 +48,7 @@ let jobRouter = require("./routers/jobRouter");
 let freelancerRouter = require("./routers/freelancerRouter");
 let projectRouter = require('./routers/projectRouter');
 let messageRouter = require("./routers/messageRouter");
+let testRouter = require("./routers/testRouter");
 const { ObjectId } = require('mongodb'); 
 
 app.use("/", homeRouter);
@@ -56,6 +57,7 @@ app.use("/jobs", jobRouter);
 app.use("/freelancers", freelancerRouter);
 app.use('/projects', projectRouter);
 app.use("/messages", messageRouter);
+app.use("/test", testRouter);
 
 // Socket
 let http = require("http").createServer(app);
