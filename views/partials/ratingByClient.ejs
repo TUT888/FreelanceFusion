@@ -6,11 +6,12 @@
     <% if (allUserRating) { %>
         <div class="col s12 center">
             <div class="card-panel valign-wrapper blue lighten-4">
-                <span class="col s12">You have given total of <%= allUserRating.length %> reviews for freelancer.</span>
+                <span data-cy="overall-rating-text" class="col s12">You have given total of <%= allUserRating.length %> reviews for freelancer.</span>
                 <a id="add_rating_btn" class="btn right" href="/profile/rating/form">Add</a>
             </div>
         </div>
 
+        <div data-cy="given-rating-section">
         <% 
         let count = 0;
         allUserRating.forEach(function (rating) { 
@@ -36,14 +37,12 @@
                         </div>
                     </div>
                     <!-- DROP DOWN -->
+                    <!-- Delete Button -->
                     <div>
-                        <!-- Dropdown Button -->
-                        <div>
-                            <span hidden><%= rating.rating_id %></span>
-                            <button class="btn-small red right delete-review-btn" style="margin-right: 1rem; margin-top: 1rem;">
-                                <i class="material-icons">clear</i>
-                            </button>
-                        </div>
+                        <span hidden><%= rating.rating_id %></span>
+                        <button data-cy="delete-review-btn" class="btn-small red right delete-review-btn" style="margin-right: 1rem; margin-top: 1rem;">
+                            <i class="material-icons">clear</i>
+                        </button>
                     </div>
                 </div>
 
@@ -61,7 +60,7 @@
             </div>
         </div>
         <% }) %>
-
+        </div>
     <% } else { %>
         <div class="col s12">
             <h6 class="center-align">You haven't given any ratings and reviews yet.</h6>
