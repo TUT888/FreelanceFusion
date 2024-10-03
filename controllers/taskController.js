@@ -69,7 +69,8 @@ const updateTaskStatus = async (req, res) => {
         const assignedTo = createdBy === 'client' ? project.freelancer_id : project.client_id;
         console.log(assignedTo)
         socket.sendNotificationToUser(io, assignedTo, `Task has been updated by ${req.session.user.email}`);
-        
+        res.status(200).json({ success: true});
+
 
     } catch (error) {
         console.log(error)
