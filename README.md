@@ -10,6 +10,8 @@ connections.
 - [Features](#features)
 - [Installation](#installation)
 - [Testing](#testing)
+    - [Unit test](#1-unit-test)
+    - [End-to-end test](#2-end-to-end-test)
 - [Contribution](#contribution)
 
 ## Features
@@ -85,7 +87,7 @@ This software project includes following features:
 **IMPORTANT NOTE: before running any type of testing, make sure you have your website running**
 
 ### 1. Unit test
-Use following command to run the test with Mocha and Chai:
+Use following command to run all the test with Mocha and Chai:
 ```
 npm test
 ```
@@ -101,7 +103,7 @@ To run the end-to-end test, choose one of the following options:
     - Choose a browser and click "Start E2E Testing"
     - Click on any `.cy.js` file to start the testing with this them. For example, click on the `home.cy.js` to start testing the features in homepage.
 - Test with command line:
-    - Run the following command:
+    - Run all tests with the following command:
         ```
         npm run e2e:chrome
         ```
@@ -112,8 +114,8 @@ To run the end-to-end test, choose one of the following options:
 
 ## Contribution
 Our team members:
-- Alice Tat: responsible for profile management, ratings and reviews features
-- Tuan Phong Nguyen: responsible for job/freelancer search, project management features
-- Caroline Nguyen: responsible for UI of homepage, login, register (frontend)
-- Sumedh Vartak: responsible for user authentication (backend) and real-time communication
-- Misa Aghera: responsible for job post management and real-time communication
+- **Alice Tat**: responsible for profile management, ratings and reviews features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
+- **Tuan Phong Nguyen**: responsible for job/freelancer search, project management features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
+- **Caroline Nguyen**: responsible for UI of homepage, login, register (frontend implementation).
+- **Sumedh Vartak**: responsible for database (implementation and backup), user authentication (backend) and real-time communication features.
+- **Misa Aghera**: responsible for database design, job post management and real-time communication features.
