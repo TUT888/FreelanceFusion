@@ -44,9 +44,6 @@ const getJobById = async (id) => {
     
     try {
         const job = await collection.findOne({ _id: new ObjectId(id) }); 
-        if (!job) {
-            throw new Error('Job not found'); // Throw an error if job is not found
-        }
         return job; // Return the job if found
     } catch (error) {
         throw error; // Throw the error to be handled by the caller
