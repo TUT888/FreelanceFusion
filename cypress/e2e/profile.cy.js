@@ -1,5 +1,5 @@
-describe('FreelanceFusion E2E profile test', () => {
-    describe('Homepage test', () => {
+describe('FreelanceFusion E2E homepage test', () => {
+    describe('Homepage components test', () => {
         beforeEach(() => {
             cy.visit("http://localhost:3000/");
         })
