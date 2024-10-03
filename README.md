@@ -8,6 +8,7 @@ connections.
 
 ## Table of Contents
 - [Features](#features)
+- [Prototype](#prototype)
 - [Installation](#installation)
 - [Testing](#testing)
     - [Unit test](#1-unit-test)
@@ -40,6 +41,11 @@ This software project includes following features:
     - Freelacner:
         - View your received ratings
     - Real-time notification is sent to target freelancer immediately when a new rating is added for them
+
+[Back to top](#introduction)
+
+## Prototype
+The HI-FI prototype of this project can be found at: [Figma - FreelanceFusion HI-FI prototype](https://www.figma.com/design/H97qY8DnbbelCcCFFsgULU/FreelanceFusion-HI-FI-prototype?node-id=0-1&t=qX4jao1bJt0mtyZQ-1)
 
 [Back to top](#introduction)
 
