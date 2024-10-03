@@ -82,10 +82,31 @@ This software project includes following features:
 
 ## Testing
 
-Unit test: use following command to run the test with Mocha and Chai:
+**IMPORTANT NOTE: before running any type of testing, make sure you have your website running**
+
+### 1. Unit test
+Use following command to run the test with Mocha and Chai:
 ```
 npm test
 ```
+
+### 2. End-to-end test
+To run the end-to-end test, choose one of the following options:
+- Test with Cypress interface open:
+    - Run the following command to launch the browser:
+        ```
+        npm run e2e:open
+        ```
+    - In the welcome page, choose E2E testing
+    - Choose a browser and click "Start E2E Testing"
+    - Click on the `spec.cy.js` to start the testing with this file.
+- Test with command line:
+    - Run the following command:
+        ```
+        npm run e2e:chrome
+        ```
+    - Observe the testing result in command line
+    
     
 [Back to top](#introduction)
 
