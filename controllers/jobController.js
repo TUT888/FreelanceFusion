@@ -26,7 +26,7 @@ const getJobList = async (req, res) => {
 
         if (paginationResult.data.length === 0 && page > 1) {
             // Redirect to the previous valid page or the first page if none exists
-            return res.redirect(`/jobs/search?page=${Math.max(1, paginationResult.totalPages)}`);
+            return res.redirect(`/jobs/search?page=${page - 1}`);
         }
 
         res.render('jobSearch', {
@@ -46,9 +46,11 @@ const getJobList = async (req, res) => {
 const getJobDetail = async (req, res) => {
     const jobId = req.params.id;
     const session = req.session;
-    // Fetch the job details asynchronously from the model
+
     try {
+        // Fetch the job details asynchronously from the model
         let job = await collection.getJobById(jobId);
+
         // Check if the user has already applied
         let existingApplication = false;
 
@@ -61,17 +63,17 @@ const getJobDetail = async (req, res) => {
         }
 
 
-        
         if (job) {
-            res.render('partials/jobSearchDetail', { job, session, alreadyApplied: existingApplication ? true : false });
+            res.render('partials/jobSearchDetail', { job, session, alreadyApplied: !!existingApplication });
         } else {
             res.status(404).send('Job not found');
         }
     } catch (error) {
-        console.log(error)
+        console.error("Error fetching job details:", error);
+        res.status(500).send('Error fetching job details');
     }
-
 };
+
 
 
 const getAddJobForm = (req, res) => {
@@ -80,11 +82,10 @@ const getAddJobForm = (req, res) => {
 
 const addJob = async (req, res) => {
     const session = req.session;
-
     const { title, description, payment_type, salary, requirements, status } = req.body;
     const clientId = req.session.user.id; 
     const userRole = req.session.user.role; 
-    
+
     if (userRole !== 'client') {
         return res.status(403).send('Forbidden: Only clients can add jobs');
     }
