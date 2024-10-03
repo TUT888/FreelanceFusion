@@ -1,12 +1,10 @@
-describe('FreelanceFusion end2end test', () => {
+describe('FreelanceFusion end2end Sample Test', () => {
     describe('Homepage test', () => {
         beforeEach(() => {
             cy.visit("http://localhost:3000/");
         })
-        it('Testimonials are visible', () => {
-            cy.get('[id="testimonials"]').should("exist");
-
-            
+        it('The website runs normally', () => {
+            cy.get('body').should("exist");
         })
     })
 })

@@ -99,7 +99,7 @@ To run the end-to-end test, choose one of the following options:
         ```
     - In the welcome page, choose E2E testing
     - Choose a browser and click "Start E2E Testing"
-    - Click on the `spec.cy.js` to start the testing with this file.
+    - Click on any `.cy.js` file to start the testing with this them. For example, click on the `home.cy.js` to start testing the features in homepage.
 - Test with command line:
     - Run the following command:
         ```
