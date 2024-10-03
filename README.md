@@ -99,6 +99,11 @@ npm test
 ```
 
 ### 2. End-to-end test
+Start server with following command:
+```
+npm run start:test
+```
+
 To run the end-to-end test, choose one of the following options:
 - Test with Cypress interface open:
     - Run the following command to launch the browser:
