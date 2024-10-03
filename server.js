@@ -48,7 +48,7 @@ let jobRouter = require("./routers/jobRouter");
 let freelancerRouter = require("./routers/freelancerRouter");
 let projectRouter = require('./routers/projectRouter');
 let messageRouter = require("./routers/messageRouter");
-let testRouter = require("./routers/testRouter");
+
 const { ObjectId } = require('mongodb'); 
 
 app.use("/", homeRouter);
@@ -57,8 +57,11 @@ app.use("/jobs", jobRouter);
 app.use("/freelancers", freelancerRouter);
 app.use('/projects', projectRouter);
 app.use("/messages", messageRouter);
-app.use("/test", testRouter);
 
+if (process.env.NODE_ENV === 'test') {
+  const testRouter = require("./routers/testRouter");
+  app.use("/test", testRouter); // Only load mock login routes in the test environment
+}
 // Socket
 let http = require("http").createServer(app);
 let io = require("socket.io")(http);
