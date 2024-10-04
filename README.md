@@ -8,8 +8,11 @@ connections.
 
 ## Table of Contents
 - [Features](#features)
+- [Prototype](#prototype)
 - [Installation](#installation)
 - [Testing](#testing)
+    - [Unit test](#1-unit-test)
+    - [End-to-end test](#2-end-to-end-test)
 - [Contribution](#contribution)
 
 ## Features
@@ -38,6 +41,11 @@ This software project includes following features:
     - Freelacner:
         - View your received ratings
     - Real-time notification is sent to target freelancer immediately when a new rating is added for them
+
+[Back to top](#introduction)
+
+## Prototype
+The HI-FI prototype of this project can be found at: [Figma - FreelanceFusion HI-FI prototype](https://www.figma.com/design/H97qY8DnbbelCcCFFsgULU/FreelanceFusion-HI-FI-prototype?node-id=0-1&t=qX4jao1bJt0mtyZQ-1)
 
 [Back to top](#introduction)
 
@@ -82,17 +90,43 @@ This software project includes following features:
 
 ## Testing
 
-Unit test: use following command to run the test with Mocha and Chai:
+**IMPORTANT NOTE: before running any type of testing, make sure you have your website running**
+
+### 1. Unit test
+Use following command to run all the test with Mocha and Chai:
 ```
 npm test
 ```
+
+### 2. End-to-end test
+Start server with following command:
+```
+npm run start:test
+```
+
+To run the end-to-end test, choose one of the following options:
+- Test with Cypress interface open:
+    - Run the following command to launch the browser:
+        ```
+        npm run e2e:open
+        ```
+    - In the welcome page, choose E2E testing
+    - Choose a browser and click "Start E2E Testing"
+    - Click on any `.cy.js` file to start the testing with this them. For example, click on the `home.cy.js` to start testing the features in homepage.
+- Test with command line:
+    - Run all tests with the following command:
+        ```
+        npm run e2e:chrome
+        ```
+    - Observe the testing result in command line
+    
     
 [Back to top](#introduction)
 
 ## Contribution
 Our team members:
-- Alice Tat: responsible for profile management, ratings and reviews features
-- Tuan Phong Nguyen: responsible for job/freelancer search, project management features
-- Caroline Nguyen: responsible for UI of homepage, login, register (frontend)
-- Sumedh Vartak: responsible for user authentication (backend) and real-time communication
-- Misa Aghera: responsible for job post management and real-time communication
+- **Alice Tat**: responsible for profile management, ratings and reviews features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
+- **Tuan Phong Nguyen**: responsible for job/freelancer search, project management features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
+- **Caroline Nguyen**: responsible for UI of homepage, login, register (frontend implementation).
+- **Sumedh Vartak**: responsible for database (implementation and backup), user authentication (backend) and real-time communication features.
+- **Misa Aghera**: responsible for database design, job post management and real-time communication features.

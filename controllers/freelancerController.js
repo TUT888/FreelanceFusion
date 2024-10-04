@@ -17,10 +17,10 @@ const getFreelancerList = async (req, res) => {
 
         if (paginationResult.data.length === 0 && page > 1) {
             // Redirect to the previous valid page or the first page if none exists
-            return res.redirect(`/freelancers?page=${Math.max(1, paginationResult.totalPages)}`);
+            return res.redirect(`/freelancers/search?page=${Math.max(1, paginationResult.totalPages)}`);
         }
 
-        res.render('freelancer', {
+        res.status(200).render('freelancer', {
             freelancersList: paginationResult.data,
             currentPage: paginationResult.currentPage,
             totalPages: paginationResult.totalPages,

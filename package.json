@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
+        "start:test": "cross-env NODE_ENV=test node server.js",
+        "e2e:open": "npx cypress open",
+        "e2e:chrome": "cypress run --browser chrome",
         "test": "mocha --reporter spec",
         "start": "node server.js",
         "start:dev": "nodemon server.js",
@@ -28,5 +31,9 @@
         "nodemon": "^3.0.1",
         "request": "^2.88.2",
         "socket.io": "^4.7.2"
+    },
+    "devDependencies": {
+        "cross-env": "^7.0.3",
+        "cypress": "^13.15.0"
     }
 }
