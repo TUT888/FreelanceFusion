@@ -4,13 +4,13 @@ Detailed description of supported features and their contributors.
 ## Summary
 | Feature | Brief Description | Contributors |
 |:---|:---|:---|
-| [Profile management](#profile-management) | View and update profile | Alice Tat
-| [Ratings and reviews](#ratings-and-reviews) | - Client: View, add, delete ratings and reviews <br>- Freelacner: View received ratings and receive real-time notification | Alice Tat
-| [Search function](#search-function) | Search job, search freelancer | Tuan Phong Nguyen
-| [Project Management](#project-management) | - Freelancer and Client: Manage projects and real-time updated tasks <br>- Client: add or remove freelancer from current project | Tuan Phong Nguyen
-| [User authentication](#user-authentication) | Register and login | Caroline Nguyen <br> Sumedh Vartak
-| [Real-time communication](#real-time-communication) | Real-time chat between freelancer and client | Caroline Nguyen <br> Sumedh Vartak <br> Misa Aghera
-| [Job board](#job-board) | - Client: View all posted jobs, post new job, edit posted jobs <br> - Freelancer: Apply for a job | Misa Aghera
+| [Profile management](#profile-management) | View and update profile | Alice Tat ([TUT888](https://github.com/TUT888))
+| [Ratings and reviews](#ratings-and-reviews) | - Client: View, add, delete ratings and reviews <br>- Freelacner: View received ratings and receive real-time notification | Alice Tat ([TUT888](https://github.com/TUT888))
+| [Search function](#search-function) | Search job, search freelancer | Tuan Phong Nguyen ([ntp111](https://github.com/ntp111))
+| [Project Management](#project-management) | - Freelancer and Client: Manage projects and real-time updated tasks <br>- Client: add or remove freelancer from current project | Tuan Phong Nguyen ([ntp111](https://github.com/ntp111))
+| [User authentication](#user-authentication) | Register and login | Caroline Nguyen ([uyenanuong](https://github.com/uyenanuong))<br> Sumedh Vartak ([sumedh004](https://github.com/sumedh004))
+| [Real-time communication](#real-time-communication) | Real-time chat between freelancer and client | Caroline Nguyen ([uyenanuong](https://github.com/uyenanuong))<br> Sumedh Vartak ([sumedh004](https://github.com/sumedh004))<br> Misa Aghera ([MisaAghera](https://github.com/MisaAghera))
+| [Job board](#job-board) | - Client: View all posted jobs, post new job, edit posted jobs <br> - Freelancer: Apply for a job | Misa Aghera ([MisaAghera](https://github.com/MisaAghera))
 
 ## Profile management
 This feature include view and update profile.

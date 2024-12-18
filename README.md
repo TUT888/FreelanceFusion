@@ -128,8 +128,8 @@ To run the end-to-end test, choose one of the following options:
 
 ## Contribution
 Our team members:
-- **Alice Tat**: responsible for profile management, ratings and reviews features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
-- **Tuan Phong Nguyen**: responsible for job/freelancer search, project management features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
-- **Caroline Nguyen**: responsible for UI of homepage, login, register (frontend implementation).
-- **Sumedh Vartak**: responsible for database (implementation and backup), user authentication (backend and unit testing) and real-time communication features.
-- **Misa Aghera**: responsible for database design, job post management and real-time communication features.
+- **Alice Tat ([TUT888](https://github.com/TUT888))**: responsible for profile management, ratings and reviews features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
+- **Tuan Phong Nguyen ([ntp111](https://github.com/ntp111))**: responsible for job/freelancer search, project management features (HI-FI prototype, feature implementation, unit testing, end-to-end testing).
+- **Caroline Nguyen ([uyenanuong](https://github.com/uyenanuong))**: responsible for UI of homepage, login, register (frontend implementation).
+- **Sumedh Vartak ([sumedh004](https://github.com/sumedh004))**: responsible for database (implementation and backup), user authentication (backend and unit testing) and real-time communication features.
+- **Misa Aghera ([MisaAghera](https://github.com/MisaAghera))**: responsible for database design, job post management and real-time communication features.
