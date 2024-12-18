@@ -5,6 +5,7 @@ FreelanceFusion is a platform where freelancers can create profiles and
 connect with clients seeking various services. It facilitates direct
 communication, helping freelancers and clients establish effective
 connections.
+![Demo](demo/images/home.png)
 
 ## Table of Contents
 - [Features](#features)
@@ -16,6 +17,8 @@ connections.
 - [Contribution](#contribution)
 
 ## Features
+**For more detailed information, including images, please refer to the separated demo section: [DEMO](./demo/README.md)**
+
 This software project includes following features:
 - **User authentication**: Register and login
 - **Profile management**: View and update profile
@@ -28,7 +31,7 @@ This software project includes following features:
     - Freelancer:
         - Apply for a job
 - **Project Management**: 
-    - Manage your project with tasks can boards (To-do, In progress and Completed). This feature is real-time sync between client and freelancer.
+    - Manage your project with tasks on boards (To-do, In progress and Completed). This feature is real-time sync between client and freelancer.
     - Client:
         - Accept application from freelancer
         - Remove freelancer from current project
